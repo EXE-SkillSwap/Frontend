@@ -18,6 +18,22 @@ function App() {
           path: "/login",
           element: <Login />,
         },
+        {
+          path: "/documents",
+          element: <h1>Documents</h1>,
+        },
+        {
+          path: "/friends",
+          element: <h1>Friends</h1>,
+        },
+        {
+          path: "/groups",
+          element: <h1>Groups</h1>,
+        },
+        {
+          path: "/membership",
+          element: <h1>Membership</h1>,
+        },
       ],
     },
   ]);
