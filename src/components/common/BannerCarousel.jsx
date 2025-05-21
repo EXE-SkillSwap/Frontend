@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import BannerIllustration from "@/components/common/illustration/BannerIllustration";
+import gsap from "gsap";
 
 export default function BannerCarousel() {
-  // Sample banner data - matching the e-learning style
   const banners = [
     {
       id: 1,
@@ -15,7 +15,11 @@ export default function BannerCarousel() {
       buttonText: "Get started",
       buttonLink: "#",
       secondaryText: "or contact",
-      bgColor: "bg-amber-300",
+      bgColor: "bg-purple-700 text-white",
+      buttonBg: "bg-purple-600 hover:bg-purple-700",
+      buttonTextColor: "text-white",
+      descriptionTextColor: "text-gray-300",
+      secondaryTextColor: "text-gray-300",
     },
     {
       id: 2,
@@ -25,7 +29,11 @@ export default function BannerCarousel() {
       buttonText: "Join a class",
       buttonLink: "#",
       secondaryText: "view courses",
-      bgColor: "bg-blue-300",
+      bgColor: "bg-purple-900 text-white",
+      buttonBg: "bg-purple-800 hover:bg-purple-900",
+      buttonTextColor: "text-white",
+      descriptionTextColor: "text-gray-300",
+      secondaryTextColor: "text-gray-300",
     },
     {
       id: 3,
@@ -35,46 +43,46 @@ export default function BannerCarousel() {
       buttonText: "Explore options",
       buttonLink: "#",
       secondaryText: "learn more",
-      bgColor: "bg-emerald-500",
+      bgColor: "bg-indigo-900 text-white",
+      buttonBg: "bg-indigo-800 hover:bg-indigo-900",
+      buttonTextColor: "text-white",
+      descriptionTextColor: "text-gray-300",
+      secondaryTextColor: "text-gray-300",
     },
   ];
+  
+ 
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  // Navigate to the previous slide
+  const contentRef = useRef([]);
+
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
   };
 
-  // Navigate to the next slide
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
   }, [banners.length]);
 
-  // Set up autoplay
   useEffect(() => {
     let intervalId;
     if (isAutoPlaying) {
       intervalId = setInterval(() => {
         nextSlide();
-      }, 5000); // Change slide every 5 seconds
+      }, 5000);
     }
-
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
+      clearInterval(intervalId);
     };
   }, [isAutoPlaying, nextSlide]);
 
-  // Pause autoplay when hovering over carousel
   const handleMouseEnter = () => setIsAutoPlaying(false);
   const handleMouseLeave = () => setIsAutoPlaying(true);
 
-  // Touch handlers for mobile swipe
   const handleTouchStart = (e) => {
     setTouchStart(e.touches[0].clientX);
   };
@@ -84,16 +92,27 @@ export default function BannerCarousel() {
   };
 
   const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 50) {
-      // Swipe left
-      nextSlide();
-    }
-
-    if (touchStart - touchEnd < -50) {
-      // Swipe right
-      prevSlide();
-    }
+    if (touchStart - touchEnd > 50) nextSlide();
+    if (touchStart - touchEnd < -50) prevSlide();
   };
+
+  // Animate current banner content
+  useEffect(() => {
+    const currentContent = contentRef.current[currentIndex];
+    if (currentContent) {
+      gsap.fromTo(
+        currentContent.children,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "power3.out",
+        }
+      );
+    }
+  }, [currentIndex]);
 
   return (
     <div
@@ -104,9 +123,7 @@ export default function BannerCarousel() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Main carousel container */}
       <div className="relative h-96 md:h-screen max-h-[600px] w-full">
-        {/* Banner slides */}
         {banners.map((banner, index) => (
           <div
             key={banner.id}
@@ -116,35 +133,50 @@ export default function BannerCarousel() {
               banner.bgColor
             )}
           >
-            {/* Two-column layout */}
             <div className="flex flex-col md:flex-row h-full">
-              {/* Left column - Content */}
-              <div className="md:w-1/2 h-full flex flex-col justify-center p-8 md:p-16">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4 text-navy-900">
+              <div
+                ref={(el) => (contentRef.current[index] = el)}
+                className="md:w-1/2 h-full flex flex-col justify-center p-8 md:p-16"
+              >
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
                   {banner.title}
                 </h2>
-                <p className="text-sm md:text-base text-gray-600 mb-8 max-w-md">
+                <p
+                  className={cn(
+                    "text-sm md:text-base mb-8 max-w-md",
+                    banner.descriptionTextColor
+                  )}
+                >
                   {banner.description}
                 </p>
-
                 <div className="flex items-center gap-4">
-                  <Button className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-2 rounded-full">
+                  <Button
+                    className={cn(
+                      "px-8 py-2 rounded-full",
+                      banner.buttonBg,
+                      banner.buttonTextColor
+                    )}
+                  >
                     {banner.buttonText}
                   </Button>
-                  <span className="text-sm text-gray-600 flex items-center">
+                  <span
+                    className={cn(
+                      "text-sm flex items-center",
+                      banner.secondaryTextColor
+                    )}
+                  >
                     {banner.secondaryText}
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </span>
                 </div>
               </div>
-
               <BannerIllustration />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Navigation arrows - styled to match the modern look */}
+      {/* Arrows */}
       <Button
         variant="ghost"
         size="icon"
@@ -154,7 +186,6 @@ export default function BannerCarousel() {
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
-
       <Button
         variant="ghost"
         size="icon"
@@ -165,7 +196,7 @@ export default function BannerCarousel() {
         <ChevronRight className="h-5 w-5" />
       </Button>
 
-      {/* Pagination indicators - styled to match the modern look */}
+      {/* Pagination */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
         {banners.map((_, index) => (
           <button
