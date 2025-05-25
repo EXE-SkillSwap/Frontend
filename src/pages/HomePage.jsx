@@ -10,19 +10,22 @@ const courses = [
     id: 1,
     title: "React for Beginners",
     description: "Learn React basics with hands-on projects.",
-    image: "https://source.unsplash.com/400x250/?react,code",
+    image:
+      "https://i.pinimg.com/736x/41/8b/00/418b0005c0c5b7e391f6c4802a2c3e80.jpg",
   },
   {
     id: 2,
     title: "Advanced Data Science",
     description: "Master data science techniques and tools.",
-    image: "https://source.unsplash.com/400x250/?data,science",
+    image:
+      "https://i.pinimg.com/736x/fc/e6/60/fce660bfd794ee5fdb0e7590a00a9328.jpg",
   },
   {
     id: 3,
     title: "UI/UX Design Fundamentals",
     description: "Design engaging and user-friendly interfaces.",
-    image: "https://source.unsplash.com/400x250/?design,ui",
+    image:
+      "https://i.pinimg.com/736x/46/0e/f3/460ef3c3fa05eae192e32d056fc5339d.jpg",
   },
 ];
 
@@ -194,10 +197,7 @@ const HomePage = () => {
       </section>
 
       {/* Popular Categories Section */}
-      <section
-        ref={categoriesRef}
-        className="py-20 px-6 text-center bg-white"
-      >
+      <section ref={categoriesRef} className="py-20 px-6 text-center bg-white">
         <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-8">
           Popular Categories
         </h2>
@@ -216,10 +216,7 @@ const HomePage = () => {
       </section>
 
       {/* Instructor Spotlight Section */}
-      <section
-        ref={instructorsRef}
-        className="py-20 px-6 bg-white text-center"
-      >
+      <section ref={instructorsRef} className="py-20 px-6 bg-white text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-8">
           Meet Our Instructors
         </h2>
@@ -281,7 +278,9 @@ const HomePage = () => {
             },
           ].map(({ step, title, description }) => (
             <div key={step} className="p-6 bg-white rounded-lg shadow-md">
-              <div className="text-indigo-600 font-bold text-3xl mb-4">{step}</div>
+              <div className="text-indigo-600 font-bold text-3xl mb-4">
+                {step}
+              </div>
               <h3 className="text-xl font-semibold mb-2">{title}</h3>
               <p className="text-gray-600">{description}</p>
             </div>
