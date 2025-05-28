@@ -6,7 +6,10 @@
         "@/*": [
           "./src/*"
         ]
-      }
+      },
       // ...
+      "jsx": "react-jsx",        // hoặc "react" nếu bạn dùng React < 17
+      "module": "ESNext",        // tùy thuộc vào môi trường của bạn
+      "target": "ES6" 
     }
   }
