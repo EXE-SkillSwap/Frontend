@@ -4,6 +4,10 @@ import Login from "@/pages/Login";
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import Signup from "@/pages/Signup";
+import Admin from "@/pages/AdminPage";
+import Participants from "@/Admin/dashboard/Participants";
+import UploadDocument from "@/Admin/dashboard/Document";
+
 function App() {
   const routes = createBrowserRouter([
     {
@@ -37,6 +41,18 @@ function App() {
         {
           path: "/membership",
           element: <h1>Membership</h1>,
+        },
+        {
+          path: "/admin/dashboard",
+          element: <Admin />,
+        },
+        {
+          path: "/admin/participants",
+          element: <Participants />,
+        },
+        {
+          path: "/admin/upload-document",
+          element: <UploadDocument />,
         },
       ],
     },
