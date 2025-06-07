@@ -35,7 +35,7 @@ export default function UploadDocument() {
       fileInputRef.current.click(); // Kích hoạt input file
     }
   };
-  
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -46,9 +46,6 @@ export default function UploadDocument() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar bên trái */}
-      <Sidebar />
-
       {/* Form bên phải */}
       <div className="flex flex-1 justify-center p-8">
         <div className="w-full max-w-2xl">
@@ -59,7 +56,10 @@ export default function UploadDocument() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="name"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Name
                 </Label>
                 <Input
@@ -73,7 +73,10 @@ export default function UploadDocument() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="description"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Description
                 </Label>
                 <Textarea
@@ -90,7 +93,10 @@ export default function UploadDocument() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="price" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="price"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Price
                 </Label>
                 <Input
@@ -113,7 +119,10 @@ export default function UploadDocument() {
               </div>
             </div>
 
-            <div className="mt-8 cursor-pointer" onClick={handleFileUploadClick}>
+            <div
+              className="mt-8 cursor-pointer"
+              onClick={handleFileUploadClick}
+            >
               <Card className="border-2 border-dashed border-gray-300 hover:border-skillswap-purple transition-colors">
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -124,7 +133,7 @@ export default function UploadDocument() {
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     className="hidden"
-                />  
+                  />
                   <button
                     type="button"
                     className="text-skillswap-purple hover:text-skillswap-purple-dark font-medium"

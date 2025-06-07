@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const nav = useNavigate();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -131,7 +133,10 @@ const Login = () => {
                   </a>
                 </p>
                 <p className="text-sm text-center text-[#6B7280]">
-                  <a className="text-[#6366F1] hover:text-[#6366F1]/80 transition-colors cursor-pointer">
+                  <a
+                    className="text-[#6366F1] hover:text-[#6366F1]/80 transition-colors cursor-pointer"
+                    onClick={() => nav("/register")}
+                  >
                     Đăng Kí Tài Khoản
                   </a>
                 </p>

@@ -1,12 +1,14 @@
+import UploadDocument from "@/Admin/dashboard/Document";
+import Participants from "@/Admin/dashboard/Participants";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
 import UserLayout from "@/layouts/UserLayout";
+import Admin from "@/pages/AdminPage";
+import NotFound from "@/pages/errors/NotFound";
 import HomePage from "@/pages/HomePage";
 import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
-import Signup from "@/pages/Signup";
-import Admin from "@/pages/AdminPage";
-import Participants from "@/Admin/dashboard/Participants";
-import UploadDocument from "@/Admin/dashboard/Document";
 
 function App() {
   const routes = createBrowserRouter([
@@ -42,19 +44,29 @@ function App() {
           path: "/membership",
           element: <h1>Membership</h1>,
         },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <DashboardLayout />,
+      children: [
         {
-          path: "/admin/dashboard",
+          path: "dashboard",
           element: <Admin />,
         },
         {
-          path: "/admin/participants",
+          path: "participants",
           element: <Participants />,
         },
         {
-          path: "/admin/upload-document",
+          path: "upload-document",
           element: <UploadDocument />,
         },
       ],
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ]);
 

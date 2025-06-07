@@ -1,21 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { useNavigate, useLocation } from "react-router-dom";
+import newLogo from "@/assets/newLogo.png";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
-  Users,
-  Upload,
-  Inbox,
-  FileText,
-  DollarSign,
   Calendar,
-  UserCheck,
+  DollarSign,
+  FileText,
+  Inbox,
+  LayoutDashboard,
+  LogOut,
   MessageSquare,
   Receipt,
   Settings,
-  LogOut,
+  Upload,
+  UserCheck,
+  Users,
 } from "lucide-react";
+import PropTypes from "prop-types";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const navigationItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
@@ -39,17 +40,22 @@ const bottomItems = [
 ];
 
 export function Sidebar() {
+  const navigate = useNavigate();
   return (
     <div className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
       {/* Logo */}
-      <div className="p-6" >
-        <div className="flex items-center space-x-2" >
+      <div className="p-6">
+        <div
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => navigate("/admin/dashboard")}
+        >
           <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">S</span>
+            {/* <span className="text-white font-bold text-sm">S</span> */}
+            <img src={newLogo} alt="Company Logo" />
           </div>
           <span className="text-xl font-semibold">
-            <span className="text-purple-600">Skill</span>
-            <span className="text-gray-900">Swap</span>
+            <span className="text-purple-600 font-bold">Skill</span>
+            <span className="text-gray-900 font-bold">Swap</span>
           </span>
         </div>
       </div>
@@ -78,9 +84,13 @@ export function Sidebar() {
       {/* Bottom Items */}
       <div className="p-4 border-t border-gray-200">
         <div className="space-y-1">
-          {bottomItems.map((item) => (
-            <SidebarItem key={item.label} item={item} />
-          ))}
+          <Button
+            className="w-full cursor-pointer"
+            variant="destructive"
+            onClick={() => navigate("/")}
+          >
+            Đăng xuất
+          </Button>
         </div>
       </div>
     </div>
@@ -94,17 +104,12 @@ function SidebarItem({ item }) {
   const Icon = item.icon;
 
   const handleClick = () => {
-    if (item.label === "Logout") {
-      // Add logout logic (e.g., clear localStorage)
-      navigate("/login");
-    } else {
-      navigate(item.href);
-    }
+    navigate(item.href);
   };
 
   return (
     <button
-    onClick={handleClick}
+      onClick={handleClick}
       className={cn(
         "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left cursor-pointer",
         isActive

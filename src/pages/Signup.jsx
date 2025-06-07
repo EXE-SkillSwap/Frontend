@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { UserPlus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -27,6 +28,7 @@ const itemVariants = {
 const SignUp = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const nav = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,9 +36,11 @@ const SignUp = () => {
     setSuccess(null);
 
     const form = e.currentTarget;
-    const email = (form.elements.namedItem("email") )?.value.trim();
-    const password = (form.elements.namedItem("password") )?.value.trim();
-    const confirmPassword = (form.elements.namedItem("confirmPassword"))?.value.trim();
+    const email = form.elements.namedItem("email")?.value.trim();
+    const password = form.elements.namedItem("password")?.value.trim();
+    const confirmPassword = form.elements
+      .namedItem("confirmPassword")
+      ?.value.trim();
 
     if (!email || !password || !confirmPassword) {
       setError("Vui lòng điền đầy đủ tất cả các trường.");
@@ -113,12 +117,18 @@ const SignUp = () => {
               </motion.div>
 
               {error && (
-                <motion.p variants={itemVariants} className="text-red-600 text-center">
+                <motion.p
+                  variants={itemVariants}
+                  className="text-red-600 text-center"
+                >
                   {error}
                 </motion.p>
               )}
               {success && (
-                <motion.p variants={itemVariants} className="text-green-700 text-center">
+                <motion.p
+                  variants={itemVariants}
+                  className="text-green-700 text-center"
+                >
                   {success}
                 </motion.p>
               )}
@@ -134,8 +144,14 @@ const SignUp = () => {
               </motion.div>
             </form>
 
-            <motion.div variants={itemVariants} className="text-sm text-center text-[#6B7280]">
-              <a className="text-[#6366F1] hover:text-[#6366F1]/80 cursor-pointer transition-colors">
+            <motion.div
+              variants={itemVariants}
+              className="text-sm text-center text-[#6B7280]"
+            >
+              <a
+                className="text-[#6366F1] hover:text-[#6366F1]/80 cursor-pointer transition-colors"
+                onClick={() => nav("/login")}
+              >
                 Đã có tài khoản? Đăng Nhập
               </a>
             </motion.div>

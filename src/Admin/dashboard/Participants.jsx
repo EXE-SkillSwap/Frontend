@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,9 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { Sidebar } from "../../components/dashboardChart/Sidebar";
-import { Header } from "../../components/dashboardChart/Header";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { useState } from "react";
 
 // Mock data
 const mockParticipants = [
@@ -112,11 +110,17 @@ export default function Participants() {
       participant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       participant.address.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate =
-      selectedDate === "all" || !selectedDate || participant.date.includes(selectedDate);
+      selectedDate === "all" ||
+      !selectedDate ||
+      participant.date.includes(selectedDate);
     const matchesLesson =
-      selectedLesson === "all" || !selectedLesson || participant.lesson === selectedLesson;
+      selectedLesson === "all" ||
+      !selectedLesson ||
+      participant.lesson === selectedLesson;
     const matchesStatus =
-      selectedStatus === "all" || !selectedStatus || participant.status === selectedStatus;
+      selectedStatus === "all" ||
+      !selectedStatus ||
+      participant.status === selectedStatus;
 
     return matchesSearch && matchesDate && matchesLesson && matchesStatus;
   });
@@ -142,13 +146,11 @@ export default function Participants() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar />
       <div className="flex-1 flex flex-col">
-        <Header />
         <main className="flex-1 space-y-4 p-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Participants</h1>
-        </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Participants</h1>
+          </div>
           {/* Filters Section */}
           <div className="flex flex-wrap items-center gap-4 border-b pb-4">
             <div className="flex items-center gap-2">
@@ -236,9 +238,13 @@ export default function Participants() {
               <TableBody>
                 {paginatedParticipants.map((participant) => (
                   <TableRow key={participant.id}>
-                    <TableCell className="font-medium">{participant.id}</TableCell>
+                    <TableCell className="font-medium">
+                      {participant.id}
+                    </TableCell>
                     <TableCell>{participant.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{participant.address}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {participant.address}
+                    </TableCell>
                     <TableCell>{participant.date}</TableCell>
                     <TableCell>{participant.lesson}</TableCell>
                     <TableCell>
@@ -253,8 +259,8 @@ export default function Participants() {
           <div className="flex items-center justify-between pt-4">
             <p className="text-sm text-muted-foreground">
               Showing {startIndex + 1}-
-              {Math.min(startIndex + itemsPerPage, filteredParticipants.length)} of{" "}
-              {filteredParticipants.length}
+              {Math.min(startIndex + itemsPerPage, filteredParticipants.length)}{" "}
+              of {filteredParticipants.length}
             </p>
             <div className="flex items-center gap-2">
               <Button
@@ -272,7 +278,9 @@ export default function Participants() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
               >
                 Next
