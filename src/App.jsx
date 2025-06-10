@@ -6,12 +6,18 @@ import Admin from "@/pages/AdminPage";
 import NotFound from "@/pages/errors/NotFound";
 import HomePage from "@/pages/HomePage";
 import Login from "@/pages/Login";
+import Profile from "@/pages/Profile";
+import SelectSkills from "@/pages/SelectSkills";
 import Signup from "@/pages/Signup";
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 
 function App() {
   const routes = createBrowserRouter([
+    {
+      path: "/skills",
+      element: <SelectSkills />,
+    },
     {
       path: "/",
       element: <UserLayout />,
@@ -27,6 +33,10 @@ function App() {
         {
           path: "/register",
           element: <Signup />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
         },
         {
           path: "/documents",

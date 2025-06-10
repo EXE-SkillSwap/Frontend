@@ -1,5 +1,5 @@
 import { Facebook, Instagram, Twitter } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/newLogo.png";
 
 const Footer = () => {
   return (
@@ -23,22 +23,15 @@ const Footer = () => {
 
             <div className="flex space-x-3">
               <a
-                href="#"
+                onClick={() =>
+                  window.open(
+                    "https://www.facebook.com/profile.php?id=100090153279761",
+                    "_blank"
+                  )
+                }
                 className="h-8 w-8 rounded-full border border-gray-600 flex items-center justify-center hover:bg-gray-800 transition-colors"
               >
                 <Facebook size={16} />
-              </a>
-              <a
-                href="#"
-                className="h-8 w-8 rounded-full border border-gray-600 flex items-center justify-center hover:bg-gray-800 transition-colors"
-              >
-                <Twitter size={16} />
-              </a>
-              <a
-                href="#"
-                className="h-8 w-8 rounded-full border border-gray-600 flex items-center justify-center hover:bg-gray-800 transition-colors"
-              >
-                <Instagram size={16} />
               </a>
             </div>
           </div>
@@ -49,12 +42,6 @@ const Footer = () => {
               SẢN PHẨM
             </h3>
             <ul className="space-y-3">
-              <li></li>
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Khóa học
-                </a>
-              </li>
               <li>
                 <a href="#" className="block text-gray-200 hover:text-white">
                   Đánh giá
