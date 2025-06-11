@@ -9,49 +9,47 @@ export default function BannerCarousel() {
   const banners = [
     {
       id: 1,
-      title: "Learn anywhere",
+      title: "Kết nối – Học hỏi – Cùng phát triển",
       description:
-        "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.",
-      buttonText: "Get started",
+        "Skill Swap là nơi bạn gặp gỡ những người có cùng đam mê, cùng nhau chia sẻ kỹ năng và học hỏi không giới hạn.",
+      buttonText: "Tham gia ngay",
       buttonLink: "#",
-      secondaryText: "or contact",
-      bgColor: "bg-purple-700 text-white",
-      buttonBg: "bg-purple-600 hover:bg-purple-700",
+      secondaryText: "xem cách hoạt động",
+      bgColor: "bg-pink-600 text-white",
+      buttonBg: "bg-pink-500 hover:bg-pink-600",
       buttonTextColor: "text-white",
-      descriptionTextColor: "text-gray-300",
-      secondaryTextColor: "text-gray-300",
+      descriptionTextColor: "text-white/80",
+      secondaryTextColor: "text-white/80",
     },
     {
       id: 2,
-      title: "Learn together",
+      title: "Biết gì dạy đó – Cần gì học đó",
       description:
-        "Connect with peers and instructors in our collaborative learning environment designed for student success.",
-      buttonText: "Join a class",
+        "Bạn giỏi thiết kế? Bạn muốn học chơi guitar? Trao đổi kỹ năng một cách vui vẻ, dễ dàng và hoàn toàn miễn phí!",
+      buttonText: "Bắt đầu trao đổi",
       buttonLink: "#",
-      secondaryText: "view courses",
-      bgColor: "bg-purple-900 text-white",
-      buttonBg: "bg-purple-800 hover:bg-purple-900",
-      buttonTextColor: "text-white",
-      descriptionTextColor: "text-gray-300",
-      secondaryTextColor: "text-gray-300",
+      secondaryText: "khám phá kỹ năng",
+      bgColor: "bg-yellow-500 text-black",
+      buttonBg: "bg-yellow-400 hover:bg-yellow-500",
+      buttonTextColor: "text-black",
+      descriptionTextColor: "text-black/70",
+      secondaryTextColor: "text-black/70",
     },
     {
       id: 3,
-      title: "Learn at your pace",
+      title: "Không ai giỏi hết – Nhưng ai cũng có cái hay",
       description:
-        "Access course materials anytime, anywhere. Set your own schedule and learn at the pace that works for you.",
-      buttonText: "Explore options",
+        "Mỗi người đều có kỹ năng đáng giá. Skill Swap giúp bạn chia sẻ và học hỏi từ chính cộng đồng thân thiện và năng động này.",
+      buttonText: "Khám phá cộng đồng",
       buttonLink: "#",
-      secondaryText: "learn more",
-      bgColor: "bg-indigo-900 text-white",
-      buttonBg: "bg-indigo-800 hover:bg-indigo-900",
+      secondaryText: "xem trải nghiệm",
+      bgColor: "bg-indigo-700 text-white",
+      buttonBg: "bg-indigo-600 hover:bg-indigo-700",
       buttonTextColor: "text-white",
-      descriptionTextColor: "text-gray-300",
-      secondaryTextColor: "text-gray-300",
+      descriptionTextColor: "text-white/80",
+      secondaryTextColor: "text-white/80",
     },
   ];
-  
- 
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -176,13 +174,13 @@ export default function BannerCarousel() {
         ))}
       </div>
 
-      {/* Arrows */}
+      {/* Nút điều hướng */}
       <Button
         variant="ghost"
         size="icon"
         className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white shadow-md hover:bg-gray-100 text-gray-800 rounded-full h-10 w-10"
         onClick={prevSlide}
-        aria-label="Previous slide"
+        aria-label="Slide trước"
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
@@ -191,12 +189,12 @@ export default function BannerCarousel() {
         size="icon"
         className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white shadow-md hover:bg-gray-100 text-gray-800 rounded-full h-10 w-10"
         onClick={nextSlide}
-        aria-label="Next slide"
+        aria-label="Slide tiếp theo"
       >
         <ChevronRight className="h-5 w-5" />
       </Button>
 
-      {/* Pagination */}
+      {/* Điểm chuyển trang */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
         {banners.map((_, index) => (
           <button
@@ -208,7 +206,7 @@ export default function BannerCarousel() {
                 ? "w-8 bg-gray-800"
                 : "bg-gray-400 hover:bg-gray-600"
             )}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={`Chuyển đến slide ${index + 1}`}
           />
         ))}
       </div>

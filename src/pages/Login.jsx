@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { loginSchema } from "@/schemas/login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { jwtDecode } from "jwt-decode";
 import { EyeClosedIcon, EyeIcon, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -55,11 +56,15 @@ const Login = () => {
     try {
       const response = await login(data);
       if (response.status === 200) {
+        const decodedToken = jwtDecode(response.data.token);
         localStorage.setItem("token", response.data.token);
-        toast.success("Xin chào!");
-        setTimeout(() => {
+        localStorage.setItem("userRole", decodedToken?.scope);
+        if (decodedToken?.scope === "ADMIN") {
+          nav("/admin/dashboard");
+        }
+        if (decodedToken?.scope === "USER") {
           nav("/");
-        }, 1000);
+        }
       }
       if (response.data?.firstLogin) {
         nav("/skills");

@@ -1,6 +1,7 @@
 import newLogo from "@/assets/newLogo.png";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { logOut } from "@/utils/auth.utils";
 import {
   Calendar,
   DollarSign,
@@ -41,6 +42,10 @@ const bottomItems = [
 
 export function Sidebar() {
   const navigate = useNavigate();
+
+  const handleLogut = () => {
+    logOut();
+  };
   return (
     <div className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
       {/* Logo */}
@@ -87,7 +92,7 @@ export function Sidebar() {
           <Button
             className="w-full cursor-pointer"
             variant="destructive"
-            onClick={() => navigate("/")}
+            onClick={handleLogut}
           >
             Đăng xuất
           </Button>

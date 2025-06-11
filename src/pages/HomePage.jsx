@@ -8,22 +8,22 @@ gsap.registerPlugin(ScrollTrigger);
 const courses = [
   {
     id: 1,
-    title: "React for Beginners",
-    description: "Learn React basics with hands-on projects.",
+    title: "React cho người mới bắt đầu",
+    description: "Học React cơ bản với các dự án thực hành.",
     image:
       "https://i.pinimg.com/736x/41/8b/00/418b0005c0c5b7e391f6c4802a2c3e80.jpg",
   },
   {
     id: 2,
-    title: "Advanced Data Science",
-    description: "Master data science techniques and tools.",
+    title: "Khoa học dữ liệu nâng cao",
+    description: "Thành thạo kỹ thuật và công cụ khoa học dữ liệu.",
     image:
       "https://i.pinimg.com/736x/fc/e6/60/fce660bfd794ee5fdb0e7590a00a9328.jpg",
   },
   {
     id: 3,
-    title: "UI/UX Design Fundamentals",
-    description: "Design engaging and user-friendly interfaces.",
+    title: "Cơ bản về thiết kế UI/UX",
+    description: "Thiết kế giao diện hấp dẫn và thân thiện với người dùng.",
     image:
       "https://i.pinimg.com/736x/46/0e/f3/460ef3c3fa05eae192e32d056fc5339d.jpg",
   },
@@ -32,29 +32,29 @@ const courses = [
 const testimonials = [
   {
     id: 1,
-    name: "Anna Lee",
+    name: "Nguyễn Thị Anh",
     quote:
-      "This platform helped me land my dream job. The courses are well structured and easy to follow!",
+      "Nền tảng này đã giúp tôi có được công việc mơ ước. Các khóa học được cấu trúc tốt và dễ theo dõi!",
     avatar: "https://randomuser.me/api/portraits/women/68.jpg",
   },
   {
     id: 2,
-    name: "Mark Johnson",
+    name: "Trần Văn Minh",
     quote:
-      "Great instructors and content! I especially loved the interactive projects.",
+      "Giảng viên và nội dung tuyệt vời! Tôi đặc biệt thích các dự án tương tác.",
     avatar: "https://randomuser.me/api/portraits/men/65.jpg",
   },
   {
     id: 3,
-    name: "Sophie Kim",
+    name: "Lê Thị Hương",
     quote:
-      "A fantastic learning experience. Highly recommend to anyone wanting to upskill.",
+      "Trải nghiệm học tập tuyệt vời. Rất khuyến khích cho bất kỳ ai muốn nâng cao kỹ năng.",
     avatar: "https://randomuser.me/api/portraits/women/72.jpg",
   },
 ];
 
 const HomePage = () => {
-  // Refs for sections
+  // Refs cho các phần
   const featuredRef = useRef(null);
   const testimonialRef = useRef(null);
   const categoriesRef = useRef(null);
@@ -62,7 +62,7 @@ const HomePage = () => {
   const howItWorksRef = useRef(null);
   const newsletterRef = useRef(null);
 
-  // Refs for course & testimonial cards arrays (for hover animations)
+  // Refs cho mảng thẻ khóa học & đánh giá (cho hiệu ứng hover)
   const courseCardRefs = useRef([]);
   const testimonialCardRefs = useRef([]);
 
@@ -76,7 +76,7 @@ const HomePage = () => {
       newsletterRef.current,
     ];
 
-    // Scroll animation for sections
+    // Hiệu ứng cuộn cho các phần
     sections.forEach((section) => {
       if (section) {
         gsap.fromTo(
@@ -96,10 +96,10 @@ const HomePage = () => {
       }
     });
 
-    // Add hover toggle animations for course cards
+    // Thêm hiệu ứng hover cho thẻ khóa học
     courseCardRefs.current.forEach((card) => {
       if (card) {
-        // on mouse enter
+        // khi chuột vào
         card.addEventListener("mouseenter", () => {
           gsap.to(card, {
             scale: 1.05,
@@ -108,7 +108,7 @@ const HomePage = () => {
             ease: "power3.out",
           });
         });
-        // on mouse leave
+        // khi chuột rời đi
         card.addEventListener("mouseleave", () => {
           gsap.to(card, {
             scale: 1,
@@ -120,7 +120,7 @@ const HomePage = () => {
       }
     });
 
-    // Hover toggle animations for testimonial cards
+    // Hiệu ứng hover cho thẻ đánh giá
     testimonialCardRefs.current.forEach((card) => {
       if (card) {
         card.addEventListener("mouseenter", () => {
@@ -142,7 +142,7 @@ const HomePage = () => {
       }
     });
 
-    // Clean up event listeners on unmount
+    // Dọn dẹp event listener khi unmount
     return () => {
       courseCardRefs.current.forEach((card) => {
         if (card) {
@@ -161,19 +161,20 @@ const HomePage = () => {
 
   return (
     <main className="relative z-0">
-      {/* Hero Banner */}
+      {/* Banner Chính */}
       <BannerCarousel />
 
-      {/* Featured Courses Section */}
+      {/* Phần Khóa Học Nổi Bật */}
       <section
         ref={featuredRef}
         className="fade-in-section py-20 px-6 text-center bg-white"
       >
         <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
-          Featured Courses
+          Khóa Học Nổi Bật
         </h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-8">
-          Discover top-rated learning paths carefully curated for your growth.
+          Khám phá các lộ trình học hàng đầu được chọn lọc kỹ lưỡng cho sự phát
+          triển của bạn.
         </p>
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {courses.map((course, index) => (
@@ -196,13 +197,13 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Popular Categories Section */}
+      {/* Phần Danh Mục Phổ Biến */}
       <section ref={categoriesRef} className="py-20 px-6 text-center bg-white">
         <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-8">
-          Popular Categories
+          Danh Mục Phổ Biến
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-          {["Web Development", "Data Science", "Design", "Marketing"].map(
+          {["Phát triển Web", "Khoa học Dữ liệu", "Thiết kế", "Marketing"].map(
             (cat) => (
               <div
                 key={cat}
@@ -215,26 +216,26 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Instructor Spotlight Section */}
+      {/* Phần Giới Thiệu Giảng Viên */}
       <section ref={instructorsRef} className="py-20 px-6 bg-white text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-8">
-          Meet Our Instructors
+          Gặp Gỡ Giảng Viên Của Chúng Tôi
         </h2>
         <div className="flex flex-wrap justify-center gap-10 max-w-6xl mx-auto">
           {[
             {
-              name: "Jane Doe",
-              bio: "Expert in Web Development with 10 years of experience.",
+              name: "Nguyễn Thị Hương",
+              bio: "Chuyên gia Phát triển Web với 10 năm kinh nghiệm.",
               img: "https://randomuser.me/api/portraits/women/44.jpg",
             },
             {
-              name: "John Smith",
-              bio: "Data Scientist passionate about turning data into insights.",
+              name: "Trần Văn Đức",
+              bio: "Nhà khoa học Dữ liệu đam mê biến dữ liệu thành thông tin chi tiết.",
               img: "https://randomuser.me/api/portraits/men/46.jpg",
             },
             {
-              name: "Emily Johnson",
-              bio: "Creative designer specializing in UI/UX experiences.",
+              name: "Phạm Thị Lan",
+              bio: "Nhà thiết kế sáng tạo chuyên về trải nghiệm UI/UX.",
               img: "https://randomuser.me/api/portraits/women/47.jpg",
             },
           ].map(({ name, bio, img }) => (
@@ -251,30 +252,30 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {/* Phần Cách Thức Hoạt Động */}
       <section
         ref={howItWorksRef}
         className="py-20 px-6 bg-indigo-50 text-center"
       >
         <h2 className="text-3xl md:text-4xl font-bold text-indigo-900 mb-8">
-          How It Works
+          Cách Thức Hoạt Động
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
             {
               step: 1,
-              title: "Choose a Course",
-              description: "Browse and select your favorite topics.",
+              title: "Chọn Khóa Học",
+              description: "Duyệt và chọn chủ đề yêu thích của bạn.",
             },
             {
               step: 2,
-              title: "Learn at Your Pace",
-              description: "Watch videos and complete assignments.",
+              title: "Học Theo Tốc Độ Của Bạn",
+              description: "Xem video và hoàn thành bài tập.",
             },
             {
               step: 3,
-              title: "Earn Certificates",
-              description: "Showcase your achievements to employers.",
+              title: "Nhận Chứng Chỉ",
+              description: "Trưng bày thành tích của bạn cho nhà tuyển dụng.",
             },
           ].map(({ step, title, description }) => (
             <div key={step} className="p-6 bg-white rounded-lg shadow-md">
@@ -288,16 +289,17 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Phần Đánh Giá */}
       <section
         ref={testimonialRef}
         className="fade-in-section bg-gray-100 py-20 px-6 text-center"
       >
         <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
-          What Our Students Say
+          Học Viên Nói Gì Về Chúng Tôi
         </h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-8">
-          Hear from learners who’ve achieved more through our platform.
+          Lắng nghe từ người học đã đạt được nhiều thành tựu thông qua nền tảng
+          của chúng tôi.
         </p>
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((t, index) => (
@@ -320,26 +322,27 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Newsletter Signup Section */}
+      {/* Phần Đăng Ký Bản Tin */}
       <section
         ref={newsletterRef}
         className="py-16 px-6 bg-purple-700 text-white text-center rounded-t-lg"
       >
-        <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
+        <h2 className="text-3xl font-bold mb-4">Cập Nhật Thông Tin</h2>
         <p className="max-w-xl mx-auto mb-8">
-          Subscribe to our newsletter to get the latest courses and offers.
+          Đăng ký nhận bản tin của chúng tôi để nhận các khóa học và ưu đãi mới
+          nhất.
         </p>
         <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
           <input
             type="email"
-            placeholder="Your email address"
+            placeholder="Địa chỉ email của bạn"
             className="p-3 rounded-md text-gray-800 flex-grow"
           />
           <button
             type="submit"
             className="bg-amber-400 hover:bg-amber-500 rounded-md px-6 py-3 font-semibold text-purple-900"
           >
-            Subscribe
+            Đăng Ký
           </button>
         </form>
       </section>

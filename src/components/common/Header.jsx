@@ -12,10 +12,8 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
-  { name: "Tài Liệu", href: "/documents" },
   { name: "Bạn Bè", href: "/friends" },
-  { name: "Nhóm", href: "/groups" },
-  { name: "Thành Viên", href: "/membership" },
+  { name: "Trò Chuyện", href: "/groups" },
 ];
 
 function classNames(...classes) {
@@ -68,9 +66,9 @@ const Header = () => {
                     aria-current={item.href === location ? "page" : undefined}
                     className={classNames(
                       item.href === location
-                        ? "bg-[#6246ea] text-white"
-                        : "text-indigo-700 hover:bg-[#d1d1e9] hover:text-white",
-                      "rounded-md px-3 py-2 text-sm font-medium hover:cursor-pointer transition-all duration-100 ease-in-out"
+                        ? "bg-gradient-to-l from-[#6246ea] to-blue-400 text-white "
+                        : "text-indigo-700 hover:bg-[#d1d1e9] hover:text-gray-700",
+                      "rounded-full px-3 py-2 text-sm font-medium hover:cursor-pointer transition-all duration-100 ease-in-out"
                     )}
                   >
                     {item.name}
