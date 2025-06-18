@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
-import { CardContent } from "@mui/material";
 import svg from "@/assets/undraw_confirmed_c5lo.svg";
 const PaymentSucess = () => {
   const [showConfetti, setShowConfetti] = useState(true);

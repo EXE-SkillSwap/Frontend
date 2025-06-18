@@ -1,5 +1,6 @@
 import { register } from "@/api/services/userService";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
@@ -10,14 +11,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { registerSchema } from "@/schemas/register.shema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { EyeClosedIcon, EyeIcon, UserPlus } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronDownIcon,
+  EyeClosedIcon,
+  EyeIcon,
+  UserPlus,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import CircleLoading from "@/components/common/loading/CircleLoading";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -40,19 +65,23 @@ const itemVariants = {
 const SignUp = () => {
   const nav = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const registerForm = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
+      birthDay: "",
       email: "",
       password: "",
       confirmPassword: "",
+      gender: "",
     },
   });
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const response = await register(data);
       if (response.status === 201) {
@@ -61,6 +90,7 @@ const SignUp = () => {
           nav("/login");
         }, 3000);
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Error during registration:", error);
       if (error.response && error.response.data) {
@@ -70,6 +100,7 @@ const SignUp = () => {
       } else {
         toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau.");
       }
+      setIsLoading(false);
     }
   };
 
@@ -130,6 +161,94 @@ const SignUp = () => {
                               className="mt-1 bg-white/70 border-[#D1D5DB] focus:border-[#6366F1] focus:ring-[#6366F1] text-[#111827] transition-all duration-200"
                             />
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <motion.div variants={itemVariants}>
+                    <FormField
+                      control={registerForm.control}
+                      name="birthDay"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Ngày sinh</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-[185px] pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "dd/MM/yyyy").toString()
+                                  ) : (
+                                    <span>Chọn ngày sinh</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={
+                                  field.value
+                                    ? new Date(field.value)
+                                    : undefined
+                                }
+                                onSelect={(date) => {
+                                  field.onChange(
+                                    date ? format(date, "yyyy-MM-dd") : null
+                                  );
+                                }}
+                                disabled={(date) =>
+                                  date > new Date() ||
+                                  date < new Date("1900-01-01")
+                                }
+                                captionLayout="dropdown"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+
+                  <motion.div variants={itemVariants}>
+                    <FormField
+                      control={registerForm.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Giới tính</FormLabel>
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                            }}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="Chọn giới tính" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectItem value="Không xác định">
+                                  Không xác định
+                                </SelectItem>
+                                <SelectItem value="Nam">Nam</SelectItem>
+                                <SelectItem value="Nữ">Nữ</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -217,13 +336,17 @@ const SignUp = () => {
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
-                  <Button
-                    type="submit"
-                    className="w-full bg-[#6366F1] hover:bg-[#6366F1]/90 text-white transition-all duration-200 cursor-pointer"
-                  >
-                    <UserPlus className="mr-2" />
-                    Đăng Ký
-                  </Button>
+                  {isLoading ? (
+                    <CircleLoading />
+                  ) : (
+                    <Button
+                      type="submit"
+                      className="w-full bg-[#6366F1] hover:bg-[#6366F1]/90 text-white transition-all duration-200 cursor-pointer"
+                    >
+                      <UserPlus className="mr-2" />
+                      Đăng Ký
+                    </Button>
+                  )}
                 </motion.div>
               </form>
             </Form>

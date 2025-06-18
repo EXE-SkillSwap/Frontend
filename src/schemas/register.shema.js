@@ -4,6 +4,14 @@ export const registerSchema = z
   .object({
     firstName: z.string().min(1, "Họ là bắt buộc").max(50, "Họ quá dài"),
     lastName: z.string().min(1, "Tên là bắt buộc").max(50, "Tên quá dài"),
+    birthDay: z
+      .string()
+      .min(1, "Ngày sinh là bắt buộc")
+      .max(10, "Ngày sinh quá dài"),
+    gender: z
+      .string()
+      .min(1, "Giới tính là bắt buộc")
+      .max(20, "Giới tính quá dài"),
     email: z.string().email("Email không hợp lệ").max(100, "Email quá dài"),
     password: z
       .string()

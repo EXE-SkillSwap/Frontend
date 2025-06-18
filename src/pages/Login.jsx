@@ -1,5 +1,6 @@
 import { login } from "@/api/services/authService";
 import LoginIllustration from "@/components/common/illustration/LoginIllustration";
+import CircleLoading from "@/components/common/loading/CircleLoading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -25,6 +26,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const nav = useNavigate();
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -53,6 +55,7 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const response = await login(data);
       if (response.status === 200) {
@@ -61,20 +64,24 @@ const Login = () => {
         localStorage.setItem("userRole", decodedToken?.scope);
         if (decodedToken?.scope === "ADMIN") {
           nav("/admin/dashboard");
+          toast.success("Đăng nhập thành công với quyền quản trị!");
         }
         if (decodedToken?.scope === "USER") {
           nav("/");
+          toast.success("Đăng nhập thành công!");
         }
       }
       if (response.data?.firstLogin) {
         nav("/skills");
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Login failed:", error);
       setError(
         error.response?.data?.message ||
           "Đăng nhập không thành công. Vui lòng thử lại."
       );
+      setIsLoading(false);
     }
   };
 
@@ -141,7 +148,6 @@ const Login = () => {
                       )}
                     />
                   </motion.div>
-
                   <motion.div variants={itemVariants}>
                     <FormField
                       control={loginForm.control}
@@ -172,7 +178,6 @@ const Login = () => {
                       )}
                     />
                   </motion.div>
-
                   {error && (
                     <motion.div
                       variants={itemVariants}
@@ -181,16 +186,21 @@ const Login = () => {
                       {error}
                     </motion.div>
                   )}
-
-                  <motion.div variants={itemVariants}>
-                    <Button
-                      type="submit"
-                      className="w-full bg-[#6366F1] hover:bg-[#6366F1]/90 text-white transition-all duration-200 cursor-pointer"
-                    >
-                      <LogIn className="mr-2" />
-                      Đăng Nhập
-                    </Button>
-                  </motion.div>
+                  {isLoading ? (
+                    <div className="flex justify-center items-center">
+                      <CircleLoading />
+                    </div>
+                  ) : (
+                    <motion.div variants={itemVariants}>
+                      <Button
+                        type="submit"
+                        className="w-full bg-[#6366F1] hover:bg-[#6366F1]/90 text-white transition-all duration-200 cursor-pointer"
+                      >
+                        <LogIn className="mr-2" />
+                        Đăng Nhập
+                      </Button>
+                    </motion.div>
+                  )}
                 </form>
               </Form>
 

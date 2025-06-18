@@ -11,12 +11,10 @@ import { logOut } from "@/utils/auth.utils";
 import { CrownIcon, Info, LogOutIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const UserPopover = () => {
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
-
   const [userInfo, setUserInfo] = useState(null);
 
   const fetchUserInfo = async () => {
@@ -44,7 +42,7 @@ const UserPopover = () => {
         </Avatar>
       </PopoverTrigger>
       {open && (
-        <PopoverContent className="w-50">
+        <PopoverContent className="w-60 bg-white p-4 shadow-lg">
           <div className="grid gap-4">
             <Button
               variant={"ghost"}

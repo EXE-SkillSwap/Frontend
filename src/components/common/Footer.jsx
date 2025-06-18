@@ -1,27 +1,66 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+
 import logo from "@/assets/newLogo.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Logo and Copyright Section */}
-          <div className="space-y-6">
-            <div className="flex items-center space-x-2">
-              <div className="h-6 w-6 bg-white flex items-center justify-center">
-                <img alt="Logo" src={logo} />
-              </div>
+    <footer className="bg-gray-800 text-white">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 pb-2 border-b-2 border-indigo-500 inline-block">
+              Liên Kết Nhanh
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  to="/"
+                  className="text-gray-300 hover:text-indigo-500 transition duration-300"
+                >
+                  Trang Chủ
+                </Link>
+              </li>
 
-              <span className="font-medium text-lg">SkillSwap</span>
+              <li>
+                <Link
+                  to="/about"
+                  className="text-gray-300 hover:text-indigo-500 transition duration-300"
+                >
+                  Về Chúng Tôi
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-gray-300 hover:text-indigo-500 transition duration-300"
+                >
+                  Liên Hệ
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 pb-2 border-b-2 border-indigo-500 inline-block">
+              Thông Tin Liên Hệ
+            </h3>
+            <div className="space-y-2 text-gray-300">
+              <p>Email: info@example.com</p>
+              <p>Phone: +1 (123) 456-7890</p>
+              <p>Address: 123 Education St, Learning City</p>
             </div>
+          </div>
 
-            <div className="text-sm text-gray-400">
-              <p>Copyright © SkillSwap</p>
-              <p>All rights reserved</p>
-            </div>
-
-            <div className="flex space-x-3">
+          {/* Social Media */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 pb-2 border-b-2 border-indigo-500 inline-block">
+              Follow Us
+            </h3>
+            <div className="flex space-x-4 mt-4">
               <a
                 onClick={() =>
                   window.open(
@@ -29,84 +68,27 @@ const Footer = () => {
                     "_blank"
                   )
                 }
-                className="h-8 w-8 rounded-full border border-gray-600 flex items-center justify-center hover:bg-gray-800 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gray-700 hover:bg-indigo-500 h-10 w-10 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
               >
-                <Facebook size={16} />
+                <FaFacebook className="text-xl" />
               </a>
             </div>
           </div>
 
-          {/* Products Column */}
-          <div className="space-y-4">
-            <h3 className="text-sm uppercase tracking-wider text-gray-400">
-              SẢN PHẨM
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Đánh giá
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Giáo dục
-                </a>
-              </li>
-            </ul>
+          <div className="flex items-center justify-center">
+            <div className="w-24 h-24">
+              <img src={logo} alt="Logo" />
+            </div>
           </div>
+        </div>
 
-          {/* Company Column */}
-          <div className="space-y-4">
-            <h3 className="text-sm uppercase tracking-wider text-gray-400">
-              CÔNG TY
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Về chúng tôi
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Đội ngũ
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Liên hệ
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Support Column */}
-          <div className="space-y-4">
-            <h3 className="text-sm uppercase tracking-wider text-gray-400">
-              HỖ TRỢ
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Hướng dẫn
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  Chính sách bảo mật
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block text-gray-200 hover:text-white">
-                  FAQ
-                </a>
-              </li>
-            </ul>
-          </div>
+        {/* Footer Bottom */}
+        <div className="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400">
+          <p>
+            &copy; {new Date().getFullYear()} SkillSwap. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

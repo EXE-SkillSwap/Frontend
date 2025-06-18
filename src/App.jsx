@@ -4,7 +4,9 @@ import AppLoading from "@/components/common/loading/AppLoading";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import UserLayout from "@/layouts/UserLayout";
 import Admin from "@/pages/AdminPage";
+import CommingSoon from "@/pages/CommingSoon";
 import NotFound from "@/pages/errors/NotFound";
+import FindFriends from "@/pages/FindFriends";
 import HomePage from "@/pages/HomePage";
 import Login from "@/pages/Login";
 import Membership from "@/pages/Membership";
@@ -59,15 +61,19 @@ function App() {
         },
         {
           path: "/documents",
-          element: <h1>Documents</h1>,
+          element: <CommingSoon />,
         },
         {
           path: "/friends",
-          element: <h1>Friends</h1>,
+          element: <FindFriends />,
         },
         {
-          path: "/groups",
-          element: <h1>Groups</h1>,
+          path: "/chats",
+          element: <CommingSoon />,
+        },
+        {
+          path: "/posts",
+          element: <CommingSoon />,
         },
         {
           path: "/membership",

@@ -1,4 +1,8 @@
-import { getUserProfile } from "@/api/services/userService";
+import { uploadImage } from "@/api/services/cloudinaryService";
+import { getUserProfile, updateProfile } from "@/api/services/userService";
+import ChangePassword from "@/components/ChangePassword";
+import ChaseLoading from "@/components/common/loading/ChaseLoading";
+import EditProfile from "@/components/EditProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,87 +13,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Briefcase,
-  Calendar,
-  GraduationCap,
-  Mail,
-  MapPin,
-  Phone,
-  Star,
-} from "lucide-react";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Calendar, Edit3Icon, Mail, MapPin, Phone, Star } from "lucide-react";
+import moment from "moment/moment";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+
+const cloudinary_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
 const Profile = () => {
-  const user = {
-    name: "Sarah Johnson",
-    title: "Senior Frontend Developer",
-    bio: "Passionate frontend developer with 5+ years of experience building modern web applications. I love creating intuitive user experiences and working with cutting-edge technologies.",
-    avatar: "/placeholder.svg?height=120&width=120",
-    coverImage: "/placeholder.svg?height=200&width=800",
-    location: "San Francisco, CA",
-    email: "sarah.johnson@example.com",
-    phone: "+1 (555) 123-4567",
-    joinDate: "March 2019",
-    company: "TechCorp Inc.",
-    education: "BS Computer Science, Stanford University",
-    website: "https://sarahjohnson.dev",
-    social: {
-      github: "sarahjohnson",
-      linkedin: "sarah-johnson-dev",
-      twitter: "sarahcodes",
-    },
-  };
-
-  const skills = [
-    "React",
-    "TypeScript",
-    "Next.js",
-    "Tailwind CSS",
-    "Node.js",
-    "GraphQL",
-    "AWS",
-    "Docker",
-    "Jest",
-    "Figma",
-  ];
-
-  const recentActivity = [
-    {
-      id: 1,
-      type: "project",
-      title: "Launched new e-commerce platform",
-      description:
-        "Successfully deployed a React-based e-commerce solution with 99.9% uptime",
-      date: "2 days ago",
-      icon: Briefcase,
-    },
-    {
-      id: 2,
-      type: "achievement",
-      title: "Completed AWS Certification",
-      description: "Earned AWS Solutions Architect Associate certification",
-      date: "1 week ago",
-      icon: Star,
-    },
-    {
-      id: 3,
-      type: "education",
-      title: "Finished Advanced React Course",
-      description:
-        "Completed advanced patterns and performance optimization course",
-      date: "2 weeks ago",
-      icon: GraduationCap,
-    },
-  ];
-
   const [userInfo, setUserInfo] = useState(null);
+  const fileInputRef = useRef(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   const fetchUserInfo = async () => {
     try {
       const response = await getUserProfile();
-      console.log(response.data);
       setUserInfo(response.data);
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -103,8 +42,60 @@ const Profile = () => {
 
   const processSkills = (skills) => {
     if (!skills) return [];
-    return skills.split("#").map((skill) => skill.trim());
+    return skills
+      .split("#")
+      .filter((skill) => skill.trim())
+      .map((skill) => skill.trim());
   };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadLoading(true);
+      toast.info("Đang tải ảnh lên...");
+      uploadFile(file);
+    }
+  };
+
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "demo-upload-unsigned"); // Replace with your Cloudinary upload preset
+    formData.append("cloud_name", cloudinary_name); // Cloudinary cloud name
+    setUploadLoading(true);
+    try {
+      const response = await uploadImage(formData);
+      if (response) {
+        const newAvatarUrl = response.data?.secure_url;
+        const body = {
+          avatarUrl: newAvatarUrl,
+        };
+        const res = await updateProfile(body);
+        if (res) {
+          setUploadLoading(false);
+          toast.success("Đổi ảnh đại diện thành công!");
+          fetchUserInfo(); // Refresh user info after update
+        }
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast.error("Lỗi tải ảnh lên. Vui lòng thử lại.");
+      setUploadLoading(false);
+    }
+  };
+
+  if (!userInfo) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="flex justify-center mb-10">
+            <ChaseLoading />
+          </div>
+          <p className="text-muted-foreground">Đang tải....</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -124,19 +115,40 @@ const Profile = () => {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
-                    <Avatar className="h-32 w-32 border-4 border-background shadow-lg">
-                      <AvatarImage src={userInfo?.avatarUrl} alt={user.name} />
-                      <AvatarFallback className="text-2xl">
-                        {userInfo?.firstName?.charAt(0)}
-                        {userInfo?.lastName?.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <label className="group relative cursor-pointer w-fit">
+                      <Avatar className="h-32 w-32 border-4 border-background shadow-lg group-hover:opacity-80 transition">
+                        <AvatarImage
+                          src={userInfo?.avatarUrl}
+                          alt={userInfo?.name}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="text-2xl">
+                          {userInfo?.firstName?.charAt(0)}
+                          {userInfo?.lastName?.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center text-white bg-black/40 opacity-0 group-hover:opacity-100 transition rounded-full">
+                        <span className="text-sm font-medium">
+                          <Edit3Icon />
+                        </span>
+                      </div>
+
+                      {/* Hidden file input */}
+                      {!uploadLoading && (
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      )}
+                    </label>
                     <h1 className="text-2xl font-bold mt-4">
                       {userInfo?.firstName} {userInfo?.lastName}
                     </h1>
-                    {userInfo?.bio && (
-                      <p className="text-muted-foreground">{userInfo?.bio}</p>
-                    )}
 
                     {userInfo?.location && (
                       <div className="flex items-center mt-2 text-sm text-muted-foreground">
@@ -163,18 +175,32 @@ const Profile = () => {
 
                     <div className="flex items-center text-sm">
                       <Calendar className="h-4 w-4 mr-3 text-muted-foreground" />
-                      <span>Tham gia {userInfo?.createdAt}</span>
+                      <span>
+                        Tham gia{" "}
+                        <Badge variant="secondary" className="">
+                          {moment(userInfo?.createdAt).format("MMMM YYYY")}
+                        </Badge>
+                      </span>
                     </div>
                   </div>
 
                   <Separator className="my-6" />
+
+                  {/* Action Buttons */}
+                  <div className="space-y-3">
+                    <EditProfile
+                      userInfo={userInfo}
+                      onRefresh={fetchUserInfo}
+                    />
+                    <ChangePassword />
+                  </div>
                 </CardContent>
               </Card>
 
               {/* Skills Card */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Skills</CardTitle>
+                  <CardTitle>Sở Thích - Kĩ Năng</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
@@ -193,11 +219,11 @@ const Profile = () => {
               {/* About Section */}
               <Card>
                 <CardHeader>
-                  <CardTitle>About</CardTitle>
+                  <CardTitle>Giới thiệu</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground leading-relaxed">
-                    {user.bio}
+                    {userInfo?.bio}
                   </p>
                 </CardContent>
               </Card>
@@ -212,30 +238,22 @@ const Profile = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {recentActivity.map((activity) => {
-                      const IconComponent = activity.icon;
-                      return (
-                        <div
-                          key={activity.id}
-                          className="flex items-start space-x-4 p-4 rounded-lg border"
-                        >
-                          <div className="flex-shrink-0">
-                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                              <IconComponent className="h-5 w-5 text-primary" />
-                            </div>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium">{activity.title}</h4>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {activity.description}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-2">
-                              {activity.date}
-                            </p>
-                          </div>
+                    <div className="flex items-start space-x-4 p-4 rounded-lg border">
+                      <div className="flex-shrink-0">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Star className="h-5 w-5 text-primary" />
                         </div>
-                      );
-                    })}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium">Profile Updated</h4>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Successfully updated profile information
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          2 hours ago
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

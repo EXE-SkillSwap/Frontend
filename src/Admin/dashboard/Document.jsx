@@ -1,12 +1,10 @@
-import { useRef } from "react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Paperclip } from "lucide-react";
-import { Sidebar } from "../../components/dashboardChart/Sidebar";
+import { useRef, useState } from "react";
 
 export default function UploadDocument() {
   const [formData, setFormData] = useState({

@@ -13,7 +13,8 @@ import { useNavigate } from "react-router-dom";
 
 const navigation = [
   { name: "Bạn Bè", href: "/friends" },
-  { name: "Trò Chuyện", href: "/groups" },
+  { name: "Trò Chuyện", href: "/chats" },
+  { name: "Diễn Đàn", href: "/posts" },
 ];
 
 function classNames(...classes) {
@@ -27,7 +28,7 @@ const Header = () => {
   return (
     <Disclosure
       as="nav"
-      className="bg-white/5 shadow-md backdrop-blur-lg top-0 z-50 w-full"
+      className="bg-white shadow-md backdrop-blur-lg top-0 z-50 w-full"
     >
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
@@ -58,23 +59,25 @@ const Header = () => {
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <a
-                    onClick={() => nav(item.href)}
-                    key={item.name}
-                    aria-current={item.href === location ? "page" : undefined}
-                    className={classNames(
-                      item.href === location
-                        ? "bg-gradient-to-l from-[#6246ea] to-blue-400 text-white "
-                        : "text-indigo-700 hover:bg-[#d1d1e9] hover:text-gray-700",
-                      "rounded-full px-3 py-2 text-sm font-medium hover:cursor-pointer transition-all duration-100 ease-in-out"
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
+              {isAuthenticated() && (
+                <div className="flex space-x-4">
+                  {navigation.map((item) => (
+                    <a
+                      onClick={() => nav(item.href)}
+                      key={item.name}
+                      aria-current={item.href === location ? "page" : undefined}
+                      className={classNames(
+                        item.href === location
+                          ? "bg-gradient-to-l from-[#6246ea] to-blue-400 text-white "
+                          : "text-indigo-700 hover:bg-[#d1d1e9] hover:text-gray-700",
+                        "rounded-full px-3 py-2 text-md font-medium hover:cursor-pointer transition-all duration-100 ease-in-out"
+                      )}
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           {isAuthenticated() ? (
@@ -100,7 +103,7 @@ const Header = () => {
               <div className="ml-2">
                 <Button
                   variant="outline"
-                  className="rounded-full bg-[#e45858] text-[#fffffe] hover:bg-[#d1d1e9] hover:text-[#6246ea] focus:ring-2 focus:ring-white focus:ring-offset- hover:cursor-pointer transition-all duration-100 ease-in-out"
+                  className="rounded-full bg-[#e45858] text-[#fffffe] hover:bg-[#f5cccc] hover:text-[#e45858] focus:ring-2 focus:ring-white focus:ring-offset- hover:cursor-pointer transition-all duration-100 ease-in-out"
                   onClick={() => nav("/register")}
                 >
                   Đăng Ký
@@ -122,7 +125,7 @@ const Header = () => {
               className={classNames(
                 item.current
                   ? "bg-gray-900 text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                  : "text-indigo-600 hover:bg-gray-700 hover:text-white",
                 "block rounded-md px-3 py-2 text-base font-medium"
               )}
             >

@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from "react";
 import BannerCarousel from "@/components/common/BannerCarousel";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,27 +30,21 @@ const courses = [
   },
 ];
 
-const testimonials = [
+const steps = [
   {
-    id: 1,
-    name: "Nguyễn Thị Anh",
-    quote:
-      "Nền tảng này đã giúp tôi có được công việc mơ ước. Các khóa học được cấu trúc tốt và dễ theo dõi!",
-    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+    step: 1,
+    title: "Đăng kí tài khoản và chọn các kĩ năng",
+    description: "Duyệt và chọn sở thích của bạn.",
   },
   {
-    id: 2,
-    name: "Trần Văn Minh",
-    quote:
-      "Giảng viên và nội dung tuyệt vời! Tôi đặc biệt thích các dự án tương tác.",
-    avatar: "https://randomuser.me/api/portraits/men/65.jpg",
+    step: 2,
+    title: "Kết bạn và học tập",
+    description: "Kết nối với những người cùng sở thích và bắt đầu học.",
   },
   {
-    id: 3,
-    name: "Lê Thị Hương",
-    quote:
-      "Trải nghiệm học tập tuyệt vời. Rất khuyến khích cho bất kỳ ai muốn nâng cao kỹ năng.",
-    avatar: "https://randomuser.me/api/portraits/women/72.jpg",
+    step: 3,
+    title: "Diễn đàn và Chia sẻ",
+    description: "Tham gia cộng đồng và chia sẻ kiến thức.",
   },
 ];
 
@@ -170,7 +165,7 @@ const HomePage = () => {
         className="fade-in-section py-20 px-6 text-center bg-white"
       >
         <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
-          Khóa Học Nổi Bật
+          Các kĩ năng trao đổi cùng nhau
         </h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-8">
           Khám phá các lộ trình học hàng đầu được chọn lọc kỹ lưỡng cho sự phát
@@ -216,42 +211,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Phần Giới Thiệu Giảng Viên */}
-      <section ref={instructorsRef} className="py-20 px-6 bg-white text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-8">
-          Gặp Gỡ Giảng Viên Của Chúng Tôi
-        </h2>
-        <div className="flex flex-wrap justify-center gap-10 max-w-6xl mx-auto">
-          {[
-            {
-              name: "Nguyễn Thị Hương",
-              bio: "Chuyên gia Phát triển Web với 10 năm kinh nghiệm.",
-              img: "https://randomuser.me/api/portraits/women/44.jpg",
-            },
-            {
-              name: "Trần Văn Đức",
-              bio: "Nhà khoa học Dữ liệu đam mê biến dữ liệu thành thông tin chi tiết.",
-              img: "https://randomuser.me/api/portraits/men/46.jpg",
-            },
-            {
-              name: "Phạm Thị Lan",
-              bio: "Nhà thiết kế sáng tạo chuyên về trải nghiệm UI/UX.",
-              img: "https://randomuser.me/api/portraits/women/47.jpg",
-            },
-          ].map(({ name, bio, img }) => (
-            <div key={name} className="max-w-xs rounded-lg shadow-lg p-6">
-              <img
-                src={img}
-                alt={name}
-                className="w-32 h-32 mx-auto rounded-full mb-4 object-cover"
-              />
-              <h3 className="text-xl font-semibold mb-2">{name}</h3>
-              <p className="text-gray-600">{bio}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Phần Cách Thức Hoạt Động */}
       <section
         ref={howItWorksRef}
@@ -261,23 +220,7 @@ const HomePage = () => {
           Cách Thức Hoạt Động
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-          {[
-            {
-              step: 1,
-              title: "Chọn Khóa Học",
-              description: "Duyệt và chọn chủ đề yêu thích của bạn.",
-            },
-            {
-              step: 2,
-              title: "Học Theo Tốc Độ Của Bạn",
-              description: "Xem video và hoàn thành bài tập.",
-            },
-            {
-              step: 3,
-              title: "Nhận Chứng Chỉ",
-              description: "Trưng bày thành tích của bạn cho nhà tuyển dụng.",
-            },
-          ].map(({ step, title, description }) => (
+          {steps.map(({ step, title, description }) => (
             <div key={step} className="p-6 bg-white rounded-lg shadow-md">
               <div className="text-indigo-600 font-bold text-3xl mb-4">
                 {step}
@@ -289,43 +232,10 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Phần Đánh Giá */}
-      <section
-        ref={testimonialRef}
-        className="fade-in-section bg-gray-100 py-20 px-6 text-center"
-      >
-        <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
-          Học Viên Nói Gì Về Chúng Tôi
-        </h2>
-        <p className="text-gray-600 max-w-xl mx-auto mb-8">
-          Lắng nghe từ người học đã đạt được nhiều thành tựu thông qua nền tảng
-          của chúng tôi.
-        </p>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((t, index) => (
-            <div
-              key={t.id}
-              ref={(el) => (testimonialCardRefs.current[index] = el)}
-              className="bg-white rounded-lg p-6 shadow-md cursor-pointer"
-            >
-              <div className="flex items-center mb-4">
-                <img
-                  src={t.avatar}
-                  alt={t.name}
-                  className="w-14 h-14 rounded-full object-cover mr-4"
-                />
-                <h3 className="font-semibold text-lg">{t.name}</h3>
-              </div>
-              <p className="text-gray-700 italic">"{t.quote}"</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Phần Đăng Ký Bản Tin */}
       <section
         ref={newsletterRef}
-        className="py-16 px-6 bg-purple-700 text-white text-center rounded-t-lg"
+        className="py-16 px-6 bg-gradient-to-b from-violet-600 to-indigo-600 text-white text-center rounded-lg mx-2 "
       >
         <h2 className="text-3xl font-bold mb-4">Cập Nhật Thông Tin</h2>
         <p className="max-w-xl mx-auto mb-8">
@@ -336,11 +246,14 @@ const HomePage = () => {
           <input
             type="email"
             placeholder="Địa chỉ email của bạn"
-            className="p-3 rounded-md text-gray-800 flex-grow"
+            className="p-3 rounded-md text-gray-800 flex-grow bg-white"
           />
           <button
-            type="submit"
+            type="button"
             className="bg-amber-400 hover:bg-amber-500 rounded-md px-6 py-3 font-semibold text-purple-900"
+            onClick={() => {
+              toast.info("Comming soon...");
+            }}
           >
             Đăng Ký
           </button>
