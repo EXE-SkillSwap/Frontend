@@ -1,26 +1,44 @@
+import UploadDocument from "@/Admin/dashboard/Document";
+import Participants from "@/Admin/dashboard/Participants";
+import AppLoading from "@/components/common/loading/AppLoading";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
 import UserLayout from "@/layouts/UserLayout";
+import Admin from "@/pages/AdminPage";
+import CommingSoon from "@/pages/CommingSoon";
+import NotFound from "@/pages/errors/NotFound";
+import FindFriends from "@/pages/FindFriends";
 import HomePage from "@/pages/HomePage";
 import Login from "@/pages/Login";
+import Membership from "@/pages/Membership";
+import Payment from "@/pages/Payment";
+import Profile from "@/pages/Profile";
+import SelectSkills from "@/pages/SelectSkills";
+import Signup from "@/pages/Signup";
+import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
-import Signup from "@/pages/Signup";
-import Dashboard from './Admin/dashboard/index.jsx';
 
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * The App component sets up the routing for the application using `createBrowserRouter`.
- * It defines several routes with their respective components or elements, including:
- * - "/" which renders the UserLayout component with nested routes.
- * - "/login" to render the Login component.
- * - "/register" to render the Signup component.
- * - "/documents", "/friends", "/groups", and "/membership" which render heading elements.
- * - "/admin/dashboard" to render the Dashboard component.
- * The routes are provided to the RouterProvider to enable navigation within the application.
- */
-
-/*******  f18e61ed-cd31-4149-98a7-25db010262bd  *******/
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
+  if (isLoading) {
+    return <AppLoading />;
+  }
   const routes = createBrowserRouter([
+    {
+      path: "/skills",
+      element: <SelectSkills />,
+    },
+    {
+      path: "/payment/callback",
+      element: <Payment />,
+    },
     {
       path: "/",
       element: <UserLayout />,
@@ -38,26 +56,52 @@ function App() {
           element: <Signup />,
         },
         {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
           path: "/documents",
-          element: <h1>Documents</h1>,
+          element: <CommingSoon />,
         },
         {
           path: "/friends",
-          element: <h1>Friends</h1>,
+          element: <FindFriends />,
         },
         {
-          path: "/groups",
-          element: <h1>Groups</h1>,
+          path: "/chats",
+          element: <CommingSoon />,
+        },
+        {
+          path: "/posts",
+          element: <CommingSoon />,
         },
         {
           path: "/membership",
-          element: <h1>Membership</h1>,
-        },
-        {
-          path: "/admin/dashboard",
-          element: <Dashboard />,
+          element: <Membership />,
         },
       ],
+    },
+    {
+      path: "/admin",
+      element: <DashboardLayout />,
+      children: [
+        {
+          path: "dashboard",
+          element: <Admin />,
+        },
+        {
+          path: "participants",
+          element: <Participants />,
+        },
+        {
+          path: "upload-document",
+          element: <UploadDocument />,
+        },
+      ],
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ]);
 
