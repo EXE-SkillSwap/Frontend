@@ -13,7 +13,7 @@ export function DashboardLayout() {
         <div className="sticky top-0 z-20">
           <Header />
         </div>
-        <main className={cn("flex-1 p-6")}>
+        <main className={cn("flex-1 p-1")}>
           <Outlet />
         </main>
       </div>

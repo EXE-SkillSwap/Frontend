@@ -1,6 +1,8 @@
+import FloatingChatButton from "@/components/common/FloatingChatWindow";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import ScrollToTopButton from "@/components/common/ScollToTopButton";
+import { isAuthenticated } from "@/utils/auth.utils";
 import { Outlet } from "react-router-dom";
 
 const UserLayout = () => {
@@ -10,6 +12,7 @@ const UserLayout = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
+      {isAuthenticated() && <FloatingChatButton />}
       <Footer />
       <ScrollToTopButton />
     </div>

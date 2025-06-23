@@ -20,11 +20,13 @@ import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const navigationItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
-  { icon: Users, label: "Participants", href: "/admin/participants" },
-  { icon: Upload, label: "Upload Document", href: "/admin/upload-document" },
-  { icon: Inbox, label: "Inbox", href: "/inbox" },
-  { icon: FileText, label: "Document Lists", href: "/documents" },
+  { icon: LayoutDashboard, label: "Thống kê", href: "/admin/dashboard" },
+  { icon: Users, label: "Quản lí Người dùng", href: "/admin/participants" },
+  {
+    icon: Upload,
+    label: "Quản lí gói thành viên",
+    href: "/admin/memberships",
+  },
 ];
 
 const pageItems = [
@@ -127,12 +129,3 @@ function SidebarItem({ item }) {
     </button>
   );
 }
-
-SidebarItem.propTypes = {
-  item: PropTypes.shape({
-    icon: PropTypes.elementType.isRequired,
-    label: PropTypes.string.isRequired,
-    href: PropTypes.string,
-    active: PropTypes.bool,
-  }).isRequired,
-};

@@ -1,4 +1,4 @@
-import UploadDocument from "@/Admin/dashboard/Document";
+import ManageMemberships from "@/Admin/dashboard/ManageMembership";
 import Participants from "@/Admin/dashboard/Participants";
 import AppLoading from "@/components/common/loading/AppLoading";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
@@ -94,8 +94,8 @@ function App() {
           element: <Participants />,
         },
         {
-          path: "upload-document",
-          element: <UploadDocument />,
+          path: "memberships",
+          element: <ManageMemberships />,
         },
       ],
     },
