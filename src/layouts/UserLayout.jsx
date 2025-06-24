@@ -11,8 +11,8 @@ const UserLayout = () => {
       <Header />
       <main className="flex-grow">
         <Outlet />
+        <FloatingChatButton />
       </main>
-      {isAuthenticated() && <FloatingChatButton />}
       <Footer />
       <ScrollToTopButton />
     </div>

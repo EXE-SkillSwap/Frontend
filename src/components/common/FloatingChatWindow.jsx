@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send } from "lucide-react";
+import axios from "axios";
 
 const FloatingChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,24 +15,48 @@ const FloatingChatButton = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (newMessage.trim() === "") return;
 
-    // Add user message
     const userMessage = { id: Date.now(), text: newMessage, isUser: true };
     setMessages([...messages, userMessage]);
     setNewMessage("");
 
-    // Simulate response (you would replace this with actual API call)
-    setTimeout(() => {
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_GEMINI_API_URL +
+          "/?key=" +
+          import.meta.env.VITE_GEMINI_API_KEY,
+        {
+          contents: [
+            {
+              parts: [
+                {
+                  text: newMessage,
+                },
+              ],
+            },
+          ],
+        }
+      );
+      if (response) {
+        const botMessage = {
+          id: Date.now() + 1,
+          text: response.data?.candidates[0]?.content?.parts[0]?.text,
+          isUser: false,
+        };
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+      }
+    } catch (error) {
+      console.log(error);
       const botMessage = {
         id: Date.now() + 1,
-        text: "Thanks for your message! Our team will get back to you soon.",
+        text: "Xin lỗi, tôi không thể trả lời câu hỏi của bạn ngay bây giờ.",
         isUser: false,
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
-    }, 1000);
+    }
   };
 
   // Scroll to bottom when messages change
@@ -131,7 +156,7 @@ const FloatingChatButton = () => {
           ${
             isOpen
               ? "bg-red-500 hover:bg-red-600"
-              : "bg-indigo-500 hover:bg-indigo-600"
+              : "bg-indigo-500 hover:bg-indigo-600 animate-bounce"
           }
           text-white
         `}

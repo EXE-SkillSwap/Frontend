@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -6,7 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { BellIcon } from "lucide-react";
+import { Bell } from "lucide-react";
 import { useState } from "react";
 
 const NotificationSheet = () => {
@@ -14,12 +15,17 @@ const NotificationSheet = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          onClick={() => setOpen(true)}
-          className="relative rounded-full bg-[#6246ea] text-[#fffffe] hover:bg-[#d1d1e9] hover:text-[#6246ea] focus:ring-2 focus:ring-white focus:ring-offset- hover:cursor-pointer transition-all duration-100 ease-in-out"
-        >
-          <BellIcon aria-hidden="true" className="size-6" />
-        </Button>
+        <div className="relative">
+          <Button
+            onClick={() => setOpen(true)}
+            variant="ghost"
+            size="icon"
+            className="relative w-10 h-10 rounded-full hover:bg-gray-100/50 transition-all duration-300 group"
+          >
+            <Bell className="w-5 h-5 text-gray-600 group-hover:text-gray-900 transition-colors" />
+            <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 bg-gradient-to-r from-red-500 to-pink-500 border-2 border-white text-xs" />
+          </Button>
+        </div>
       </SheetTrigger>
       {open && (
         <SheetContent>

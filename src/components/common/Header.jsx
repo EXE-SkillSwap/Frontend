@@ -1,20 +1,31 @@
 import logo from "@/assets/newLogo.png";
 import NotificationSheet from "@/components/common/NotificationSheet";
-import UserPopover from "@/components/common/UserPopover";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { isAuthenticated } from "@/utils/auth.utils";
 import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+  Globe,
+  LogOut,
+  Menu,
+  MessageCircle,
+  Settings,
+  User,
+  Users,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
-  { name: "Bạn Bè", href: "/friends" },
-  { name: "Trò Chuyện", href: "/chats" },
-  { name: "Diễn Đàn", href: "/posts" },
+  { name: "Bạn Bè", href: "/friends", icon: Users },
+  { name: "Trò Chuyện", href: "/chats", icon: MessageCircle },
+  { name: "Diễn Đàn", href: "/posts", icon: Globe },
 ];
 
 function classNames(...classes) {
@@ -22,119 +33,245 @@ function classNames(...classes) {
 }
 
 const Header = () => {
+  const [currentPath, setCurrentPath] = useState("/");
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const nav = useNavigate();
-  const location = window.location.pathname;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleNavigation = (href) => {
+    setCurrentPath(href);
+    nav(href);
+    setMobileMenuOpen(false);
+  };
+
+  const logOut = () => {
+    localStorage.clear();
+    nav("/login");
+  };
 
   return (
-    <Disclosure
-      as="nav"
-      className="bg-white shadow-md backdrop-blur-lg top-0 z-50 w-full"
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-lg shadow-black/5"
+          : "bg-white/60 backdrop-blur-md"
+      }`}
     >
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            {/* Mobile menu button*/}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
-              <span className="absolute -inset-0.5" />
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon
-                aria-hidden="true"
-                className="block size-6 group-data-open:hidden"
-              />
-              <XMarkIcon
-                aria-hidden="true"
-                className="hidden size-6 group-data-open:block"
-              />
-            </DisclosureButton>
-          </div>
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div
-              className="flex shrink-0 items-center"
-              onClick={() => nav("/")}
-            >
-              <img
-                alt="Your Company"
-                src={logo}
-                className="h-10 w-auto rounded-xl hover:cursor-pointer"
-              />
-            </div>
-            <div className="hidden sm:ml-6 sm:block">
-              {isAuthenticated() && (
-                <div className="flex space-x-4">
-                  {navigation.map((item) => (
-                    <a
-                      onClick={() => nav(item.href)}
-                      key={item.name}
-                      aria-current={item.href === location ? "page" : undefined}
-                      className={classNames(
-                        item.href === location
-                          ? "bg-gradient-to-l from-[#6246ea] to-blue-400 text-white "
-                          : "text-indigo-700 hover:bg-[#d1d1e9] hover:text-gray-700",
-                        "rounded-full px-3 py-2 text-md font-medium hover:cursor-pointer transition-all duration-100 ease-in-out"
-                      )}
-                    >
-                      {item.name}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          {isAuthenticated() ? (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <NotificationSheet />
+      {/* Futuristic glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none" />
 
-              {/* Profile dropdown */}
-              <div className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden ml-8">
-                <UserPopover />
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo Section */}
+          <div
+            className="flex items-center space-x-3 cursor-pointer group"
+            onClick={() => handleNavigation("/")}
+          >
+            <div className="relative">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 p-0.5 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-full h-full rounded-[10px] bg-white flex items-center justify-center">
+                  <img src={logo} alt="Logo" className="w-6 h-6 rounded-md" />
+                </div>
               </div>
+              <div className="absolute -inset-1 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
             </div>
-          ) : (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <div className="">
+            <span className="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
+              SkillsSwap
+            </span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-2">
+            {isAuthenticated() &&
+              navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentPath === item.href;
+
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => handleNavigation(item.href)}
+                    className={`relative px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 group ${
+                      isActive
+                        ? "text-white shadow-lg"
+                        : "text-gray-700 hover:text-gray-900"
+                    }`}
+                  >
+                    {isActive && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full" />
+                    )}
+                    {!isActive && (
+                      <div className="absolute inset-0 bg-gray-100/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    )}
+                    <div className="relative flex items-center space-x-2">
+                      <Icon className="w-4 h-4" />
+                      <span>{item.name}</span>
+                    </div>
+                    {isActive && (
+                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full blur opacity-30" />
+                    )}
+                  </button>
+                );
+              })}
+          </div>
+
+          {/* Right Section */}
+          <div className="flex items-center space-x-4">
+            {isAuthenticated() ? (
+              <>
+                {/* Notifications */}
+                <NotificationSheet />
+
+                {/* User Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative w-10 h-10 rounded-full p-0 hover:scale-105 transition-transform duration-300"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-0.5">
+                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+                          <User className="w-5 h-5 text-gray-600" />
+                        </div>
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 bg-white/90 backdrop-blur-xl border border-white/20 shadow-xl"
+                  >
+                    <DropdownMenuItem
+                      className="hover:bg-gray-100/50"
+                      onClick={() => handleNavigation("/profile")}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Hồ Sơ</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="hover:bg-gray-100/50">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Cài Đặt</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="hover:bg-red-50 text-red-600"
+                      onClick={logOut}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Đăng Xuất</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <div className="flex items-center space-x-3">
                 <Button
-                  variant="outline"
-                  className="rounded-full bg-[#6246ea] text-[#fffffe] hover:bg-[#d1d1e9] hover:text-[#6246ea] focus:ring-2 focus:ring-white focus:ring-offset- hover:cursor-pointer transition-all duration-100 ease-in-out"
-                  onClick={() => nav("/login")}
+                  variant="ghost"
+                  className="rounded-full px-6 py-2 font-medium hover:bg-gray-100/50 transition-all duration-300"
+                  onClick={() => handleNavigation("/login")}
                 >
                   Đăng Nhập
                 </Button>
-              </div>
-              <div className="ml-2">
                 <Button
-                  variant="outline"
-                  className="rounded-full bg-[#e45858] text-[#fffffe] hover:bg-[#f5cccc] hover:text-[#e45858] focus:ring-2 focus:ring-white focus:ring-offset- hover:cursor-pointer transition-all duration-100 ease-in-out"
-                  onClick={() => nav("/register")}
+                  className="rounded-full px-6 py-2 font-medium bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105"
+                  onClick={() => handleNavigation("/register")}
                 >
                   Đăng Ký
                 </Button>
               </div>
-            </div>
-          )}
-        </div>
-      </div>
+            )}
 
-      <DisclosurePanel className="sm:hidden">
-        <div className="space-y-1 px-2 pt-2 pb-3">
-          {navigation.map((item) => (
-            <DisclosureButton
-              key={item.name}
-              as="a"
-              href={item.href}
-              aria-current={item.current ? "page" : undefined}
-              className={classNames(
-                item.current
-                  ? "bg-gray-900 text-white"
-                  : "text-indigo-600 hover:bg-gray-700 hover:text-white",
-                "block rounded-md px-3 py-2 text-base font-medium"
-              )}
-            >
-              {item.name}
-            </DisclosureButton>
-          ))}
+            {/* Mobile Menu */}
+            <div className="md:hidden">
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="w-10 h-10 rounded-full hover:bg-gray-100/50 transition-all duration-300"
+                  >
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent
+                  side="right"
+                  className="w-80 bg-white/95 backdrop-blur-xl border-l border-white/20"
+                >
+                  <div className="flex flex-col space-y-6 mt-8">
+                    {/* Mobile Logo */}
+                    <div className="flex items-center space-x-3 pb-6 border-b border-gray-200/50">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 p-0.5">
+                        <div className="w-full h-full rounded-[10px] bg-white flex items-center justify-center">
+                          <img
+                            src={logo}
+                            alt="Logo"
+                            className="w-6 h-6 rounded-md"
+                          />
+                        </div>
+                      </div>
+                      <span className="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
+                        SkillsSwap
+                      </span>
+                    </div>
+
+                    {/* Mobile Navigation */}
+                    {isAuthenticated() && (
+                      <div className="space-y-2">
+                        {navigation.map((item) => {
+                          const Icon = item.icon;
+                          const isActive = currentPath === item.href;
+
+                          return (
+                            <button
+                              key={item.name}
+                              onClick={() => handleNavigation(item.href)}
+                              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                                isActive
+                                  ? "bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg"
+                                  : "text-gray-700 hover:bg-gray-100/50"
+                              }`}
+                            >
+                              <Icon className="w-5 h-5" />
+                              <span>{item.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Mobile Auth Buttons */}
+                    {!isAuthenticated() && (
+                      <div className="space-y-3 pt-6">
+                        <Button
+                          variant="outline"
+                          className="w-full rounded-xl py-3 font-medium border-gray-200 hover:bg-gray-50"
+                          onClick={() => handleNavigation("/login")}
+                        >
+                          Đăng Nhập
+                        </Button>
+                        <Button
+                          className="w-full rounded-xl py-3 font-medium bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                          onClick={() => handleNavigation("/register")}
+                        >
+                          Đăng Ký
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
         </div>
-      </DisclosurePanel>
-    </Disclosure>
+      </nav>
+    </header>
   );
 };
 
