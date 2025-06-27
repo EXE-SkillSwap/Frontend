@@ -25,25 +25,32 @@ const FloatingChatButton = () => {
 
     try {
       const response = await axios.post(
-        import.meta.env.VITE_GEMINI_API_URL +
-          "/?key=" +
-          import.meta.env.VITE_GEMINI_API_KEY,
+        import.meta.env.VITE_AI_CHATBOT_URL,
         {
-          contents: [
+          model: "llama-3.3-70b-versatile",
+          messages: [
             {
-              parts: [
-                {
-                  text: newMessage,
-                },
-              ],
+              role: "system",
+              content:
+                "Bạn là trợ lý ảo của nền tảng SkillsSwap - là nền tảng kết nối, tìm kiếm bạn bè phục vụ mục đích học tập.",
+            },
+            {
+              role: "user",
+              content: newMessage,
             },
           ],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+          },
         }
       );
       if (response) {
         const botMessage = {
           id: Date.now() + 1,
-          text: response.data?.candidates[0]?.content?.parts[0]?.text,
+          text: response.data?.choices[0]?.message?.content,
           isUser: false,
         };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
