@@ -1,4 +1,13 @@
+import { getAllProvinces, updateProfile } from "@/api/services/userService";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -17,16 +26,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Edit2Icon, Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { toast } from "sonner";
-import { useState } from "react";
-import { updateProfileSchema } from "@/schemas/updateProfile.schema";
-import { getAllProvinces, updateProfile } from "@/api/services/userService";
-import { useEffect } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -34,12 +38,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { genders } from "@/data/gender";
+import { professions } from "@/data/profession";
+import { universities } from "@/data/universities";
+import { cn } from "@/lib/utils";
+import { updateProfileSchema } from "@/schemas/updateProfile.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, ChevronsUpDown, Edit2Icon, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const EditProfile = ({ userInfo, onRefresh }) => {
+  const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
   const [provinces, setProvinces] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState("");
   const [isEditLocation, setIsEditLocation] = useState(false);
 
   const profileForm = useForm({
@@ -50,6 +64,10 @@ const EditProfile = ({ userInfo, onRefresh }) => {
       phoneNumber: userInfo?.phoneNumber || "",
       location: userInfo?.location || "",
       bio: userInfo?.bio || "",
+      gender: userInfo?.gender || "",
+      birthday: userInfo?.birthday || "",
+      profession: userInfo?.profession || "",
+      education: userInfo?.education || "",
     },
   });
 
@@ -84,7 +102,6 @@ const EditProfile = ({ userInfo, onRefresh }) => {
     setIsOpen(false);
     setIsEditLocation(false);
     profileForm.reset();
-    setSelectedProvince("");
   };
 
   return (
@@ -92,7 +109,7 @@ const EditProfile = ({ userInfo, onRefresh }) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full bg-gray-400 cursor-pointer"
           onClick={() => setIsOpen(true)}
         >
           <Edit2Icon className="h-4 w-4 mr-2" />
@@ -200,9 +217,8 @@ const EditProfile = ({ userInfo, onRefresh }) => {
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
-                        setSelectedProvince(value);
                       }}
-                      value={selectedProvince}
+                      value={field.value}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Chọn tỉnh thành" />
@@ -219,6 +235,130 @@ const EditProfile = ({ userInfo, onRefresh }) => {
                 )}
               />
             )}
+
+            <FormField
+              control={profileForm.control}
+              name="education"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Chọn trường học</FormLabel>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-full justify-between"
+                      >
+                        {field.value
+                          ? universities.name.find(
+                              (name) => name === field.value
+                            )
+                          : "Chọn trường học"}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Chọn trường học"
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>Không tìm thấy</CommandEmpty>
+                          <CommandGroup>
+                            {universities.name.map((uni, index) => (
+                              <CommandItem
+                                key={index}
+                                value={uni}
+                                onSelect={(currentValue) => {
+                                  field.onChange(
+                                    currentValue === field.value
+                                      ? ""
+                                      : currentValue
+                                  );
+                                  setOpen(false);
+                                }}
+                              >
+                                {uni}
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    field.value === uni
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={profileForm.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Giới tính</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      value={field.value || userInfo?.gender || ""}
+                    >
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Giới tính" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {genders.map((gender) => (
+                          <SelectItem key={gender.id} value={gender.name}>
+                            {gender.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={profileForm.control}
+                name="profession"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Công việc hiện tại</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      value={field.value || userInfo?.profession || ""}
+                    >
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Công việc hiện tại" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {professions.map((profession) => (
+                          <SelectItem
+                            key={profession.id}
+                            value={profession.name}
+                          >
+                            {profession.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={profileForm.control}
