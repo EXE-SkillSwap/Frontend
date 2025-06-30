@@ -17,7 +17,8 @@ import Signup from "@/pages/Signup";
 import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
-
+import EnhancedChatInterface from "./pages/EnhancedChatInterface";
+import ForumPage from "./pages/ForumPage";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,6 +39,10 @@ function App() {
     {
       path: "/payment/callback",
       element: <Payment />,
+    },
+    {
+      path: "/chats",
+      element: <EnhancedChatInterface />,
     },
     {
       path: "/",
@@ -67,10 +72,7 @@ function App() {
           path: "/friends",
           element: <FindFriends />,
         },
-        {
-          path: "/chats",
-          element: <CommingSoon />,
-        },
+        
         {
           path: "/posts",
           element: <CommingSoon />,
@@ -78,6 +80,10 @@ function App() {
         {
           path: "/membership",
           element: <Membership />,
+        },
+        {
+          path: "/forum",
+          element: <ForumPage />,
         },
       ],
     },
