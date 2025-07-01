@@ -174,10 +174,53 @@ export default function Index() {
       time: "10 days, 2:25pm",
       isOwn: false,
     },
+    {
+      id: 10,
+      text: "I will push Albert to give us a few more days. That shouldn't be a problem.",
+      time: "",
+      isOwn: false,
+    },
+    { id: 11, text: "Can we meet tomorrow?", time: "", isOwn: false },
+    {
+      id: 12,
+      text: "Hello",
+      time: "",
+      isOwn: true,
+    },
+    {
+      id: 13,
+      text: "I'm fine and how about you?",
+      time: "",
+      isOwn: true,
+    },
+    {
+      id: 14,
+      text: "That would be nice.",
+      time: "",
+      isOwn: true,
+    },
+    {
+      id: 15,
+      text: "10 days, 2:25pm",
+      time: "10 days, 2:25pm",
+      isOwn: false,
+    },
+    {
+      id: 16,
+      text: "I will push Albert to give us a few more days. That shouldn't be a problem.",
+      time: "",
+      isOwn: false,
+    },
+    {
+      id: 17,
+      text: "Can we meet tomorrow?",
+      time: "",
+      isOwn: false,
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-purple-600 p-6 flex">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-blue-600 p-6 flex">
       {/* Vertical Toolbar */}
       <div className="flex flex-col items-center bg-white/80 rounded-2xl shadow-lg mr-6 py-6 w-16 h-[calc(100vh-3rem)] justify-between">
         <div className="flex flex-col gap-4 items-center">
@@ -191,10 +234,20 @@ export default function Index() {
           >
             <Home className="w-6 h-6" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-gray-500 hover:bg-gray-100" aria-label="Profile">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-gray-500 hover:bg-gray-100"
+            aria-label="Profile"
+          >
             <User className="w-6 h-6" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-gray-500 hover:bg-gray-100" aria-label="Settings">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-gray-500 hover:bg-gray-100"
+            aria-label="Settings"
+          >
             <Settings className="w-6 h-6" />
           </Button>
         </div>
@@ -409,7 +462,9 @@ export default function Index() {
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.isOwn ? "justify-end" : "justify-start"}`}
+                  className={`flex ${
+                    message.isOwn ? "justify-end" : "justify-start"
+                  }`}
                 >
                   <div className="max-w-xs lg:max-w-md">
                     {message.time && (
