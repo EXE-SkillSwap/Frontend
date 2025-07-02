@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const navigation = [
   { name: "Bạn Bè", href: "/friends", icon: Users },
   { name: "Trò Chuyện", href: "/chats", icon: MessageCircle },
-  { name: "Diễn Đàn", href: "/posts", icon: Globe },
+  { name: "Diễn Đàn", href: "/forum", icon: Globe },
 ];
 
 function classNames(...classes) {
