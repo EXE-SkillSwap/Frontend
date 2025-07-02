@@ -12,4 +12,8 @@ export const updateProfileSchema = z.object({
       (val) => !val || /^\d{10,15}$/.test(val),
       "Số điện thoại không hợp lệ"
     ),
+  gender: z.string(),
+  birthday: z.string().optional(),
+  profession: z.string().optional(),
+  education: z.string().optional(),
 });

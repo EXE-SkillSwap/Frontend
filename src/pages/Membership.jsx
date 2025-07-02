@@ -59,6 +59,13 @@ const Membership = () => {
               <MembershipItem packageData={pkg} />
             </div>
           ))}
+          {packages.length === 0 && (
+            <div className="col-span-full text-center">
+              <p className="text-lg text-muted-foreground">
+                Hiện tại không có gói thành viên nào.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

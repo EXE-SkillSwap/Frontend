@@ -1,0 +1,5 @@
+name = "skillsswap-client"
+compatibility_date = "2025-06-24"
+main = "workers-site/index.js"
+[site]
+bucket = "./dist"

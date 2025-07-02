@@ -13,8 +13,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import UploadProfileImage from "@/components/UploadProfileImage";
 import { motion } from "framer-motion";
-import { Calendar, Edit3Icon, Mail, MapPin, Phone, Star } from "lucide-react";
+import {
+  Briefcase,
+  Calendar,
+  Edit3Icon,
+  GraduationCap,
+  Mail,
+  MapPin,
+  Mars,
+  Phone,
+  Star,
+  Venus,
+} from "lucide-react";
 import moment from "moment/moment";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -166,10 +178,32 @@ const Profile = () => {
                       <Mail className="h-4 w-4 mr-3 text-muted-foreground" />
                       <span className="truncate">{userInfo?.email}</span>
                     </div>
-                    {userInfo?.phone && (
+                    {userInfo?.phoneNumber && (
                       <div className="flex items-center text-sm">
                         <Phone className="h-4 w-4 mr-3 text-muted-foreground" />
-                        <span>{userInfo?.phone}</span>
+                        <span>{userInfo?.phoneNumber}</span>
+                      </div>
+                    )}
+                    {userInfo?.profession && (
+                      <div className="flex items-center text-sm">
+                        <Briefcase className="h-4 w-4 mr-3 text-muted-foreground" />
+                        <span>{userInfo?.profession}</span>
+                      </div>
+                    )}
+                    {userInfo?.education && (
+                      <div className="flex items-center text-sm">
+                        <GraduationCap className="h-4 w-4 mr-3 text-muted-foreground" />
+                        <span>{userInfo?.education}</span>
+                      </div>
+                    )}
+                    {userInfo?.gender && (
+                      <div className="flex items-center text-sm">
+                        {userInfo?.gender === "Nam" ? (
+                          <Mars className="h-4 w-4 mr-3 text-muted-foreground" />
+                        ) : (
+                          <Venus className="h-4 w-4 mr-3 text-muted-foreground" />
+                        )}
+                        <span>{userInfo?.gender}</span>
                       </div>
                     )}
 
@@ -188,11 +222,15 @@ const Profile = () => {
 
                   {/* Action Buttons */}
                   <div className="space-y-3">
-                    <EditProfile
-                      userInfo={userInfo}
-                      onRefresh={fetchUserInfo}
-                    />
-                    <ChangePassword />
+                    <UploadProfileImage />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <EditProfile
+                        userInfo={userInfo}
+                        onRefresh={fetchUserInfo}
+                      />
+                      <ChangePassword />
+                    </div>
                   </div>
                 </CardContent>
               </Card>

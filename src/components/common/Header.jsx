@@ -1,24 +1,10 @@
 import logo from "@/assets/newLogo.png";
 import NotificationSheet from "@/components/common/NotificationSheet";
+import UserPopover from "@/components/common/UserPopover";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { isAuthenticated } from "@/utils/auth.utils";
-import {
-  Globe,
-  LogOut,
-  Menu,
-  MessageCircle,
-  Settings,
-  User,
-  Users,
-} from "lucide-react";
+import { Globe, Menu, MessageCircle, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -131,44 +117,7 @@ const Header = () => {
                 <NotificationSheet />
 
                 {/* User Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="relative w-10 h-10 rounded-full p-0 hover:scale-105 transition-transform duration-300"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-0.5">
-                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                          <User className="w-5 h-5 text-gray-600" />
-                        </div>
-                      </div>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-56 bg-white/90 backdrop-blur-xl border border-white/20 shadow-xl"
-                  >
-                    <DropdownMenuItem
-                      className="hover:bg-gray-100/50"
-                      onClick={() => handleNavigation("/profile")}
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Hồ Sơ</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:bg-gray-100/50">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Cài Đặt</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="hover:bg-red-50 text-red-600"
-                      onClick={logOut}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Đăng Xuất</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <UserPopover />
               </>
             ) : (
               <div className="flex items-center space-x-3">
