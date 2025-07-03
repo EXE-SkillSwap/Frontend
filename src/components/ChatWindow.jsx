@@ -28,7 +28,6 @@ const ChatWindow = ({ selectedConversation }) => {
     const client = new Client({
       brokerURL: import.meta.env.VITE_WEB_SOCKET_URL,
       connectHeaders: {},
-      debug: (str) => console.log(str),
       reconnectDelay: 5000,
       onConnect: () => {
         client.publish({
@@ -101,7 +100,11 @@ const ChatWindow = ({ selectedConversation }) => {
           <div className="text-center text-gray-500">Chưa có tin nhắn nào</div>
         )}
         {messages.map((message) => (
-          <MessageItem message={message} key={message.id} />
+          <MessageItem
+            message={message}
+            currentUserId={senderId}
+            key={message.id}
+          />
         ))}
         <div ref={messagesEndRef} />
       </div>

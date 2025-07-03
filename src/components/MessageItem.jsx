@@ -1,9 +1,7 @@
 import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-const MessageItem = ({ message, currentUserId = null }) => {
-  const isOwn =
-    message.senderName === "You" ||
-    (currentUserId && message.senderId === currentUserId);
+const MessageItem = ({ message, currentUserId }) => {
+  const isOwn = message.senderId == currentUserId;
 
   // Format timestamp
   const formatTime = (timestamp) => {
