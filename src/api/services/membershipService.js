@@ -19,3 +19,7 @@ export const getMembershipsForAdmin = async () => {
 export const createMembership = async (data) => {
   return instance.post("memberships", data);
 };
+
+export const cancelPayment = async (orderCode) => {
+  return instance.post(`payment/cancel`, { orderCode });
+};

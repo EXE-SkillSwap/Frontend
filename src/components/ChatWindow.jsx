@@ -19,9 +19,42 @@ const ChatWindow = ({ selectedConversation }) => {
   const senderId = jwtDecode(localStorage.getItem("token")).sub;
 
   useEffect(() => {
-    connectSocket((message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+    const connectSocket = (callback) => {
+      const client = new Client({
+        brokerURL: import.meta.env.VITE_WEB_SOCKET_URL,
+        connectHeaders: {},
+        reconnectDelay: 5000,
+        onConnect: () => {
+          client.subscribe(
+            `/topic/chat/${selectedConversation.id}`,
+            (newMessage) => {
+              callback(newMessage.body);
+            }
+          );
+        },
+        onDisconnect: () => {
+          console.log("Disconnected");
+        },
+      });
+      client.activate();
+      return client;
+    };
+
+    const handleData = (data) => {
+      const parsedData = JSON.parse(data);
+      setMessages((prevMessages) => [...prevMessages, parsedData]);
+
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    const client = connectSocket(handleData);
+    return () => {
+      if (client && client.connected) {
+        client.deactivate();
+      }
+    };
   }, []);
 
   const handleSendMessage = (conversationId, content) => {
@@ -79,7 +112,7 @@ const ChatWindow = ({ selectedConversation }) => {
         <GroupChatHeader conversation={selectedConversation} />
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-gray-600">
+          {/* <Button variant="ghost" size="icon" className="text-gray-600">
             <Phone className="w-4 h-4" />
           </Button>
           <Button variant="ghost" size="icon" className="text-gray-600">
@@ -90,7 +123,7 @@ const ChatWindow = ({ selectedConversation }) => {
           </Button>
           <Button variant="ghost" size="icon" className="text-gray-600">
             <MoreHorizontal className="w-4 h-4" />
-          </Button>
+          </Button> */}
         </div>
       </div>
 

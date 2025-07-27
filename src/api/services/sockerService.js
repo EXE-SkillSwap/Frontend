@@ -6,7 +6,7 @@ const connectSocket = (onMessageReceived) => {
     connectHeaders: {},
     reconnectDelay: 5000,
     onConnect: () => {
-      client.subscribe(`/user/chat/queue/messages`, (message) => {
+      client.subscribe(`/topic/chat`, (message) => {
         try {
           const parsedMessage = JSON.parse(message.body);
           onMessageReceived(parsedMessage);

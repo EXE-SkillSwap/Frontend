@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getMemberships } from "@/api/services/membershipService";
 import MembershipItem from "@/components/MembershipItem";
-import CircleLoading from "@/components/common/loading/CircleLoading";
 import ChaseLoading from "@/components/common/loading/ChaseLoading";
 
 const Membership = () => {
@@ -33,7 +32,7 @@ const Membership = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-100 to-indigo-500">
+    <div className="min-h-screen bg-gradient-to-br from-rose-100 to-indigo-500 flex flex-col items-center justify-center p-24">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
