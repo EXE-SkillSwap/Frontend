@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Crown } from "lucide-react";
 import moment from "moment/moment";
+import { useNavigate } from "react-router-dom";
 
 const ProfileMembershipCard = ({ userMembership }) => {
+  const nav = useNavigate();
   return (
     <Card className="relative overflow-hidden border-l-0 shadow-lg bg-white">
       {/* Background decoration */}
