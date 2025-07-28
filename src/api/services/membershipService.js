@@ -23,3 +23,7 @@ export const createMembership = async (data) => {
 export const cancelPayment = async (orderCode) => {
   return instance.post(`payment/cancel`, { orderCode });
 };
+
+export const getUserMembership = async () => {
+  return instance.get(`memberships/my`);
+};

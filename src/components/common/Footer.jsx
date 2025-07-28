@@ -49,16 +49,16 @@ const Footer = () => {
               Thông Tin Liên Hệ
             </h3>
             <div className="space-y-2 text-gray-300">
-              <p>Email: info@example.com</p>
-              <p>Phone: +1 (123) 456-7890</p>
-              <p>Address: 123 Education St, Learning City</p>
+              <p>Email: admin@skillsswap.io.vn</p>
+              <p>Liên hệ: +84 077712345</p>
+              <p>Địa chỉ: 123 Đường Giáo Dục, Thành Phố Học Tập</p>
             </div>
           </div>
 
           {/* Social Media */}
           <div>
             <h3 className="text-lg font-semibold mb-4 pb-2 border-b-2 border-indigo-500 inline-block">
-              Follow Us
+              Theo Dõi Chúng Tôi
             </h3>
             <div className="flex space-x-4 mt-4">
               <a
@@ -87,7 +87,8 @@ const Footer = () => {
         {/* Footer Bottom */}
         <div className="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400">
           <p>
-            &copy; {new Date().getFullYear()} SkillSwap. All rights reserved.
+            &copy; {new Date().getFullYear()} SkillSwap. Tất cả các quyền được
+            bảo lưu.
           </p>
         </div>
       </div>

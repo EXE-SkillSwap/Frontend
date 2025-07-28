@@ -45,9 +45,9 @@ const MembershipItem = ({ packageData, isPopular = false }) => {
         className={`relative border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 
         ${isPopular ? "scale-105 border-purple-500" : "hover:scale-[1.02]"}`}
       >
-        {isPopular && (
+        {packageData.bought && (
           <Badge className="absolute -top-3 right-8 bg-gradient-to-r from-purple-600 to-blue-600 px-3 py-1">
-            Phổ biến nhất
+            Đang Sử Dụng
           </Badge>
         )}
 
@@ -96,7 +96,7 @@ const MembershipItem = ({ packageData, isPopular = false }) => {
           </div>
         </CardContent>
 
-        <CardFooter className="pt-4">
+        <CardFooter className="pt-4 flex flex-col items-center">
           {isLoading ? (
             <div className="w-full flex justify-center">
               <CircleLoading />
