@@ -3,6 +3,7 @@ import { getUserMembership } from "@/api/services/membershipService";
 import { getUserProfile, updateProfile } from "@/api/services/userService";
 import ProfileMembershipCard from "@/components/cards/ProfileMembershipCard";
 import ProfileSkillsCard from "@/components/cards/ProfileSkillsCard";
+import UserSkillsCard from "@/components/cards/UserSkillsCard";
 import ChangePassword from "@/components/ChangePassword";
 import ChaseLoading from "@/components/common/loading/ChaseLoading";
 import EditProfile from "@/components/EditProfile";
@@ -32,11 +33,37 @@ import {
   Venus,
 } from "lucide-react";
 import moment from "moment/moment";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const cloudinary_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+// Context lưu kỹ năng tạm thời
+export const UserSkillsContext = createContext();
+
+export const UserSkillsProvider = ({ children }) => {
+  const [skills, setSkills] = useState([]);
+  const addSkill = (skill) => setSkills((prev) => [...prev, skill]);
+  // Thêm hàm nạp kỹ năng từ chuỗi skillTags
+  const importSkillsFromTags = (skillTags) => {
+    if (!skillTags) return;
+    const arr = skillTags
+      .split("#")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((name, idx) => ({
+        id: Date.now() + idx,
+        skillName: name,
+        coursePrice: "",
+        evidenceLink: "",
+        description: "",
+      }));
+    setSkills((prev) => prev.length === 0 ? arr : prev);
+  };
+  const value = { skills, addSkill, importSkillsFromTags };
+  return <UserSkillsContext.Provider value={value}>{children}</UserSkillsContext.Provider>;
+};
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -69,6 +96,14 @@ const Profile = () => {
     fetchUserInfo();
     fetchUserMembership();
   }, []);
+
+  // Nạp kỹ năng từ userInfo vào context nếu context rỗng
+  const { importSkillsFromTags, skills } = useContext(UserSkillsContext);
+  useEffect(() => {
+    if (userInfo && userInfo.skillTags && skills.length === 0) {
+      importSkillsFromTags(userInfo.skillTags);
+    }
+  }, [userInfo]);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -427,6 +462,9 @@ const Profile = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* User Skills Card - moved to right column below Recent Activity */}
+              <UserSkillsCard />
             </div>
           </div>
         </div>

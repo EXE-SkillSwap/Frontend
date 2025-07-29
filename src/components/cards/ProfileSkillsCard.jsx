@@ -1,15 +1,29 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Plus, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserSkillsContext } from "@/pages/Profile";
 
 const ProfileSkillsCard = ({ userInfo }) => {
-  const processSkills = (skills) => {
-    if (!skills) return [];
-    return skills
+  const navigate = useNavigate();
+  const { skills } = useContext(UserSkillsContext);
+
+  // Nếu context có kỹ năng, ưu tiên lấy từ context
+  const processSkills = () => {
+    if (skills && skills.length > 0) {
+      return skills.map((s) => s.skillName).filter(Boolean);
+    }
+    if (!userInfo?.skillTags) return [];
+    return userInfo.skillTags
       .split("#")
       .filter((skill) => skill.trim())
       .map((skill) => skill.trim());
   };
+
+  const skillList = processSkills();
+
   return (
     <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Background decoration */}
@@ -30,10 +44,10 @@ const ProfileSkillsCard = ({ userInfo }) => {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="relative z-10">
-        {processSkills(userInfo?.skillTags).length > 0 ? (
+      <CardContent className="relative z-10 space-y-4">
+        {skillList.length > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {processSkills(userInfo?.skillTags).map((skill, index) => (
+            {skillList.map((skill, index) => (
               <Badge
                 key={index}
                 className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200/50 hover:from-blue-200 hover:to-indigo-200 transition-all duration-200 font-medium px-3 py-1.5 shadow-sm"
@@ -57,6 +71,16 @@ const ProfileSkillsCard = ({ userInfo }) => {
             </div>
           </div>
         )}
+        {/* Add Skill Button */}
+        <div className="pt-2">
+          <Button
+            onClick={() => navigate("/add-skill")}
+            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-2.5 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Thêm kỹ năng của bản thân
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 import {
   Search,
   Home,
@@ -15,9 +17,9 @@ import {
   MoreHorizontal,
   Smile,
 } from "lucide-react";
-
-// Helper function from shadcn/ui to merge classes
 import { cn } from "@/lib/utils";
+
+
 
 // Story Circle Component
 const StoryCircle = ({ username, avatar, hasStory = true, isOwn = false, className }) => {
@@ -145,6 +147,8 @@ const PostCard = ({ post, className }) => {
 // Forum Page Component
 export default function ForumPage() {
     const [searchQuery, setSearchQuery] = useState("");
+    const [status, setStatus] = useState("");
+    const [statusList, setStatusList] = useState([]);
 
     const stories = [
       { username: "Your story", avatar: "/placeholder.svg", isOwn: true, hasStory: false },
@@ -203,61 +207,59 @@ export default function ForumPage() {
       { username: "fitness_guru", name: "David Lee", avatar: "/placeholder.svg" },
     ];
 
+  // Thêm status mới
+  const handlePostStatus = () => {
+    if (status.trim()) {
+      setStatusList([{ text: status, time: new Date() }, ...statusList]);
+      setStatus("");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Forum</h1>
-
-            {/* Search */}
-            <div className="relative max-w-xs w-full hidden sm:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search"
-                className="pl-10 bg-gray-50 border-gray-200"
-              />
-            </div>
-
-            {/* Navigation */}
-            <div className="flex items-center space-x-2">
-              <Link to="/">
-                <Button variant="ghost" size="icon">
-                  <Home />
-                </Button>
-              </Link>
-              <Link to="/chat"> {/* Assuming chat page is at /chat */}
-                <Button variant="ghost" size="icon">
-                  <MessageCircle />
-                </Button>
-              </Link>
-              <Button variant="ghost" size="icon">
-                <PlusSquare />
-              </Button>
-              <Button variant="ghost" size="icon">
-                <Compass />
-              </Button>
-              <Button variant="ghost" size="icon">
-                <Heart />
-              </Button>
-              <Avatar className="w-8 h-8 cursor-pointer">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-6xl mx-auto px-4 py-6">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50">
+      <Header />
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-6 mt-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Feed */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Up Status */}
+            <div className="bg-white/80 border border-purple-100 rounded-lg p-4 shadow-sm mb-2">
+              <div className="flex items-start gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <Input
+                    value={status}
+                    onChange={e => setStatus(e.target.value)}
+                    placeholder="Bạn đang nghĩ gì? Hãy chia sẻ cảm xúc hoặc trạng thái của bạn..."
+                    className="bg-purple-50 border border-purple-200 focus:border-purple-400 focus:ring-purple-200 rounded-full px-4 py-2 text-sm"
+                  />
+                </div>
+                <Button
+                  onClick={handlePostStatus}
+                  className="bg-gradient-to-r from-purple-400 to-indigo-500 text-white rounded-full px-6 py-2 font-semibold shadow-md hover:from-purple-500 hover:to-indigo-600"
+                  disabled={!status.trim()}
+                >
+                  Đăng
+                </Button>
+              </div>
+              {/* Hiển thị status mới nhất */}
+              {statusList.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {statusList.map((s, idx) => (
+                    <div key={idx} className="bg-purple-50 border border-purple-100 rounded-lg px-4 py-2 text-sm text-purple-900 shadow-sm">
+                      <span className="font-semibold mr-2">Bạn:</span>
+                      {s.text}
+                      <span className="ml-2 text-xs text-purple-400">{s.time.toLocaleTimeString()}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             {/* Stories */}
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="bg-white/80 border border-purple-100 rounded-lg p-4">
               <div className="flex space-x-4 overflow-x-auto pb-2 -mx-4 px-4">
                 {stories.map((story, index) => (
                   <StoryCircle
@@ -271,7 +273,6 @@ export default function ForumPage() {
                 ))}
               </div>
             </div>
-
             {/* Posts */}
             <div className="space-y-6">
               {posts.map((post) => (
@@ -279,28 +280,26 @@ export default function ForumPage() {
               ))}
             </div>
           </div>
-
           {/* Sidebar */}
           <aside className="hidden lg:block space-y-6">
             {/* User Profile */}
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center space-x-3 mb-4">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="/placeholder.svg" />
-                        <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <h3 className="font-semibold text-sm">your_username</h3>
-                        <p className="text-gray-600 text-sm">Your Name</p>
-                    </div>
+            <div className="bg-white/80 border border-purple-100 rounded-lg p-4">
+              <div className="flex items-center space-x-3 mb-4">
+                <Avatar className="w-14 h-14">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="font-semibold text-sm">your_username</h3>
+                  <p className="text-gray-600 text-sm">Your Name</p>
                 </div>
+              </div>
             </div>
-            
             {/* Suggestions */}
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="bg-white/80 border border-purple-100 rounded-lg p-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-600 text-sm">Suggestions for you</h3>
-                <Button variant="ghost" className="text-xs font-semibold text-gray-800 p-0 h-auto">See All</Button>
+                <h3 className="font-semibold text-purple-600 text-sm">Suggestions for you</h3>
+                <Button variant="ghost" className="text-xs font-semibold text-purple-800 p-0 h-auto">See All</Button>
               </div>
               <div className="space-y-3">
                 {suggestions.map((user, index) => (
@@ -315,24 +314,12 @@ export default function ForumPage() {
                         <p className="text-gray-600 text-xs">{user.name}</p>
                       </div>
                     </div>
-                    <Button size="sm" variant="ghost" className="text-blue-500 text-xs font-semibold">
+                    <Button size="sm" variant="ghost" className="text-purple-500 text-xs font-semibold">
                       Follow
                     </Button>
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Footer */}
-            <div className="text-xs text-gray-400 space-y-2 pt-4">
-              <p className="space-x-2">
-                <a href="#" className="hover:underline">About</a>
-                <a href="#" className="hover:underline">Help</a>
-                <a href="#" className="hover:underline">Press</a>
-                <a href="#" className="hover:underline">API</a>
-                <a href="#" className="hover:underline">Jobs</a>
-              </p>
-              <p>© 2024 FORUM FROM ME</p>
             </div>
           </aside>
         </div>

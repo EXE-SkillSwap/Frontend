@@ -4,7 +4,9 @@ import AppLoading from "@/components/common/loading/AppLoading";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import UserLayout from "@/layouts/UserLayout";
 import Admin from "@/pages/AdminPage";
+import AddSkill from "@/pages/AddSkill";
 import CommingSoon from "@/pages/CommingSoon";
+import EditSkill from "@/pages/EditSkill";
 import NotFound from "@/pages/errors/NotFound";
 import FindFriends from "@/pages/FindFriends";
 import HomePage from "@/pages/HomePage";
@@ -19,6 +21,7 @@ import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import EnhancedChatInterface from "./pages/EnhancedChatInterface";
 import ForumPage from "./pages/ForumPage";
+import { UserSkillsProvider } from "@/pages/Profile";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -63,6 +66,14 @@ function App() {
         {
           path: "/profile",
           element: <Profile />,
+        },
+        {
+          path: "/add-skill",
+          element: <AddSkill />,
+        },
+        {
+          path: "/edit-skill/:skillId",
+          element: <EditSkill />,
         },
         {
           path: "/documents",
@@ -113,7 +124,9 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={routes} />
+      <UserSkillsProvider>
+        <RouterProvider router={routes} />
+      </UserSkillsProvider>
     </>
   );
 }

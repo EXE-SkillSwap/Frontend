@@ -15,11 +15,12 @@ export default function BannerCarousel() {
       buttonText: "Tham gia ngay",
       buttonLink: "#",
       secondaryText: "xem cách hoạt động",
-      bgColor: "bg-pink-600 text-white",
-      buttonBg: "bg-pink-500 hover:bg-pink-600",
+      bgColor: "bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 text-white",
+      buttonBg: "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 hover:from-pink-600 hover:to-indigo-700 shadow-lg shadow-pink-300/30",
       buttonTextColor: "text-white",
-      descriptionTextColor: "text-white/80",
+      descriptionTextColor: "text-white/90 drop-shadow-md",
       secondaryTextColor: "text-white/80",
+      image: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=600&q=80",
     },
     {
       id: 2,
@@ -29,11 +30,12 @@ export default function BannerCarousel() {
       buttonText: "Bắt đầu trao đổi",
       buttonLink: "#",
       secondaryText: "khám phá kỹ năng",
-      bgColor: "bg-yellow-500 text-black",
-      buttonBg: "bg-yellow-400 hover:bg-yellow-500",
+      bgColor: "bg-gradient-to-br from-yellow-400 via-pink-200 to-purple-300 text-black",
+      buttonBg: "bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 hover:from-yellow-500 hover:to-purple-500 shadow-lg shadow-yellow-200/30",
       buttonTextColor: "text-black",
-      descriptionTextColor: "text-black/70",
+      descriptionTextColor: "text-black/80 drop-shadow-md",
       secondaryTextColor: "text-black/70",
+      image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80",
     },
     {
       id: 3,
@@ -43,11 +45,12 @@ export default function BannerCarousel() {
       buttonText: "Khám phá cộng đồng",
       buttonLink: "#",
       secondaryText: "xem trải nghiệm",
-      bgColor: "bg-indigo-700 text-white",
-      buttonBg: "bg-indigo-600 hover:bg-indigo-700",
+      bgColor: "bg-gradient-to-br from-indigo-700 via-purple-600 to-pink-500 text-white",
+      buttonBg: "bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 hover:from-indigo-700 hover:to-pink-600 shadow-lg shadow-indigo-300/30",
       buttonTextColor: "text-white",
-      descriptionTextColor: "text-white/80",
+      descriptionTextColor: "text-white/90 drop-shadow-md",
       secondaryTextColor: "text-white/80",
+      image: "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=600&q=80",
     },
   ];
 
@@ -57,6 +60,8 @@ export default function BannerCarousel() {
   const [touchEnd, setTouchEnd] = useState(0);
 
   const contentRef = useRef([]);
+  const illusRef = useRef([]);
+  const imgRef = useRef([]);
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
@@ -105,106 +110,145 @@ export default function BannerCarousel() {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          stagger: 0.2,
+          stagger: 0.18,
           ease: "power3.out",
         }
+      );
+    }
+    // Parallax effect for illustration
+    const illus = illusRef.current[currentIndex];
+    if (illus) {
+      gsap.fromTo(
+        illus,
+        { y: 60, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
+      );
+    }
+    // Parallax effect for image
+    const img = imgRef.current[currentIndex];
+    if (img) {
+      gsap.fromTo(
+        img,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
       );
     }
   }, [currentIndex]);
 
   return (
     <div
-      className="relative w-full overflow-hidden shadow-xl"
+      className="relative w-full overflow-hidden shadow-2xl rounded-b-3xl"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="relative h-96 md:h-screen max-h-[600px] w-full">
+      <div className="relative h-[420px] md:h-[520px] lg:h-[600px] w-full">
         {banners.map((banner, index) => (
           <div
             key={banner.id}
             className={cn(
-              "absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out",
-              index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0",
+              "absolute top-0 left-0 w-full h-full transition-all duration-700 ease-in-out flex flex-col md:flex-row items-stretch",
+              index === currentIndex
+                ? "opacity-100 z-10 translate-x-0 pointer-events-auto"
+                : index < currentIndex
+                ? "opacity-0 z-0 -translate-x-20 pointer-events-none"
+                : "opacity-0 z-0 translate-x-20 pointer-events-none",
               banner.bgColor
             )}
+            style={{ boxShadow: index === currentIndex ? '0 8px 32px 0 rgba(80,0,120,0.12)' : undefined }}
           >
-            <div className="flex flex-col md:flex-row h-full">
-              <div
-                ref={(el) => (contentRef.current[index] = el)}
-                className="md:w-1/2 h-full flex flex-col justify-center p-8 md:p-16"
+            {/* Overlay gradient for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent z-0" />
+            <div
+              ref={(el) => (contentRef.current[index] = el)}
+              className="relative z-10 md:w-1/2 h-full flex flex-col justify-center px-6 md:px-16 py-10 md:py-0"
+            >
+              <h2 className="text-3xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg animate-fade-in">
+                {banner.title}
+              </h2>
+              <p
+                className={cn(
+                  "text-base md:text-lg mb-8 max-w-xl font-medium animate-fade-in",
+                  banner.descriptionTextColor
+                )}
               >
-                <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
-                  {banner.title}
-                </h2>
-                <p
+                {banner.description}
+              </p>
+              <div className="flex items-center gap-4 animate-fade-in">
+                <Button
                   className={cn(
-                    "text-sm md:text-base mb-8 max-w-md",
-                    banner.descriptionTextColor
+                    "px-8 py-2 rounded-full font-bold text-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl border-2 border-white/10",
+                    banner.buttonBg,
+                    banner.buttonTextColor
                   )}
                 >
-                  {banner.description}
-                </p>
-                <div className="flex items-center gap-4">
-                  <Button
-                    className={cn(
-                      "px-8 py-2 rounded-full",
-                      banner.buttonBg,
-                      banner.buttonTextColor
-                    )}
-                  >
-                    {banner.buttonText}
-                  </Button>
-                  <span
-                    className={cn(
-                      "text-sm flex items-center",
-                      banner.secondaryTextColor
-                    )}
-                  >
-                    {banner.secondaryText}
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </span>
-                </div>
+                  {banner.buttonText}
+                </Button>
+                <span
+                  className={cn(
+                    "text-sm flex items-center cursor-pointer hover:underline hover:scale-105 transition-all duration-200",
+                    banner.secondaryTextColor
+                  )}
+                >
+                  {banner.secondaryText}
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </span>
               </div>
-              <BannerIllustration />
+            </div>
+            <div className="relative z-10 flex-1 flex items-center justify-center md:justify-end pr-0 md:pr-12">
+              {banner.image ? (
+                <div
+                  ref={el => (imgRef.current[index] = el)}
+                  className="w-64 h-64 md:w-80 md:h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/30 bg-white/10 flex items-center justify-center relative group"
+                >
+                  <img
+                    src={banner.image}
+                    alt="Banner minh họa"
+                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                </div>
+              ) : (
+                <div ref={el => (illusRef.current[index] = el)}>
+                  <BannerIllustration />
+                </div>
+              )}
             </div>
           </div>
         ))}
       </div>
-
       {/* Nút điều hướng */}
       <Button
         variant="ghost"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white shadow-md hover:bg-gray-100 text-gray-800 rounded-full h-10 w-10"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-white/90 shadow-xl hover:bg-purple-100 text-purple-700 border-2 border-purple-200 rounded-full h-14 w-14 scale-100 hover:scale-110 transition-all duration-200"
         onClick={prevSlide}
         aria-label="Slide trước"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <ChevronLeft className="h-7 w-7" />
       </Button>
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white shadow-md hover:bg-gray-100 text-gray-800 rounded-full h-10 w-10"
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-white/90 shadow-xl hover:bg-purple-100 text-purple-700 border-2 border-purple-200 rounded-full h-14 w-14 scale-100 hover:scale-110 transition-all duration-200"
         onClick={nextSlide}
         aria-label="Slide tiếp theo"
       >
-        <ChevronRight className="h-5 w-5" />
+        <ChevronRight className="h-7 w-7" />
       </Button>
-
       {/* Điểm chuyển trang */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-4">
         {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
             className={cn(
-              "w-3 h-3 rounded-full transition-all duration-300",
+              "w-4 h-4 rounded-full transition-all duration-300 border-2 border-white/40 shadow-md",
               index === currentIndex
-                ? "w-8 bg-gray-800"
-                : "bg-gray-400 hover:bg-gray-600"
+                ? "scale-125 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 shadow-lg"
+                : "bg-white/60 hover:bg-purple-200"
             )}
             aria-label={`Chuyển đến slide ${index + 1}`}
           />
