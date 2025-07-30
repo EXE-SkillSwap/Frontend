@@ -71,7 +71,10 @@ const ChangePassword = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full cursor-pointer">
+        <Button
+          variant={"outline"}
+          className="w-full cursor-pointer bg-white text-black"
+        >
           <Key className="h-4 w-4 mr-2" />
           Thay đổi mật khẩu
         </Button>

@@ -1,6 +1,6 @@
-import { processMembershipPayment } from "@/api/services/membershipService";
 import PaymentFailed from "@/components/payment/PaymentFailed";
 import PaymentSucess from "@/components/payment/PaymentSucess";
+import { processMembershipPayment } from "@/services/api/membershipService";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 

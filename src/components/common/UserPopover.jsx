@@ -1,15 +1,14 @@
-import { getUserProfile } from "@/api/services/userService";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getUserProfile } from "@/services/api/userService";
 import { logOut } from "@/utils/auth.utils";
-import { Crown, LogOut, Settings, User } from "lucide-react";
+import { Crown, LogOut, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -34,6 +33,25 @@ const UserPopover = () => {
   const handleLogOut = () => {
     logOut();
   };
+
+  const popoverItems = [
+    {
+      label: "Hồ Sơ",
+      icon: <User className="mr-2 h-4 w-4" />,
+      action: () => nav("/profile"),
+    },
+    {
+      label: "Thành Viên",
+      icon: <Crown className="mr-2 h-4 w-4" />,
+      action: () => nav("/membership"),
+    },
+    {
+      label: "Đăng Xuất",
+      icon: <LogOut className="mr-2 h-4 w-4" />,
+      action: handleLogOut,
+      className: "text-red-600 hover:bg-red-50",
+    },
+  ];
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -59,32 +77,16 @@ const UserPopover = () => {
           align="end"
           className="w-56 bg-white/90 backdrop-blur-xl border border-white/20 shadow-xl"
         >
-          <DropdownMenuItem
-            className="hover:bg-gray-100/50"
-            onClick={() => nav("/profile")}
-          >
-            <User className="mr-2 h-4 w-4" />
-            <span>Hồ Sơ</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="hover:bg-gray-100/50"
-            onClick={() => nav("/membership")}
-          >
-            <Crown className="mr-2 h-4 w-4" />
-            <span>Thành viên</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="hover:bg-gray-100/50">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Cài Đặt</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="hover:bg-red-50 text-red-600"
-            onClick={handleLogOut}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Đăng Xuất</span>
-          </DropdownMenuItem>
+          {popoverItems.map((item, index) => (
+            <DropdownMenuItem
+              key={index}
+              className={`hover:bg-gray-100/50 ${item.className || ""}`}
+              onClick={item.action}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       )}
     </DropdownMenu>

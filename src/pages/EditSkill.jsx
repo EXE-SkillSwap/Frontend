@@ -2,8 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Upload, DollarSign, Link as LinkIcon } from "lucide-react";
-import { getUserSkillById, updateUserSkill } from "@/api/services/skillService";
+import {
+  ArrowLeft,
+  Save,
+  Upload,
+  DollarSign,
+  Link as LinkIcon,
+} from "lucide-react";
+import { getUserSkillById, updateUserSkill } from "@/services/api/skillService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,15 +66,15 @@ const EditSkill = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.skillName.trim()) {
       toast.error("Vui lòng nhập tên kỹ năng");
       return;
@@ -90,7 +96,7 @@ const EditSkill = () => {
     }
 
     setIsSubmitting(true);
-    
+
     try {
       const skillData = {
         skillName: formData.skillName.trim(),
@@ -100,7 +106,7 @@ const EditSkill = () => {
       };
 
       const response = await updateUserSkill(skillId, skillData);
-      
+
       if (response && response.data) {
         toast.success("Cập nhật kỹ năng thành công!");
         navigate("/profile");
@@ -133,7 +139,9 @@ const EditSkill = () => {
           <div className="flex justify-center mb-10">
             <ChaseLoading />
           </div>
-          <p className="text-muted-foreground">Đang tải thông tin kỹ năng....</p>
+          <p className="text-muted-foreground">
+            Đang tải thông tin kỹ năng....
+          </p>
         </div>
       </div>
     );
@@ -157,7 +165,7 @@ const EditSkill = () => {
             <ArrowLeft className="h-4 w-4" />
             Quay lại Profile
           </Button>
-          
+
           <div className="text-center space-y-4">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4">
               <Save className="h-8 w-8 text-white" />
@@ -166,7 +174,8 @@ const EditSkill = () => {
               Chỉnh Sửa Kỹ Năng
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Cập nhật thông tin kỹ năng của bạn để phản ánh chính xác khả năng hiện tại.
+              Cập nhật thông tin kỹ năng của bạn để phản ánh chính xác khả năng
+              hiện tại.
             </p>
           </div>
         </div>
@@ -187,7 +196,10 @@ const EditSkill = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Skill Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="skillName" className="text-sm font-semibold text-gray-700">
+                  <Label
+                    htmlFor="skillName"
+                    className="text-sm font-semibold text-gray-700"
+                  >
                     Tên Kỹ Năng *
                   </Label>
                   <div className="relative">
@@ -212,7 +224,10 @@ const EditSkill = () => {
 
                 {/* Course Price */}
                 <div className="space-y-2">
-                  <Label htmlFor="coursePrice" className="text-sm font-semibold text-gray-700">
+                  <Label
+                    htmlFor="coursePrice"
+                    className="text-sm font-semibold text-gray-700"
+                  >
                     Giá Khóa Học (VNĐ) *
                   </Label>
                   <div className="relative">
@@ -236,7 +251,10 @@ const EditSkill = () => {
 
                 {/* Evidence Link */}
                 <div className="space-y-2">
-                  <Label htmlFor="evidenceLink" className="text-sm font-semibold text-gray-700">
+                  <Label
+                    htmlFor="evidenceLink"
+                    className="text-sm font-semibold text-gray-700"
+                  >
                     Link Bằng Chứng *
                   </Label>
                   <div className="relative">
@@ -256,16 +274,20 @@ const EditSkill = () => {
                     <Upload className="h-3 w-3" />
                     <span>Có thể là chứng chỉ, video demo, hoặc portfolio</span>
                   </div>
-                  {formData.evidenceLink && !validateUrl(formData.evidenceLink) && (
-                    <p className="text-xs text-red-500">
-                      Vui lòng nhập URL hợp lệ
-                    </p>
-                  )}
+                  {formData.evidenceLink &&
+                    !validateUrl(formData.evidenceLink) && (
+                      <p className="text-xs text-red-500">
+                        Vui lòng nhập URL hợp lệ
+                      </p>
+                    )}
                 </div>
 
                 {/* Description */}
                 <div className="space-y-2">
-                  <Label htmlFor="description" className="text-sm font-semibold text-gray-700">
+                  <Label
+                    htmlFor="description"
+                    className="text-sm font-semibold text-gray-700"
+                  >
                     Mô Tả Kỹ Năng
                   </Label>
                   <Textarea
@@ -285,33 +307,47 @@ const EditSkill = () => {
                 {/* Preview Card */}
                 {formData.skillName && (
                   <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                    <h4 className="font-semibold text-gray-800 mb-2">Xem Trước:</h4>
+                    <h4 className="font-semibold text-gray-800 mb-2">
+                      Xem Trước:
+                    </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-green-100 text-green-700">Kỹ năng:</Badge>
-                        <span className="font-medium">{formData.skillName}</span>
+                        <Badge className="bg-green-100 text-green-700">
+                          Kỹ năng:
+                        </Badge>
+                        <span className="font-medium">
+                          {formData.skillName}
+                        </span>
                       </div>
                       {formData.coursePrice && (
                         <div className="flex items-center gap-2">
-                          <Badge className="bg-green-100 text-green-700">Giá:</Badge>
+                          <Badge className="bg-green-100 text-green-700">
+                            Giá:
+                          </Badge>
                           <span className="font-medium">
-                            {parseInt(formData.coursePrice).toLocaleString('vi-VN')} VNĐ
+                            {parseInt(formData.coursePrice).toLocaleString(
+                              "vi-VN"
+                            )}{" "}
+                            VNĐ
                           </span>
                         </div>
                       )}
-                      {formData.evidenceLink && validateUrl(formData.evidenceLink) && (
-                        <div className="flex items-center gap-2">
-                          <Badge className="bg-emerald-100 text-emerald-700">Bằng chứng:</Badge>
-                          <a 
-                            href={formData.evidenceLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-green-600 hover:underline truncate"
-                          >
-                            {formData.evidenceLink}
-                          </a>
-                        </div>
-                      )}
+                      {formData.evidenceLink &&
+                        validateUrl(formData.evidenceLink) && (
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-emerald-100 text-emerald-700">
+                              Bằng chứng:
+                            </Badge>
+                            <a
+                              href={formData.evidenceLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-green-600 hover:underline truncate"
+                            >
+                              {formData.evidenceLink}
+                            </a>
+                          </div>
+                        )}
                     </div>
                   </div>
                 )}

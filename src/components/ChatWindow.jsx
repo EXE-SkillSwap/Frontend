@@ -1,5 +1,5 @@
-import { getConversationMessages } from "@/api/services/conversationsService";
-import connectSocket from "@/api/services/sockerService";
+import { getConversationMessages } from "@/services/api/conversationsService";
+import connectSocket from "@/services/api/sockerService";
 import GroupChatHeader from "@/components/GroupChatHeader";
 import MessageItem from "@/components/MessageItem";
 import { Button } from "@/components/ui/button";

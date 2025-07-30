@@ -1,4 +1,4 @@
-import { createMembership } from "@/api/services/membershipService";
+import { createMembership } from "@/services/api/membershipService";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

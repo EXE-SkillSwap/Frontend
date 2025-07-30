@@ -1,4 +1,4 @@
-import { getUserToFindFriends } from "@/api/services/userService";
+import { getUserToFindFriends } from "@/services/api/userService";
 import ChaseLoading from "@/components/common/loading/ChaseLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

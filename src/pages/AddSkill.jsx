@@ -1,13 +1,5 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { toast } from "sonner";
-import { ArrowLeft, Plus, Upload, DollarSign, Link as LinkIcon, Trash2 } from "lucide-react";
-import { UserSkillsContext } from "./Profile";
+import NotMembershipDialog from "@/components/dialog/NotMembershipDialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -15,20 +7,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { addCourses } from "@/services/api/coursesService";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  DollarSign,
+  Link as LinkIcon,
+  Plus,
+  Trash2,
+  Upload,
+} from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const emptySkill = () => ({
-  skillName: "",
-  coursePrice: "",
-  evidenceLink: "",
+  courseName: "",
+  price: "",
+  link: "",
   description: "",
 });
 
 const AddSkill = () => {
   const navigate = useNavigate();
-  const { addSkill } = useContext(UserSkillsContext);
   const [skills, setSkills] = useState([emptySkill()]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notMembsershipDialogOpen, setNotMembershipDialogOpen] =
+    useState(false);
 
   const handleInputChange = (idx, e) => {
     const { name, value } = e.target;
@@ -59,38 +67,37 @@ const AddSkill = () => {
     // Validate all skills
     for (let i = 0; i < skills.length; i++) {
       const s = skills[i];
-      if (!s.skillName.trim()) {
+      if (!s.courseName.trim()) {
         toast.error(`Vui lòng nhập tên kỹ năng cho dòng ${i + 1}`);
         return;
       }
-      if (!s.coursePrice.trim()) {
+      if (!s.price.trim()) {
         toast.error(`Vui lòng nhập giá khóa học cho dòng ${i + 1}`);
         return;
       }
-      if (!s.evidenceLink.trim()) {
+      if (!s.link.trim()) {
         toast.error(`Vui lòng nhập link bằng chứng cho dòng ${i + 1}`);
         return;
       }
-      if (!validateUrl(s.evidenceLink)) {
+      if (!validateUrl(s.link)) {
         toast.error(`Vui lòng nhập URL hợp lệ cho dòng ${i + 1}`);
         return;
       }
     }
     setIsSubmitting(true);
     try {
-      skills.forEach((s) => {
-        addSkill({
-          id: Date.now() + Math.random(),
-          skillName: s.skillName.trim(),
-          coursePrice: parseInt(s.coursePrice),
-          evidenceLink: s.evidenceLink.trim(),
-          description: s.description.trim(),
-        });
-      });
+      console.log(skills);
+      const response = await addCourses(skills);
+      console.log(response);
       toast.success("Thêm kỹ năng thành công!");
-      navigate("/profile");
+      // navigate("/profile");
     } catch (error) {
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      if (error.response?.data?.statusCode === "3003") {
+        toast.error(error.response?.data?.message);
+        setNotMembershipDialogOpen(true);
+      } else {
+        toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -122,7 +129,8 @@ const AddSkill = () => {
               Thêm Kỹ Năng Mới
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Bạn có thể thêm nhiều kỹ năng cùng lúc. Mỗi kỹ năng cần tên, giá và link bằng chứng riêng.
+              Bạn có thể thêm nhiều kỹ năng cùng lúc. Mỗi kỹ năng cần tên, giá
+              và link bằng chứng riêng.
             </p>
           </div>
         </div>
@@ -142,7 +150,10 @@ const AddSkill = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-8">
                 {skills.map((skill, idx) => (
-                  <div key={idx} className="p-4 mb-2 rounded-lg border border-blue-100 bg-blue-50/40 relative">
+                  <div
+                    key={idx}
+                    className="p-4 mb-2 rounded-lg border border-blue-100 bg-blue-50/40 relative"
+                  >
                     {skills.length > 1 && (
                       <Button
                         type="button"
@@ -158,15 +169,18 @@ const AddSkill = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Skill Name */}
                       <div className="space-y-2">
-                        <Label htmlFor={`skillName-${idx}`} className="text-sm font-semibold text-gray-700">
-                          Tên Kỹ Năng *
+                        <Label
+                          htmlFor={`courseName-${idx}`}
+                          className="text-sm font-semibold text-gray-700"
+                        >
+                          Tên Khóa Học *
                         </Label>
                         <Input
-                          id={`skillName-${idx}`}
-                          name="skillName"
+                          id={`courseName-${idx}`}
+                          name="courseName"
                           type="text"
-                          placeholder="Ví dụ: React.js, Python, UI/UX Design..."
-                          value={skill.skillName}
+                          placeholder="Ví dụ: Tán Gái, Thả Thính, Ảo Thuật..."
+                          value={skill.courseName}
                           onChange={(e) => handleInputChange(idx, e)}
                           className="border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                           required
@@ -174,16 +188,19 @@ const AddSkill = () => {
                       </div>
                       {/* Course Price */}
                       <div className="space-y-2">
-                        <Label htmlFor={`coursePrice-${idx}`} className="text-sm font-semibold text-gray-700">
+                        <Label
+                          htmlFor={`price-${idx}`}
+                          className="text-sm font-semibold text-gray-700"
+                        >
                           Giá Khóa Học (VNĐ) *
                         </Label>
                         <div className="relative">
                           <Input
-                            id={`coursePrice-${idx}`}
-                            name="coursePrice"
+                            id={`price-${idx}`}
+                            name="price"
                             type="number"
                             placeholder="Ví dụ: 500000"
-                            value={skill.coursePrice}
+                            value={skill.price}
                             onChange={(e) => handleInputChange(idx, e)}
                             className="pl-10 border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                             min="0"
@@ -198,16 +215,19 @@ const AddSkill = () => {
                     </div>
                     {/* Evidence Link */}
                     <div className="space-y-2 mt-4">
-                      <Label htmlFor={`evidenceLink-${idx}`} className="text-sm font-semibold text-gray-700">
+                      <Label
+                        htmlFor={`link-${idx}`}
+                        className="text-sm font-semibold text-gray-700"
+                      >
                         Link Bằng Chứng *
                       </Label>
                       <div className="relative">
                         <Input
-                          id={`evidenceLink-${idx}`}
-                          name="evidenceLink"
+                          id={`link-${idx}`}
+                          name="link"
                           type="url"
                           placeholder="https://example.com/certificate hoặc https://youtube.com/watch?v=..."
-                          value={skill.evidenceLink}
+                          value={skill.link}
                           onChange={(e) => handleInputChange(idx, e)}
                           className="pl-10 border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                           required
@@ -216,9 +236,11 @@ const AddSkill = () => {
                       </div>
                       <div className="flex items-center gap-2 text-xs text-gray-500">
                         <Upload className="h-3 w-3" />
-                        <span>Có thể là chứng chỉ, video demo, hoặc portfolio</span>
+                        <span>
+                          Có thể là chứng chỉ, video demo, hoặc portfolio
+                        </span>
                       </div>
-                      {skill.evidenceLink && !validateUrl(skill.evidenceLink) && (
+                      {skill.link && !validateUrl(skill.link) && (
                         <p className="text-xs text-red-500">
                           Vui lòng nhập URL hợp lệ
                         </p>
@@ -226,7 +248,10 @@ const AddSkill = () => {
                     </div>
                     {/* Description */}
                     <div className="space-y-2 mt-4">
-                      <Label htmlFor={`description-${idx}`} className="text-sm font-semibold text-gray-700">
+                      <Label
+                        htmlFor={`description-${idx}`}
+                        className="text-sm font-semibold text-gray-700"
+                      >
                         Mô Tả Kỹ Năng
                       </Label>
                       <Textarea
@@ -251,7 +276,7 @@ const AddSkill = () => {
                     onClick={handleAddRow}
                     className="flex items-center gap-2 mt-2"
                   >
-                    <Plus className="h-4 w-4" /> Thêm kỹ năng
+                    <Plus className="h-4 w-4" /> Thêm
                   </Button>
                 </div>
                 <div className="flex gap-4 pt-4">
@@ -287,6 +312,12 @@ const AddSkill = () => {
           </Card>
         </div>
       </motion.div>
+      {notMembsershipDialogOpen && (
+        <NotMembershipDialog
+          open={notMembsershipDialogOpen}
+          onOpenChange={setNotMembershipDialogOpen}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { getSkills, updateUserSkills } from "@/api/services/userService";
+import { getSkills, updateUserSkills } from "@/services/api/userService";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

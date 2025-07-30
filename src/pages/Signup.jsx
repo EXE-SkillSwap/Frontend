@@ -1,4 +1,4 @@
-import { register } from "@/api/services/userService";
+import { register } from "@/services/api/userService";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

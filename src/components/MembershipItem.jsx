@@ -1,4 +1,4 @@
-import { buyMembership } from "@/api/services/membershipService";
+import { buyMembership } from "@/services/api/membershipService";
 import CircleLoading from "@/components/common/loading/CircleLoading";
 import PaymentDialog from "@/components/dialog/PaymentDialog";
 import { Badge } from "@/components/ui/badge";

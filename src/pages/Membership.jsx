@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { getMemberships } from "@/api/services/membershipService";
 import MembershipItem from "@/components/MembershipItem";
 import ChaseLoading from "@/components/common/loading/ChaseLoading";
+import { getMemberships } from "@/services/api/membershipService";
 
 const Membership = () => {
   const [packages, setPackages] = useState([]);

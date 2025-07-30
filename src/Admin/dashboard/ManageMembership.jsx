@@ -1,5 +1,5 @@
 import { AddMembershipDialog } from "@/Admin/dialog/AddMembershipDialog";
-import { getMembershipsForAdmin } from "@/api/services/membershipService";
+import { getMembershipsForAdmin } from "@/services/api/membershipService";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

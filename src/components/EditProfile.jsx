@@ -1,4 +1,4 @@
-import { getAllProvinces, updateProfile } from "@/api/services/userService";
+import { getAllProvinces, updateProfile } from "@/services/api/userService";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -109,7 +109,7 @@ const EditProfile = ({ userInfo, onRefresh }) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="w-full bg-gray-400 cursor-pointer"
+          className="w-full bg-white cursor-pointer"
           onClick={() => setIsOpen(true)}
         >
           <Edit2Icon className="h-4 w-4 mr-2" />

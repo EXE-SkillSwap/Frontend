@@ -1,6 +1,10 @@
-import { uploadImage } from "@/api/services/cloudinaryService";
-import { getUserMembership } from "@/api/services/membershipService";
-import { getUserProfile, updateProfile } from "@/api/services/userService";
+import { uploadImage } from "@/services/api/cloudinaryService";
+import { getUserMembership } from "@/services/api/membershipService";
+import {
+  getProfileImageByUserId,
+  getUserProfile,
+  updateProfile,
+} from "@/services/api/userService";
 import ProfileMembershipCard from "@/components/cards/ProfileMembershipCard";
 import ProfileSkillsCard from "@/components/cards/ProfileSkillsCard";
 import UserSkillsCard from "@/components/cards/UserSkillsCard";
@@ -36,40 +40,17 @@ import moment from "moment/moment";
 import { useEffect, useRef, useState, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import StoryDialog from "@/components/dialog/StoryDialog";
 
 const cloudinary_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-
-// Context lưu kỹ năng tạm thời
-export const UserSkillsContext = createContext();
-
-export const UserSkillsProvider = ({ children }) => {
-  const [skills, setSkills] = useState([]);
-  const addSkill = (skill) => setSkills((prev) => [...prev, skill]);
-  // Thêm hàm nạp kỹ năng từ chuỗi skillTags
-  const importSkillsFromTags = (skillTags) => {
-    if (!skillTags) return;
-    const arr = skillTags
-      .split("#")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((name, idx) => ({
-        id: Date.now() + idx,
-        skillName: name,
-        coursePrice: "",
-        evidenceLink: "",
-        description: "",
-      }));
-    setSkills((prev) => prev.length === 0 ? arr : prev);
-  };
-  const value = { skills, addSkill, importSkillsFromTags };
-  return <UserSkillsContext.Provider value={value}>{children}</UserSkillsContext.Provider>;
-};
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState(null);
   const fileInputRef = useRef(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [userMembership, setUserMembership] = useState(null);
+  const [userProfileImages, setUserProfileImages] = useState([]);
+  const [openStoryDialog, setOpenStoryDialog] = useState(false);
   const nav = useNavigate();
 
   const fetchUserInfo = async () => {
@@ -92,17 +73,29 @@ const Profile = () => {
     }
   };
 
+  const fetchUserProfileImage = async () => {
+    const userId = userInfo?.id;
+    if (!userId) {
+      console.error("User ID is not available");
+      return;
+    }
+
+    try {
+      const response = await getProfileImageByUserId(userId);
+      setUserProfileImages(response.data);
+    } catch (error) {
+      console.error("Error fetching user profile image:", error);
+    }
+  };
+
   useEffect(() => {
     fetchUserInfo();
     fetchUserMembership();
   }, []);
 
-  // Nạp kỹ năng từ userInfo vào context nếu context rỗng
-  const { importSkillsFromTags, skills } = useContext(UserSkillsContext);
   useEffect(() => {
-    if (userInfo && userInfo.skillTags && skills.length === 0) {
-      importSkillsFromTags(userInfo.skillTags);
-    }
+    if (!userInfo) return;
+    fetchUserProfileImage();
   }, [userInfo]);
 
   const handleFileChange = (e) => {
@@ -154,6 +147,13 @@ const Profile = () => {
     );
   }
 
+  const handleOpenStory = () => {
+    if (userProfileImages.length === 0) {
+      return;
+    }
+    setOpenStoryDialog(true);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -184,7 +184,10 @@ const Profile = () => {
                           {/* Gradient ring background */}
                           <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 rounded-full p-1 shadow-lg">
                             {/* White inner ring */}
-                            <div className="w-full h-full bg-white rounded-full p-1">
+                            <div
+                              onClick={handleOpenStory}
+                              className="w-full h-full bg-white rounded-full p-1"
+                            >
                               {/* Avatar */}
                               <Avatar className="w-full h-full shadow-2xl group-hover:scale-105 transition-all duration-300">
                                 <AvatarImage
@@ -199,44 +202,22 @@ const Profile = () => {
                               </Avatar>
                             </div>
                           </div>
-
-                          {/* Enhanced Hover overlay */}
-                          <div className="absolute inset-0 flex items-center justify-center text-white bg-gradient-to-br from-blue-600/80 to-purple-600/80 opacity-0 group-hover:opacity-50 transition-all duration-300 rounded-full backdrop-blur-sm">
-                            <div className="text-center">
-                              <Camera className="inline-block mr-1" />
-                            </div>
-                          </div>
-
-                          {/* Loading overlay */}
-                          {uploadLoading && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full backdrop-blur-sm">
-                              <div className="text-center text-white">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
-                                <span className="text-xs font-medium">
-                                  Đang tải...
-                                </span>
-                              </div>
-                            </div>
-                          )}
-
                           {/* Status indicator */}
                           <div className="absolute -bottom-1 -right-1 bg-green-500 border-4 border-white rounded-full p-1.5 shadow-lg">
                             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
                           </div>
                         </div>
-
-                        {/* Hidden file input */}
-                        {!uploadLoading && (
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="hidden"
-                          />
-                        )}
                       </label>
                     </div>
+
+                    {openStoryDialog && (
+                      <StoryDialog
+                        open={openStoryDialog}
+                        setOpen={setOpenStoryDialog}
+                        images={userProfileImages}
+                        user={userInfo}
+                      />
+                    )}
 
                     {/* Enhanced Name and Location */}
                     <div className="mb-6">
@@ -253,6 +234,34 @@ const Profile = () => {
                             </span>
                           </div>
                         </div>
+                      )}
+
+                      <StoryDialog />
+
+                      {/* Upload Button below name */}
+                      <div className="flex justify-center mt-4">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            !uploadLoading && fileInputRef.current?.click()
+                          }
+                          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg shadow-lg transition-all duration-200 hover:scale-105 text-sm font-medium"
+                          disabled={uploadLoading}
+                        >
+                          <Camera className="w-4 h-4" />
+                          {uploadLoading ? "Đang tải..." : "Đổi ảnh đại diện"}
+                        </button>
+                      </div>
+
+                      {/* Hidden file input */}
+                      {!uploadLoading && (
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
                       )}
                     </div>
                   </div>
@@ -348,14 +357,18 @@ const Profile = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div className="transform hover:scale-105 transition-transform duration-200">
-                        <EditProfile
-                          userInfo={userInfo}
-                          onRefresh={fetchUserInfo}
-                        />
+                      <div className="p-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg shadow-lg">
+                        <div className="bg-white rounded-md">
+                          <EditProfile
+                            userInfo={userInfo}
+                            onRefresh={fetchUserInfo}
+                          />
+                        </div>
                       </div>
-                      <div className="transform hover:scale-105 transition-transform duration-200">
-                        <ChangePassword />
+                      <div className="p-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg shadow-lg">
+                        <div className="bg-white rounded-md">
+                          <ChangePassword />
+                        </div>
                       </div>
                     </div>
                   </div>

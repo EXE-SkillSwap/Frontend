@@ -1,4 +1,4 @@
-import instance from "@/api/axiosConfig";
+import instance from "@/services/axiosConfig";
 
 export const getConversations = async () => {
   return instance.get(`chat/current/conversations`);

@@ -1,4 +1,4 @@
-import instance from "@/api/axiosConfig";
+import instance from "@/services/axiosConfig";
 import axios from "axios";
 
 export const register = async (data) => {
@@ -36,4 +36,8 @@ export const uploadProfileImage = async (formData) => {
       "Content-Type": "multipart/form-data",
     },
   });
+};
+
+export const getProfileImageByUserId = async (userId) => {
+  return instance.get(`users/profile-images/${userId}`);
 };

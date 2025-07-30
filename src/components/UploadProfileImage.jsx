@@ -1,4 +1,3 @@
-import { uploadProfileImage } from "@/api/services/userService";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { uploadProfileImage } from "@/services/api/userService";
 import { ImageIcon, Upload, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";

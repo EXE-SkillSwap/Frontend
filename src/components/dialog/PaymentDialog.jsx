@@ -1,4 +1,4 @@
-import { cancelPayment } from "@/api/services/membershipService";
+import { cancelPayment } from "@/services/api/membershipService";
 import PaymentSucess from "@/components/payment/PaymentSucess";
 import PaymentSucessDialog from "@/components/payment/PaymentSucessDialog";
 import { Badge } from "@/components/ui/badge";

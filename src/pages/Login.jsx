@@ -1,4 +1,4 @@
-import { login } from "@/api/services/authService";
+import { login } from "@/services/api/authService";
 import LoginIllustration from "@/components/common/illustration/LoginIllustration";
 import CircleLoading from "@/components/common/loading/CircleLoading";
 import { Button } from "@/components/ui/button";

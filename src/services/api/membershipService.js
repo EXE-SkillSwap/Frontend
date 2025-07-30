@@ -1,4 +1,4 @@
-import instance from "@/api/axiosConfig";
+import instance from "@/services/axiosConfig";
 
 export const getMemberships = async () => {
   return instance.get("memberships");

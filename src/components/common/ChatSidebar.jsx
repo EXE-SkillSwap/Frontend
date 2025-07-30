@@ -1,4 +1,4 @@
-import { getUserProfile } from "@/api/services/userService";
+import { getUserProfile } from "@/services/api/userService";
 import CustomTooltip from "@/components/CustomTooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

@@ -1,20 +1,13 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { UserSkillsContext } from "@/pages/Profile";
 
 const ProfileSkillsCard = ({ userInfo }) => {
   const navigate = useNavigate();
-  const { skills } = useContext(UserSkillsContext);
 
   // Nếu context có kỹ năng, ưu tiên lấy từ context
   const processSkills = () => {
-    if (skills && skills.length > 0) {
-      return skills.map((s) => s.skillName).filter(Boolean);
-    }
     if (!userInfo?.skillTags) return [];
     return userInfo.skillTags
       .split("#")
@@ -63,24 +56,14 @@ const ProfileSkillsCard = ({ userInfo }) => {
                 <Star className="h-6 w-6 text-blue-500" />
               </div>
               <p className="text-sm text-gray-500 font-medium">
-                Chưa có kỹ năng nào được thêm
+                Chưa có kỹ năng sở thích nào được thêm
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Hãy cập nhật hồ sơ để thêm kỹ năng của bạn
+                Hãy cập nhật hồ sơ để thêm kỹ năng sở thích của bạn
               </p>
             </div>
           </div>
         )}
-        {/* Add Skill Button */}
-        <div className="pt-2">
-          <Button
-            onClick={() => navigate("/add-skill")}
-            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-2.5 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Thêm kỹ năng của bản thân
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );

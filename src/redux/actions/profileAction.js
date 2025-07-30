@@ -1,4 +1,4 @@
-import { getUserProfile } from "@/api/services/userService";
+import { getUserProfile } from "@/services/api/userService";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getProfile = createAsyncThunk(

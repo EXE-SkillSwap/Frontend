@@ -1,4 +1,4 @@
-import { getConversations } from "@/api/services/conversationsService";
+import { getConversations } from "@/services/api/conversationsService";
 import logo from "@/assets/newLogo.png"; // Adjust the path as necessary
 import ChatItem from "@/components/ChatItem";
 import ChatWindow from "@/components/ChatWindow";
