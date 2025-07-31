@@ -34,6 +34,7 @@ export function AddMembershipDialog({ onRefresh }) {
       price: 0,
       duration: 1,
       description: "",
+      features: "",
     },
   });
 
@@ -57,7 +58,12 @@ export function AddMembershipDialog({ onRefresh }) {
       <Form {...createMemberhipForm}>
         <form onSubmit={createMemberhipForm.handleSubmit(onSubmit)}>
           <DialogTrigger asChild>
-            <Button onClick={() => setOpen(true)}>Thêm gói thành viên</Button>
+            <Button
+              onClick={() => setOpen(true)}
+              className={"bg-purple-600 hover:bg-purple-700"}
+            >
+              Thêm gói thành viên
+            </Button>
           </DialogTrigger>
           {open && (
             <DialogContent className="sm:max-w-[425px]">
@@ -144,16 +150,35 @@ export function AddMembershipDialog({ onRefresh }) {
                     )}
                   />
                 </div>
+                <div className="grid gap-3">
+                  <FormField
+                    control={createMemberhipForm.control}
+                    name="features"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tính năng</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Nhập các tính năng, cách nhau bằng dấu chấm (.)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline">Hủy</Button>
                 </DialogClose>
                 <Button
                   type="submit"
+                  className={"bg-purple-600 hover:bg-purple-700"}
                   onClick={createMemberhipForm.handleSubmit(onSubmit)}
                 >
-                  Save changes
+                  Lưu
                 </Button>
               </DialogFooter>
             </DialogContent>

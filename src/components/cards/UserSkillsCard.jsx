@@ -1,15 +1,56 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, ExternalLink, Plus, Star } from "lucide-react";
-import { useState } from "react";
+import { getCoursesByCurrentUser } from "@/services/api/coursesService";
+import { ExternalLink, Plus, Star, Stars } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const skills = [];
 
 const UserSkillsCard = () => {
   const navigate = useNavigate();
+  const [skills, setSkills] = useState([]); // Replace with actual skills data fetching logic
   const [loading, setLoading] = useState(true);
+  const fetchUserCourses = async () => {
+    setLoading(true);
+    try {
+      const response = await getCoursesByCurrentUser(5, 0);
+      setSkills(response.data.content);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching user courses:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserCourses();
+  }, []);
+
+  const processCourseStatus = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "Chờ duyệt";
+      case "APPROVED":
+        return "Đã duyệt";
+      case "REJECTED":
+        return "Đã từ chối";
+      default:
+        return "Không xác định";
+    }
+  };
+
+  const processCourseStatusColor = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "bg-yellow-100 text-yellow-700";
+      case "APPROVED":
+        return "bg-green-100 text-green-700";
+      case "REJECTED":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
 
   return (
     <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
@@ -21,6 +62,14 @@ const UserSkillsCard = () => {
           <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             Khóa học và Kỹ năng
           </span>
+          <Button
+            variant="link"
+            size="sm"
+            className="ml-auto text-blue-600 hover:text-blue-700"
+            onClick={() => navigate("/my-courses")}
+          >
+            Xem tất cả
+          </Button>
         </CardTitle>
       </CardHeader>
       {skills.length === 0 ? (
@@ -31,10 +80,10 @@ const UserSkillsCard = () => {
                 <Star className="h-6 w-6 text-green-500" />
               </div>
               <p className="text-sm text-gray-500 font-medium">
-                Chưa có kỹ năng nào được thêm
+                Chưa có khoá học nào được thêm
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Hãy thêm kỹ năng đầu tiên của bạn
+                Hãy thêm khoá học đầu tiên của bạn
               </p>
             </div>
           </div>
@@ -50,7 +99,7 @@ const UserSkillsCard = () => {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-800 mb-1">
-                      {skill.skillName}
+                      {skill.courseName}
                     </h4>
                     {skill.description && (
                       <p className="text-sm text-gray-600 mb-2 line-clamp-2">
@@ -58,19 +107,34 @@ const UserSkillsCard = () => {
                       </p>
                     )}
                   </div>
+                  {/* them status */}
+                  <Badge className={processCourseStatusColor(skill.status)}>
+                    {processCourseStatus(skill.status)}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Stars className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-gray-700">
+                    {skill.rating ? skill.rating.toFixed(1) : "Chưa đánh giá"}
+                  </span>
+                  {skill.rating && (
+                    <span className="text-yellow-500">
+                      {"★".repeat(Math.floor(skill.rating))}
+                      {"☆".repeat(5 - Math.floor(skill.rating))}
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Badge className="bg-green-100 text-green-700 border-0">
-                      <DollarSign className="h-3 w-3 mr-1" />
-                      {skill.coursePrice?.toLocaleString("vi-VN")} VNĐ
+                      {skill.price?.toLocaleString("vi-VN")} VNĐ
                     </Badge>
                   </div>
-                  {skill.evidenceLink && (
+                  {skill.link && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => window.open(skill.evidenceLink, "_blank")}
+                      onClick={() => window.open(skill.link, "_blank")}
                       className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                     >
                       <ExternalLink className="h-4 w-4 mr-1" />

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getUserProfile } from "@/services/api/userService";
 import { logOut } from "@/utils/auth.utils";
-import { Crown, LogOut, User } from "lucide-react";
+import { BookOpen, Crown, LogOut, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -44,6 +44,11 @@ const UserPopover = () => {
       label: "Thành Viên",
       icon: <Crown className="mr-2 h-4 w-4" />,
       action: () => nav("/membership"),
+    },
+    {
+      label: "Khóa Học Của Tôi",
+      icon: <BookOpen className="mr-2 h-4 w-4" />,
+      action: () => nav("/my-courses"),
     },
     {
       label: "Đăng Xuất",

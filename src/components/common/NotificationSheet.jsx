@@ -82,16 +82,14 @@ const NotificationSheet = () => {
   const markAsRead = (id) => {
     setNotifications((prev) =>
       prev.map((notification) =>
-        notification.id === id
-          ? { ...notification, isRead: true }
-          : notification
+        notification.id === id ? { ...notification, read: true } : notification
       )
     );
   };
 
   const markAllAsRead = () => {
     setNotifications((prev) =>
-      prev.map((notification) => ({ ...notification, isRead: true }))
+      prev.map((notification) => ({ ...notification, read: true }))
     );
   };
 

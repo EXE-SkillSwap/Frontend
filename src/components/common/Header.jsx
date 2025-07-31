@@ -14,10 +14,6 @@ const navigation = [
   { name: "Diễn Đàn", href: "/forum", icon: Globe },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 const Header = () => {
   const [currentPath, setCurrentPath] = useState("/");
   const [scrolled, setScrolled] = useState(false);
@@ -36,11 +32,6 @@ const Header = () => {
     setCurrentPath(href);
     nav(href);
     setMobileMenuOpen(false);
-  };
-
-  const logOut = () => {
-    localStorage.clear();
-    nav("/login");
   };
 
   return (

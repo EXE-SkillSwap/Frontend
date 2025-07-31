@@ -22,6 +22,9 @@ const MembershipItem = ({ packageData, isPopular = false }) => {
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
   const nav = useNavigate();
+  const features = packageData?.features
+    .split(".")
+    .filter((feature) => feature.trim() !== "");
 
   const handleBuyMembership = async (id) => {
     if (isAuthenticated() === false) {
@@ -85,12 +88,12 @@ const MembershipItem = ({ packageData, isPopular = false }) => {
           </div>
 
           <div className="space-y-3">
-            {["Ưu đãi từ nền tảng"].map((feature, index) => (
+            {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
                 <div className="bg-purple-100 p-1 rounded-full">
                   <Check className="h-4 w-4 text-purple-600" />
                 </div>
-                <span className="text-sm">{feature}</span>
+                <span className="text-sm">{feature.trim()}</span>
               </div>
             ))}
           </div>

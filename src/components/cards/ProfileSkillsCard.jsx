@@ -17,6 +17,13 @@ const ProfileSkillsCard = ({ userInfo }) => {
 
   const skillList = processSkills();
 
+  const handleSkillClick = (skill) => {
+    window.open(
+      `https://www.google.com/search?q=${encodeURIComponent(skill)}`,
+      "_blank"
+    );
+  };
+
   return (
     <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Background decoration */}
@@ -43,7 +50,8 @@ const ProfileSkillsCard = ({ userInfo }) => {
             {skillList.map((skill, index) => (
               <Badge
                 key={index}
-                className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200/50 hover:from-blue-200 hover:to-indigo-200 transition-all duration-200 font-medium px-3 py-1.5 shadow-sm"
+                className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200/50 hover:from-blue-200 hover:to-indigo-200 transition-all duration-200 font-medium px-3 py-1.5 shadow-sm cursor-pointer"
+                onClick={() => handleSkillClick(skill)}
               >
                 {skill}
               </Badge>

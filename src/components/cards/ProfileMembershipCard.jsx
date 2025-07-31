@@ -1,10 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDateVN } from "@/utils/format";
 import { Calendar, Crown } from "lucide-react";
 import moment from "moment/moment";
+import { useNavigate } from "react-router-dom";
 
 const ProfileMembershipCard = ({ userMembership }) => {
+  const nav = useNavigate();
   return (
     <Card className="relative overflow-hidden border-l-0 shadow-lg bg-white">
       {/* Background decoration */}
@@ -99,7 +102,7 @@ const ProfileMembershipCard = ({ userMembership }) => {
                 </div>
                 <span className="text-sm text-gray-600 font-medium">
                   {userMembership?.startDate
-                    ? moment(userMembership?.startDate).format("DD/MM/YYYY")
+                    ? formatDateVN(userMembership?.startDate)
                     : "Chưa có"}
                 </span>
               </div>
@@ -122,7 +125,7 @@ const ProfileMembershipCard = ({ userMembership }) => {
                   }`}
                 >
                   {userMembership?.endDate
-                    ? moment(userMembership.endDate).format("DD/MM/YYYY")
+                    ? formatDateVN(userMembership?.endDate)
                     : "Chưa có"}
                 </span>
               </div>

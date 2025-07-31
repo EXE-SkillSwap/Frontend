@@ -11,14 +11,16 @@ const courses = [
   {
     id: 1,
     title: "Bí kíp tán gái đỉnh cao",
-    description: "Từ FA thành cao thủ thả thính, thực hành ngay trên mạng xã hội!",
+    description:
+      "Từ FA thành cao thủ thả thính, thực hành ngay trên mạng xã hội!",
     image:
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
   },
   {
     id: 2,
     title: "Ảo thuật cơ bản cho người mới",
-    description: "Học những trick ảo thuật đơn giản để gây ấn tượng với bạn bè.",
+    description:
+      "Học những trick ảo thuật đơn giản để gây ấn tượng với bạn bè.",
     image:
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
   },
@@ -137,7 +139,8 @@ const HomePage = () => {
           Các kĩ năng trao đổi cùng nhau
         </h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-10 text-lg">
-          Khám phá các lộ trình học hàng đầu được chọn lọc kỹ lưỡng cho sự phát triển của bạn.
+          Khám phá các lộ trình học hàng đầu được chọn lọc kỹ lưỡng cho sự phát
+          triển của bạn.
         </p>
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
           {courses.map((course, index) => (
@@ -158,7 +161,9 @@ const HomePage = () => {
                 <h3 className="text-xl font-bold mb-2 text-purple-900 group-hover:text-indigo-600 transition-colors">
                   {course.title}
                 </h3>
-                <p className="text-gray-600 text-base mb-4">{course.description}</p>
+                <p className="text-gray-600 text-base mb-4">
+                  {course.description}
+                </p>
                 <button className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 text-white font-semibold shadow-md hover:from-pink-600 hover:to-indigo-700 transition-all">
                   Xem chi tiết
                 </button>
@@ -200,11 +205,16 @@ const HomePage = () => {
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           {steps.map(({ step, title, description }) => (
-            <div key={step} className="p-8 bg-white rounded-3xl shadow-xl flex flex-col items-center hover:scale-105 transition-all border-2 border-purple-100 hover:border-indigo-200">
+            <div
+              key={step}
+              className="p-8 bg-white rounded-3xl shadow-xl flex flex-col items-center hover:scale-105 transition-all border-2 border-purple-100 hover:border-indigo-200"
+            >
               <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 text-white text-3xl font-bold mb-4 shadow-lg">
                 {step}
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-purple-900">{title}</h3>
+              <h3 className="text-xl font-semibold mb-2 text-purple-900">
+                {title}
+              </h3>
               <p className="text-gray-600 text-base">{description}</p>
             </div>
           ))}
@@ -216,9 +226,12 @@ const HomePage = () => {
         ref={newsletterRef}
         className="py-16 px-6 bg-gradient-to-b from-violet-600 to-indigo-600 text-white text-center rounded-3xl mx-2 mt-12 shadow-2xl"
       >
-        <h2 className="text-3xl font-extrabold mb-4 drop-shadow-lg">Cập Nhật Thông Tin</h2>
+        <h2 className="text-3xl font-extrabold mb-4 drop-shadow-lg">
+          Cập Nhật Thông Tin
+        </h2>
         <p className="max-w-xl mx-auto mb-8 text-lg">
-          Đăng ký nhận bản tin của chúng tôi để nhận các khóa học và ưu đãi mới nhất.
+          Đăng ký nhận bản tin của chúng tôi để nhận các khóa học và ưu đãi mới
+          nhất.
         </p>
         <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
           <input
