@@ -133,7 +133,6 @@ const NotificationSheet = () => {
     };
 
     const handleData = (data) => {
-      console.log(data);
       setNotifications((prev) => {
         const newNotification = JSON.parse(data);
         if (prev.some((n) => n.id === newNotification.id)) {

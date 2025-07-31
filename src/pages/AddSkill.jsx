@@ -86,14 +86,13 @@ const AddSkill = () => {
     }
     setIsSubmitting(true);
     try {
-      console.log(skills);
       const response = await addCourses(skills);
       console.log(response);
-      toast.success("Thêm kỹ năng thành công!");
-      // navigate("/profile");
+      toast.success("Thêm khóa học thành công!");
+      navigate("/profile");
     } catch (error) {
-      if (error.response?.data?.statusCode === "3003") {
-        toast.error(error.response?.data?.message);
+      if (error.response?.data?.errorCode === 3003) {
+        toast.info(error.response?.data?.message);
         setNotMembershipDialogOpen(true);
       } else {
         toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
@@ -104,7 +103,7 @@ const AddSkill = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 mt-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
