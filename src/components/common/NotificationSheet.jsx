@@ -11,7 +11,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { getNotifications } from "@/services/api/notificationService";
+import {
+  getNotifications,
+  markAllNotificationsAsRead,
+  markNotificationAsRead,
+} from "@/services/api/notificationService";
 import { playNotificationSound } from "@/utils/audito";
 import { formatDateAgo } from "@/utils/format";
 import { Client } from "@stomp/stompjs";
@@ -29,57 +33,16 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 const NotificationSheet = () => {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const currentUserId = jwtDecode(localStorage.getItem("token")).sub;
 
-  const getNotificationIcon = (type) => {
-    const iconClass = "w-4 h-4";
-    switch (type) {
-      case "message":
-        return <MessageSquare className={iconClass} />;
-      case "like":
-        return <Heart className={iconClass} />;
-      case "follow":
-        return <User className={iconClass} />;
-      case "success":
-        return <CheckCircle className={iconClass} />;
-      case "warning":
-        return <AlertTriangle className={iconClass} />;
-      case "error":
-        return <AlertCircle className={iconClass} />;
-      case "info":
-      default:
-        return <Info className={iconClass} />;
-    }
-  };
-
-  const getNotificationColor = (type) => {
-    switch (type) {
-      case "message":
-        return "text-blue-600 bg-blue-50";
-      case "like":
-        return "text-pink-600 bg-pink-50";
-      case "follow":
-        return "text-purple-600 bg-purple-50";
-      case "success":
-        return "text-green-600 bg-green-50";
-      case "warning":
-        return "text-yellow-600 bg-yellow-50";
-      case "error":
-        return "text-red-600 bg-red-50";
-      case "info":
-      default:
-        return "text-gray-600 bg-gray-50";
-    }
-  };
-
-  const markAsRead = (id) => {
+  const markAsRead = async (id) => {
+    await markNotificationAsRead(id);
     setNotifications((prev) =>
       prev.map((notification) =>
         notification.id === id ? { ...notification, read: true } : notification
@@ -87,15 +50,10 @@ const NotificationSheet = () => {
     );
   };
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
+    await markAllNotificationsAsRead();
     setNotifications((prev) =>
       prev.map((notification) => ({ ...notification, read: true }))
-    );
-  };
-
-  const deleteNotification = (id) => {
-    setNotifications((prev) =>
-      prev.filter((notification) => notification.id !== id)
     );
   };
 
@@ -162,7 +120,7 @@ const NotificationSheet = () => {
             size="icon"
             className="relative w-10 h-10 rounded-full hover:bg-gray-100/50 transition-all duration-300 group"
           >
-            <Bell className="w-5 h-5 text-gray-600 group-hover:text-gray-900 transition-colors" />
+            <Bell className="w-5 h-5 text-gray-200 group-hover:text-gray-900 transition-colors" />
             {unreadCount > 0 && (
               <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 bg-gradient-to-r from-red-500 to-pink-500 border-2 border-white text-xs">
                 {unreadCount > 9 ? "9+" : unreadCount}
@@ -269,18 +227,6 @@ const NotificationSheet = () => {
                                   <Check className="w-4 h-4 text-green-600" />
                                 </Button>
                               )}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteNotification(notification.id);
-                                }}
-                                className="w-8 h-8 p-0 hover:bg-red-100"
-                                title="Xóa thông báo"
-                              >
-                                <X className="w-4 h-4 text-red-600" />
-                              </Button>
                             </div>
                           </div>
 

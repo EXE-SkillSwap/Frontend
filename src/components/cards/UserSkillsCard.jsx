@@ -115,9 +115,9 @@ const UserSkillsCard = () => {
                 <div className="flex items-center gap-2 mb-2">
                   <Stars className="h-4 w-4 text-green-500" />
                   <span className="text-sm text-gray-700">
-                    {skill.rating ? skill.rating.toFixed(1) : "Chưa đánh giá"}
+                    {skill.rating > 0 ? "" : "Chưa đánh giá"}
                   </span>
-                  {skill.rating && (
+                  {skill.rating > 0 && (
                     <span className="text-yellow-500">
                       {"★".repeat(Math.floor(skill.rating))}
                       {"☆".repeat(5 - Math.floor(skill.rating))}

@@ -220,36 +220,6 @@ const HomePage = () => {
           ))}
         </div>
       </section>
-
-      {/* Phần Đăng Ký Bản Tin */}
-      <section
-        ref={newsletterRef}
-        className="py-16 px-6 bg-gradient-to-b from-violet-600 to-indigo-600 text-white text-center rounded-3xl mx-2 mt-12 shadow-2xl"
-      >
-        <h2 className="text-3xl font-extrabold mb-4 drop-shadow-lg">
-          Cập Nhật Thông Tin
-        </h2>
-        <p className="max-w-xl mx-auto mb-8 text-lg">
-          Đăng ký nhận bản tin của chúng tôi để nhận các khóa học và ưu đãi mới
-          nhất.
-        </p>
-        <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-          <input
-            type="email"
-            placeholder="Địa chỉ email của bạn"
-            className="p-4 rounded-full text-gray-800 flex-grow bg-white shadow-md border-0"
-          />
-          <button
-            type="button"
-            className="bg-gradient-to-r from-amber-400 to-pink-400 hover:from-amber-500 hover:to-pink-500 rounded-full px-8 py-4 font-bold text-purple-900 flex items-center gap-2 shadow-lg transition-all"
-            onClick={() => {
-              toast.info("Comming soon...");
-            }}
-          >
-            <Send className="w-5 h-5" /> Đăng Ký
-          </button>
-        </form>
-      </section>
     </main>
   );
 };

@@ -67,12 +67,12 @@ const Login = () => {
           toast.success("Đăng nhập thành công với quyền quản trị!");
         }
         if (decodedToken?.scope === "USER") {
-          nav("/");
-          toast.success("Đăng nhập thành công!");
+          if (response.data?.firstLogin) {
+            nav("/skills");
+          } else {
+            nav("/");
+          }
         }
-      }
-      if (response.data?.firstLogin) {
-        nav("/skills");
       }
       setIsLoading(false);
     } catch (error) {
