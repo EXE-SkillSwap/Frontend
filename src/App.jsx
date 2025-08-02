@@ -21,6 +21,7 @@ import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import EnhancedChatInterface from "./pages/EnhancedChatInterface";
 import ForumPage from "./pages/ForumPage";
+import GoogleCallback from "@/pages/GoogleCallback";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,6 +46,10 @@ function App() {
     {
       path: "/chats",
       element: <EnhancedChatInterface />,
+    },
+    {
+      path: "/auth",
+      element: <GoogleCallback />,
     },
     {
       path: "/",

@@ -1,4 +1,3 @@
-import { login } from "@/services/api/authService";
 import LoginIllustration from "@/components/common/illustration/LoginIllustration";
 import CircleLoading from "@/components/common/loading/CircleLoading";
 import { Button } from "@/components/ui/button";
@@ -13,12 +12,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { loginSchema } from "@/schemas/login.schema";
+import { login } from "@/services/api/authService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { jwtDecode } from "jwt-decode";
 import { EyeClosedIcon, EyeIcon, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -83,6 +84,17 @@ const Login = () => {
       );
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    const callbackUrl = import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI;
+    const authUrl = import.meta.env.VITE_GOOGLE_AUTH_URI;
+    const googleClientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID;
+
+    const targetUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
+      callbackUrl
+    )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
+    window.location.href = targetUrl;
   };
 
   return (
@@ -194,13 +206,58 @@ const Login = () => {
                     <motion.div variants={itemVariants}>
                       <Button
                         type="submit"
-                        className="w-full bg-[#6366F1] hover:bg-[#6366F1]/90 text-white transition-all duration-200 cursor-pointer"
+                        className="group relative w-full overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] cursor-pointer"
                       >
-                        <LogIn className="mr-2" />
-                        Đăng Nhập
+                        <div className="absolute inset-0 overflow-hidden">
+                          <div className="absolute top-2 left-4 w-1 h-1 bg-white/40 rounded-full animate-pulse delay-100" />
+                          <div className="absolute top-4 right-6 w-1.5 h-1.5 bg-white/30 rounded-full animate-pulse delay-300" />
+                          <div className="absolute bottom-3 left-8 w-1 h-1 bg-white/50 rounded-full animate-pulse delay-500" />
+                        </div>
+
+                        {/* Moving gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+
+                        <div className="relative flex items-center justify-center space-x-3">
+                          <LogIn className="w-5 h-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" />
+                          <span className="text-lg font-semibold tracking-wide">
+                            Đăng Nhập
+                          </span>
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            ✨
+                          </div>
+                        </div>
                       </Button>
                     </motion.div>
                   )}
+                  <motion.div
+                    variants={itemVariants}
+                    className="flex items-center justify-center space-x-2"
+                  >
+                    <Button
+                      type="button"
+                      onClick={handleGoogleLogin}
+                      className="group relative w-full overflow-hidden bg-white/90 backdrop-blur-sm border border-gray-200 hover:border-gray-400 text-gray-700 hover:text-gray-900 shadow-lg hover:shadow-2xl transition-all duration-400 transform hover:scale-105 py-3.5 px-6 rounded-2xl"
+                    >
+                      {/* Smart gradient that follows Google's brand */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-red-50 opacity-0 group-hover:opacity-80 transition-opacity duration-400" />
+
+                      {/* Animated underline */}
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-red-500 group-hover:w-16 transition-all duration-400 ease-out rounded-full" />
+
+                      <div className="relative flex items-center justify-center space-x-3">
+                        <div className="relative">
+                          <FcGoogle className="w-5 h-5 group-hover:scale-125 transition-transform duration-300 drop-shadow-sm" />
+
+                          {/* Pulse ring */}
+                          <div className="absolute -inset-1 border-2 border-blue-400/20 rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-500" />
+                        </div>
+
+                        <span className="font-medium text-base">
+                          Đăng Nhập Google
+                        </span>
+                      </div>
+                    </Button>
+                  </motion.div>
                 </form>
               </Form>
 
