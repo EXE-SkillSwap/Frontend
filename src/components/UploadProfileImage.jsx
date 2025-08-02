@@ -10,11 +10,23 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { uploadImage } from "@/services/api/cloudinaryService";
 import { uploadProfileImage } from "@/services/api/userService";
-import { ImageIcon, Upload, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  ImageIcon,
+  Loader2,
+  Upload,
+  X,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+
+const cloudinary_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
 // Constants
 const MAX_IMAGES = 5;
@@ -80,9 +92,11 @@ const UploadProfileImage = () => {
   const [images, setImages] = useState([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [errors, setErrors] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState({});
   const fileInputRef = useRef(null);
 
   // Memoized calculations
@@ -127,11 +141,20 @@ const UploadProfileImage = () => {
 
         try {
           const preview = URL.createObjectURL(file);
+          const imageId = `${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 9)}`;
           newImages.push({
             file,
             preview,
-            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            id: imageId,
           });
+
+          // Initialize upload status
+          setUploadStatus((prev) => ({
+            ...prev,
+            [imageId]: { status: "pending", progress: 0 },
+          }));
         } catch (error) {
           fileErrors.push(`${file.name}: Failed to create preview`);
         }
@@ -139,7 +162,6 @@ const UploadProfileImage = () => {
 
       if (fileErrors.length > 0) {
         setErrors(fileErrors);
-        // Clear errors after 5 seconds
         setTimeout(() => setErrors([]), 5000);
       }
 
@@ -176,16 +198,22 @@ const UploadProfileImage = () => {
         const updated = prev.filter((img) => img.id !== id);
 
         if (imageToRemove) {
-          // Clean up the specific image URL
           URL.revokeObjectURL(imageToRemove.preview);
         }
 
         return updated;
       });
 
+      // Remove upload status
+      setUploadStatus((prev) => {
+        const newStatus = { ...prev };
+        delete newStatus[id];
+        return newStatus;
+      });
+
       // Reset preview index if current image is removed or out of bounds
       setCurrentImageIndex((currentIndex) => {
-        const newLength = images.length - 1; // After removal
+        const newLength = images.length - 1;
         if (newLength === 0) return 0;
         return currentIndex >= newLength ? newLength - 1 : currentIndex;
       });
@@ -193,41 +221,106 @@ const UploadProfileImage = () => {
     [images.length]
   );
 
+  // Fixed upload function with proper async handling
   const handleUpload = useCallback(async () => {
     if (!hasImages) return;
 
     setUploading(true);
     setErrors([]);
+    setUploadProgress(0);
+
+    const uploadedImages = [];
+    const uploadErrors = [];
 
     try {
-      // Simulate API call - replace with actual upload logic
-      //   await new Promise((resolve) => setTimeout(resolve, 2000));
-      const formData = new FormData();
-      // images.forEach((image) => {
-      //   formData.append("images", image);
-      images.forEach((img) => {
-        formData.append("files", img.file);
-      });
+      // Sequential upload with progress tracking
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
 
-      const response = await uploadProfileImage(formData);
+        // Update individual image status
+        setUploadStatus((prev) => ({
+          ...prev,
+          [img.id]: { status: "uploading", progress: 0 },
+        }));
 
-      if (response) {
-        images.forEach((img) => {
-          if (img.preview) {
-            URL.revokeObjectURL(img.preview);
+        try {
+          const formData = new FormData();
+          formData.append("file", img.file);
+          formData.append("upload_preset", "demo-upload-unsigned");
+          formData.append("cloud_name", cloudinary_name);
+
+          const response = await uploadImage(formData);
+
+          if (response.data?.secure_url) {
+            uploadedImages.push({
+              imageUrl: response.data.secure_url,
+              publicId: response.data.public_id,
+            });
+
+            // Update success status
+            setUploadStatus((prev) => ({
+              ...prev,
+              [img.id]: { status: "success", progress: 100 },
+            }));
+          } else {
+            throw new Error("No secure URL returned");
           }
-        });
-        setImages([]);
-        setOpen(false);
-        toast.success(response.data);
+        } catch (error) {
+          console.error(`Failed to upload ${img.file.name}:`, error);
+          uploadErrors.push(`${img.file.name}: ${error.message}`);
+
+          // Update error status
+          setUploadStatus((prev) => ({
+            ...prev,
+            [img.id]: { status: "error", progress: 0 },
+          }));
+        }
+
+        // Update overall progress
+        setUploadProgress(Math.round(((i + 1) / images.length) * 100));
+      }
+
+      // Save to backend if we have successful uploads
+      if (uploadedImages.length > 0) {
+        try {
+          const response = await uploadProfileImage(uploadedImages);
+
+          if (response) {
+            toast.success(
+              `Hoàn tất tải lên ${uploadedImages.length} ảnh vào hồ sơ!`
+            );
+            setOpen(false); // Close dialog on success
+          } else {
+            throw new Error(response.message || "Không thể lưu vào hồ sơ");
+          }
+        } catch (error) {
+          console.error("Failed to save to backend:", error);
+          setErrors((prev) => [...prev, " Không thể lưu ảnh vào hồ sơ"]);
+        }
+      }
+
+      // Show upload errors if any
+      if (uploadErrors.length > 0) {
+        setErrors(uploadErrors);
+      }
+
+      // Show summary
+      if (uploadedImages.length > 0 && uploadErrors.length > 0) {
+        toast.info(
+          `${uploadedImages.length} ảnh đã tải lên, ${uploadErrors.length} ảnh thất bại`
+        );
+      } else if (uploadErrors.length === images.length) {
+        toast.error("Tất cả các lần tải lên đều thất bại");
       }
     } catch (error) {
-      console.error("Upload failed:", error);
-      setErrors(["Upload failed. Please try again."]);
+      console.error("Upload process failed:", error);
+      setErrors(["Quá trình tải lên thất bại. Vui lòng thử lại."]);
+      toast.error("Quá trình tải lên thất bại");
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
-  }, [hasImages, images]);
+  }, [hasImages, images, cloudinary_name]);
 
   const handleOpenChange = useCallback(
     (newOpen) => {
@@ -243,6 +336,8 @@ const UploadProfileImage = () => {
         setPreviewOpen(false);
         setErrors([]);
         setCurrentImageIndex(0);
+        setUploadProgress(0);
+        setUploadStatus({});
       }
     },
     [images]
@@ -283,7 +378,6 @@ const UploadProfileImage = () => {
   // Cleanup effect for component unmount
   useEffect(() => {
     return () => {
-      // Only cleanup on component unmount, not on every render
       images.forEach((img) => {
         if (img.preview) {
           URL.revokeObjectURL(img.preview);
@@ -297,13 +391,16 @@ const UploadProfileImage = () => {
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           <Button variant="outline" className="w-full cursor-pointer">
-            <Upload className="h-4 w-4" />
+            <Upload className="h-4 w-4 mr-2" />
             Ảnh cá nhân
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-auto">
           <DialogHeader>
-            <DialogTitle>Tải ảnh cá nhân</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <ImageIcon className="h-5 w-5" />
+              Tải ảnh cá nhân
+            </DialogTitle>
             <DialogDescription>
               Chọn tối đa {MAX_IMAGES} ảnh để tải lên. Kéo và thả hoặc nhấp để
               chọn ảnh. Định dạng được hỗ trợ: JPEG, PNG, GIF, WebP. Kích thước
@@ -314,7 +411,7 @@ const UploadProfileImage = () => {
           <div className="space-y-4">
             {/* Error Display */}
             {errors.length > 0 && (
-              <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
+              <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20">
                 <ul className="list-disc list-inside space-y-1">
                   {errors.map((error, index) => (
                     <li key={index}>{error}</li>
@@ -323,13 +420,24 @@ const UploadProfileImage = () => {
               </div>
             )}
 
+            {/* Upload Progress */}
+            {uploading && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Đang tải lên...</span>
+                  <span>{uploadProgress}%</span>
+                </div>
+                <Progress value={uploadProgress} className="h-2" />
+              </div>
+            )}
+
             {/* Upload Area */}
             <div
               className={cn(
-                "border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer",
+                "border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 cursor-pointer",
                 isDragOver
-                  ? "border-primary bg-primary/5"
-                  : "border-muted-foreground/25",
+                  ? "border-primary bg-primary/5 scale-105"
+                  : "border-muted-foreground/25 hover:border-muted-foreground/50",
                 isMaxImagesReached && "opacity-50 pointer-events-none"
               )}
               onDrop={handleDrop}
@@ -350,11 +458,12 @@ const UploadProfileImage = () => {
               <div className="space-y-2">
                 <p className="text-sm font-medium">
                   {isMaxImagesReached
-                    ? `Maximum ${MAX_IMAGES} images reached`
+                    ? `Đã đạt tối đa ${MAX_IMAGES} ảnh`
                     : "Thả ảnh vào đây hoặc nhấp để duyệt"}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {images.length}/{MAX_IMAGES} ảnh đã chọn
+                  {remainingSlots > 0 && ` • Còn lại ${remainingSlots} slot`}
                 </p>
               </div>
             </div>
@@ -370,74 +479,174 @@ const UploadProfileImage = () => {
 
             {/* Image Previews */}
             {hasImages && (
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Chọn ảnh</Label>
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Ảnh đã chọn</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {images.map((image, index) => (
-                    <div key={image.id} className="relative group">
-                      <div
-                        className="aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer transition-transform hover:scale-105"
-                        onClick={() => openPreview(index)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            openPreview(index);
-                          }
-                        }}
-                        aria-label={`Preview image ${index + 1}: ${
-                          image.file.name
-                        }`}
-                      >
-                        <img
-                          src={image.preview}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.src = "/placeholder.svg";
+                  {images.map((image, index) => {
+                    const status = uploadStatus[image.id];
+                    return (
+                      <div key={image.id} className="relative group">
+                        <div
+                          className="aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-primary/20"
+                          onClick={() => openPreview(index)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              openPreview(index);
+                            }
                           }}
-                        />
+                          aria-label={`Preview image ${index + 1}: ${
+                            image.file.name
+                          }`}
+                        >
+                          <img
+                            src={image.preview}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = "/placeholder.svg";
+                            }}
+                          />
+
+                          {/* Status overlay */}
+                          {status && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                              {status.status === "uploading" && (
+                                <Loader2 className="h-6 w-6 text-white animate-spin" />
+                              )}
+                              {status.status === "success" && (
+                                <div className="h-6 w-6 bg-green-500 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xs">✓</span>
+                                </div>
+                              )}
+                              {status.status === "error" && (
+                                <div className="h-6 w-6 bg-red-500 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xs">✗</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Remove button */}
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeImage(image.id);
+                          }}
+                          disabled={uploading}
+                          aria-label={`Remove ${image.file.name}`}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+
+                        {/* Preview button */}
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="absolute -top-2 -left-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openPreview(index);
+                          }}
+                          aria-label={`Preview ${image.file.name}`}
+                        >
+                          <Eye className="h-3 w-3" />
+                        </Button>
+
+                        <p
+                          className="text-xs text-muted-foreground mt-1 truncate"
+                          title={image.file.name}
+                        >
+                          {image.file.name}
+                        </p>
                       </div>
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeImage(image.id);
-                        }}
-                        aria-label={`Remove ${image.file.name}`}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                      <p
-                        className="text-xs text-muted-foreground mt-1 truncate"
-                        title={image.file.name}
-                      >
-                        {image.file.name}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={uploading}
+            >
+              Hủy
             </Button>
             <Button onClick={handleUpload} disabled={!hasImages || uploading}>
-              {uploading
-                ? "Đang tải lên..."
-                : `Lưu ${images.length} tấm ảnh${
-                    images.length !== 1 ? "s" : ""
-                  }`}
+              {uploading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Đang tải lên... {uploadProgress}%</span>
+                </div>
+              ) : (
+                `Tải lên ${images.length} ảnh`
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Image Preview Modal */}
+      {previewOpen && hasImages && (
+        <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+            <div className="relative">
+              <img
+                src={images[currentImageIndex]?.preview}
+                alt={`Preview ${currentImageIndex + 1}`}
+                className="w-full h-auto max-h-[80vh] object-contain"
+                {...swipeHandlers}
+              />
+
+              {/* Navigation arrows */}
+              {images.length > 1 && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white hover:bg-black/70"
+                    onClick={prevImage}
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white hover:bg-black/70"
+                    onClick={nextImage}
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </Button>
+                </>
+              )}
+
+              {/* Image counter */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {currentImageIndex + 1} / {images.length}
+              </div>
+
+              {/* Close button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 bg-black/50 text-white hover:bg-black/70"
+                onClick={() => setPreviewOpen(false)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

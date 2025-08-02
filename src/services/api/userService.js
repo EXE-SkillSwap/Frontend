@@ -30,12 +30,8 @@ export const getUserToFindFriends = async (page, size = 10) => {
   return instance.get(`users/find-friends?page=${page}&size=${size}`);
 };
 
-export const uploadProfileImage = async (formData) => {
-  return instance.post("users/upload-profile-images", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export const uploadProfileImage = async (body) => {
+  return instance.post("users/upload-profile-images", body);
 };
 
 export const getProfileImageByUserId = async (userId) => {
