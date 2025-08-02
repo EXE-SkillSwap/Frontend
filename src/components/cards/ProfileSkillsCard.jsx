@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -64,11 +65,17 @@ const ProfileSkillsCard = ({ userInfo }) => {
                 <Star className="h-6 w-6 text-blue-500" />
               </div>
               <p className="text-sm text-gray-500 font-medium">
-                Chưa có kỹ năng sở thích nào được thêm
+                Chưa có sở thích nào được thêm
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Hãy cập nhật hồ sơ để thêm kỹ năng sở thích của bạn
+                Hãy cập nhật hồ sơ để thêm sở thích của bạn
               </p>
+              <Button
+                className="mt-4 bg-gradient-to-l from-blue-500 via-cyan-500 to-blue-400 text-white"
+                onClick={() => navigate("/skills")}
+              >
+                Thêm sở thích
+              </Button>
             </div>
           </div>
         )}
