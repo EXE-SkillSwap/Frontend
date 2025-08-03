@@ -20,34 +20,32 @@ import { playNotificationSound } from "@/utils/audito";
 import { formatDateAgo } from "@/utils/format";
 import { Client } from "@stomp/stompjs";
 import { jwtDecode } from "jwt-decode";
-import {
-  AlertCircle,
-  AlertTriangle,
-  Bell,
-  Check,
-  CheckCircle,
-  Heart,
-  Info,
-  MessageSquare,
-  User,
-  X,
-} from "lucide-react";
+import { Bell, Check } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const NotificationSheet = () => {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const unreadCount = notifications.filter((n) => !n.read).length;
-
+  const nav = useNavigate();
   const currentUserId = jwtDecode(localStorage.getItem("token")).sub;
 
-  const markAsRead = async (id) => {
-    await markNotificationAsRead(id);
+  const markAsRead = async (notification) => {
+    await markNotificationAsRead(notification.id);
     setNotifications((prev) =>
       prev.map((notification) =>
         notification.id === id ? { ...notification, read: true } : notification
       )
     );
+  };
+
+  const handleNotificationClick = (notification) => {
+    if (!notification.read) {
+      markAsRead(notification);
+    }
+    nav(notification.url);
+    setOpen(false);
   };
 
   const markAllAsRead = async () => {
@@ -120,7 +118,7 @@ const NotificationSheet = () => {
             size="icon"
             className="relative w-10 h-10 rounded-full hover:bg-gray-100/50 transition-all duration-300 group"
           >
-            <Bell className="w-5 h-5 text-gray-200 group-hover:text-gray-900 transition-colors" />
+            <Bell className="w-7 h-7 text-purple-950 group-hover:text-gray-900 transition-colors" />
             {unreadCount > 0 && (
               <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 bg-gradient-to-r from-red-500 to-pink-500 border-2 border-white text-xs">
                 {unreadCount > 9 ? "9+" : unreadCount}
@@ -178,9 +176,7 @@ const NotificationSheet = () => {
                           ? "bg-blue-50/30 border-l-4 border-l-indigo-400"
                           : ""
                       }`}
-                      onClick={() =>
-                        !notification.read && markAsRead(notification.id)
-                      }
+                      onClick={() => handleNotificationClick(notification)}
                     >
                       <div className="flex items-start space-x-3">
                         {/* Avatar or Icon */}

@@ -99,7 +99,7 @@ const Header = () => {
                         className={`relative px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-500 group overflow-hidden ${
                           isActive
                             ? "text-white shadow-lg shadow-purple-500/25"
-                            : "text-gray-200 hover:text-gray-900"
+                            : "text-purple-950 hover:text-gray-900"
                         }`}
                         style={{ animationDelay: `${index * 100}ms` }}
                       >

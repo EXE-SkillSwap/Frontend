@@ -29,6 +29,7 @@ const emptySkill = () => ({
   price: "",
   link: "",
   description: "",
+  bannerUrl: "",
 });
 
 const AddSkill = () => {
@@ -83,6 +84,14 @@ const AddSkill = () => {
         toast.error(`Vui lòng nhập URL hợp lệ cho dòng ${i + 1}`);
         return;
       }
+      if (!s.description.trim()) {
+        toast.error(`Vui lòng nhập mô tả kỹ năng cho dòng ${i + 1}`);
+        return;
+      }
+      if (s.bannerUrl && !validateUrl(s.bannerUrl)) {
+        toast.error(`Vui lòng nhập URL hợp lệ cho hình ảnh dòng ${i + 1}`);
+        return;
+      }
     }
     setIsSubmitting(true);
     try {
@@ -125,12 +134,8 @@ const AddSkill = () => {
               <Plus className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Thêm Kỹ Năng Mới
+              Thêm Khóa Học Mới
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Bạn có thể thêm nhiều kỹ năng cùng lúc. Mỗi kỹ năng cần tên, giá
-              và link bằng chứng riêng.
-            </p>
           </div>
         </div>
 
@@ -139,10 +144,10 @@ const AddSkill = () => {
           <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-2xl font-bold text-gray-800">
-                Thông Tin Kỹ Năng
+                Thông Tin Khóa Học
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Điền đầy đủ thông tin cho từng kỹ năng
+                Điền đầy đủ thông tin cho từng khóa học
               </CardDescription>
             </CardHeader>
 
@@ -266,6 +271,39 @@ const AddSkill = () => {
                         Mô tả sẽ giúp người khác hiểu rõ hơn về khả năng của bạn
                       </p>
                     </div>
+                    {/* upload Banner image */}
+                    <div className="space-y-2 mt-4">
+                      <Label
+                        htmlFor={`bannerUrl-${idx}`}
+                        className="text-sm font-semibold text-gray-700"
+                      >
+                        Hình Ảnh Banner (Tùy chọn)
+                      </Label>
+                      <Input
+                        id={`bannerUrl-${idx}`}
+                        name="bannerUrl"
+                        type="url"
+                        placeholder="https://example.com/banner.jpg"
+                        value={skill.bannerUrl}
+                        onChange={(e) => handleInputChange(idx, e)}
+                        className="border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                      <p className="text-xs text-gray-500">
+                        Bạn có thể thêm hình ảnh đại diện cho kỹ năng này
+                      </p>
+                      {skill.bannerUrl && (
+                        <img
+                          src={skill.bannerUrl}
+                          alt={`Banner for ${skill.title}`}
+                          className="mt-2 h-32 w-32 object-cover rounded-md"
+                        />
+                      )}
+                      {skill.bannerUrl && !validateUrl(skill.bannerUrl) && (
+                        <p className="text-xs text-red-500">
+                          Vui lòng nhập URL hợp lệ cho hình ảnh
+                        </p>
+                      )}
+                    </div>
                   </div>
                 ))}
                 <div className="flex justify-center">
@@ -275,7 +313,7 @@ const AddSkill = () => {
                     onClick={handleAddRow}
                     className="flex items-center gap-2 mt-2"
                   >
-                    <Plus className="h-4 w-4" /> Thêm
+                    <Plus className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="flex gap-4 pt-4">
@@ -301,7 +339,7 @@ const AddSkill = () => {
                     ) : (
                       <div className="flex items-center gap-2">
                         <Plus className="h-4 w-4" />
-                        Thêm Kỹ Năng
+                        Thêm
                       </div>
                     )}
                   </Button>

@@ -22,6 +22,7 @@ import { createBrowserRouter } from "react-router-dom";
 import EnhancedChatInterface from "./pages/EnhancedChatInterface";
 import ForumPage from "./pages/ForumPage";
 import GoogleCallback from "@/pages/GoogleCallback";
+import MyCourses from "@/pages/MyCourses";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -99,6 +100,10 @@ function App() {
         {
           path: "/forum",
           element: <ForumPage />,
+        },
+        {
+          path: "/my-courses",
+          element: <MyCourses />,
         },
       ],
     },
