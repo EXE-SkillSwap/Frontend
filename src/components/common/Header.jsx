@@ -4,12 +4,12 @@ import UserPopover from "@/components/common/UserPopover";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { isAuthenticated } from "@/utils/auth.utils";
-import { Globe, Menu, MessageCircle, Users, Sparkles } from "lucide-react";
+import { Blocks, Globe, Menu, MessageCircle, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
-  { name: "Bạn Bè", href: "/friends", icon: Users },
+  { name: "Khóa Học", href: "/courses", icon: Blocks },
   { name: "Trò Chuyện", href: "/chats", icon: MessageCircle },
   { name: "Diễn Đàn", href: "/forum", icon: Globe },
 ];

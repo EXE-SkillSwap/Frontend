@@ -126,7 +126,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <main className="relative z-0 bg-gradient-to-b from-purple-50 via-violet-50 to-indigo-50 min-h-screen">
+    <main className="relative z-0 bg-gradient-to-b from-purple-50 via-violet-50 to-indigo-50 min-h-screen mt-16">
       {/* Banner Chính */}
       <BannerCarousel />
 

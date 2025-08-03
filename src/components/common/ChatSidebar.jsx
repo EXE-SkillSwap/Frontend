@@ -1,9 +1,10 @@
-import { getUserProfile } from "@/services/api/userService";
 import CustomTooltip from "@/components/CustomTooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { getUserProfile } from "@/services/api/userService";
 import { Globe, Home } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const sidebarItems = [
   {
@@ -16,6 +17,7 @@ const sidebarItems = [
 
 const ChatSidebar = () => {
   const [userInfo, setUserInfo] = useState(null);
+  const nav = useNavigate();
 
   const fetchUserInfo = async () => {
     try {
@@ -39,7 +41,7 @@ const ChatSidebar = () => {
             <Button
               variant="ghost"
               className="w-12 h-12 flex items-center justify-center rounded-full transition-colors text-purple-600 hover:bg-purple-100 cursor-pointer"
-              onClick={() => (window.location.href = item.href)}
+              onClick={() => nav(item.href)}
             >
               <item.icon className="w-6 h-6 text-gray-600" />
             </Button>

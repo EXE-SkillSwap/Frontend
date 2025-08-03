@@ -23,6 +23,8 @@ import EnhancedChatInterface from "./pages/EnhancedChatInterface";
 import ForumPage from "./pages/ForumPage";
 import GoogleCallback from "@/pages/GoogleCallback";
 import MyCourses from "@/pages/MyCourses";
+import CoursePage from "@/pages/CoursePage";
+import CourseDetail from "@/pages/CourseDetail";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -104,6 +106,14 @@ function App() {
         {
           path: "/my-courses",
           element: <MyCourses />,
+        },
+        {
+          path: "/courses",
+          element: <CoursePage />,
+        },
+        {
+          path: "/course/:courseId",
+          element: <CourseDetail />,
         },
       ],
     },

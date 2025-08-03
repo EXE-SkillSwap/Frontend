@@ -322,7 +322,7 @@ const MyCourses = () => {
                           onClick={() => handlePageChange(index)}
                           className={`w-8 h-8 p-0 ${
                             currentPage === index
-                              ? "bg-blue-500 text-white"
+                              ? "bg-purple-500 text-white"
                               : "hover:bg-blue-50"
                           }`}
                         >
