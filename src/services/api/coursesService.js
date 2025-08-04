@@ -23,3 +23,11 @@ export const getAllCourses = async (
 export const getCourseById = async (courseId) => {
   return instance.get(`courses/${courseId}`);
 };
+
+export const approveCourse = async (courseId) => {
+  return instance.put(`courses/approve/${courseId}`);
+};
+
+export const rejectCourse = async (body) => {
+  return instance.put(`courses/reject`, body);
+};

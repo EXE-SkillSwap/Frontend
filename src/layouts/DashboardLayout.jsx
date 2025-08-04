@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Outlet } from "react-router-dom";
-import { Header } from "../components/dashboardChart/Header";
-import { Sidebar } from "../components/dashboardChart/Sidebar";
+import { Header } from "../Admin/dashboardChart/Header";
+import { Sidebar } from "../Admin/dashboardChart/Sidebar";
 
 export function DashboardLayout() {
   return (

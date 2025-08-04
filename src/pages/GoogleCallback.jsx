@@ -73,6 +73,7 @@ const GoogleCallback = () => {
             error.response?.data?.message ||
               "Đăng nhập không thành công. Vui lòng thử lại."
           );
+          nav("/login");
         }
       };
       fetchToken();

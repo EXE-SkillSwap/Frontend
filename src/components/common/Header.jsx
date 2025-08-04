@@ -154,14 +154,14 @@ const Header = () => {
                   {/* Ultra-modern auth buttons */}
                   <Button
                     variant="ghost"
-                    className="relative overflow-hidden rounded-2xl px-6 py-2.5 font-semibold text-gray-700 hover:text-gray-900 bg-white/20 backdrop-blur-lg border border-white/30 hover:bg-white/30 transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-purple-500/10"
+                    className="relative overflow-hidden rounded-2xl px-6 py-2.5 font-semibold bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 hover:from-blue-600 hover:via-purple-700 hover:to-pink-600 text-white shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105 border-0 hover:text-white"
                     onClick={() => handleNavigation("/login")}
                   >
                     <span className="relative z-10">Đăng Nhập</span>
                   </Button>
 
                   <Button
-                    className="relative overflow-hidden rounded-2xl px-6 py-2.5 font-semibold bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 hover:from-blue-600 hover:via-purple-700 hover:to-pink-600 text-white shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105 border-0"
+                    className="relative overflow-hidden rounded-2xl px-6 py-2.5 font-semibold text-gray-700 hover:text-gray-900 bg-white/20 backdrop-blur-lg border  hover:bg-white/30 transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-purple-500/10 border-purple-600"
                     onClick={() => handleNavigation("/register")}
                   >
                     <span className="relative z-10 flex items-center space-x-2">

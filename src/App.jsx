@@ -25,6 +25,7 @@ import GoogleCallback from "@/pages/GoogleCallback";
 import MyCourses from "@/pages/MyCourses";
 import CoursePage from "@/pages/CoursePage";
 import CourseDetail from "@/pages/CourseDetail";
+import ManageCourses from "@/Admin/dashboard/ManageCourses";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -132,6 +133,10 @@ function App() {
         {
           path: "memberships",
           element: <ManageMemberships />,
+        },
+        {
+          path: "courses",
+          element: <ManageCourses />,
         },
       ],
     },

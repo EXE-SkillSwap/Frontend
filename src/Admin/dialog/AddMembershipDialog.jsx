@@ -1,4 +1,3 @@
-import { createMembership } from "@/services/api/membershipService";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createMembershipSchema } from "@/schemas/createMembership.schema";
+import { createMembership } from "@/services/api/membershipService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -60,7 +60,7 @@ export function AddMembershipDialog({ onRefresh }) {
           <DialogTrigger asChild>
             <Button
               onClick={() => setOpen(true)}
-              className={"bg-purple-600 hover:bg-purple-700"}
+              className={"bg-gray-600 hover:bg-purple-700"}
             >
               Thêm gói thành viên
             </Button>

@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout";
-import { MetricsCards } from "@/components/dashboardChart/MetricsCards";
-import { MembershipChart } from "@/components/dashboardChart/MembershipChart";
-import { LessonsTable } from "@/components/dashboardChart/LessonsTable";
+import { MetricsCards } from "@/Admin/dashboardChart/MetricsCards";
+import { MembershipChart } from "@/Admin/dashboardChart/MembershipChart";
+import { LessonsTable } from "@/Admin/dashboardChart/LessonsTable";
 
 const Admin = () => {
   return (

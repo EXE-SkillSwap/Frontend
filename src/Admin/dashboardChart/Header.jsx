@@ -1,5 +1,4 @@
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import newLogo from "@/assets/newLogo.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -7,15 +6,7 @@ export function Header() {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
-        {/* Search Bar */}
-        <div className="relative max-w-md w-full">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            type="text"
-            placeholder="Search"
-            className="pl-10 bg-gray-50 border-gray-200"
-          />
-        </div>
+        <div className="relative max-w-md w-full"></div>
 
         {/* User Profile */}
         <div className="flex items-center space-x-3">
@@ -23,12 +14,12 @@ export function Header() {
             <div className="text-sm font-medium text-gray-900">
               SkillSwap Admin
             </div>
-            <Badge variant="secondary" className="text-xs">
+            <Badge className="text-xs border border-green-500 bg-green-200 text-green-700">
               Admin
             </Badge>
           </div>
           <Avatar className="h-10 w-10">
-            <AvatarImage src="/placeholder.svg" alt="Admin Avatar" />
+            <AvatarImage src={newLogo} alt="Admin Avatar" />
             <AvatarFallback className="bg-purple-100 text-purple-600">
               SA
             </AvatarFallback>
