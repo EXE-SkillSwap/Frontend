@@ -1,6 +1,6 @@
-import { Badge } from "@/components/ui/badge";
+import MyCoursesItem from "@/components/items/MyCoursesItem";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import useDebounce from "@/hooks/use-debounce";
@@ -8,7 +8,6 @@ import { getAllCourses } from "@/services/api/coursesService";
 import { motion } from "framer-motion";
 import {
   BookOpen,
-  Calendar,
   ChevronLeft,
   ChevronRight,
   Grid3X3,
@@ -16,7 +15,6 @@ import {
   Search,
   SortAsc,
   SortDesc,
-  Star,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -64,21 +62,6 @@ const CoursePage = () => {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage);
     }
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
   };
 
   return (
@@ -163,84 +146,7 @@ const CoursePage = () => {
             }
           >
             {courses.map((course) => (
-              <Card
-                key={course.id}
-                className={`group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 backdrop-blur-sm overflow-hidden cursor-pointer ${
-                  viewMode === "list" ? "flex flex-row" : ""
-                }`}
-                onClick={() => navigate(`/course/${course.id}`)}
-              >
-                {/* Course Image */}
-                <div
-                  className={`relative overflow-hidden ${
-                    viewMode === "list" ? "w-48 flex-shrink-0" : "h-48"
-                  }`}
-                >
-                  <img
-                    src={course.bannerUrl}
-                    alt={course.courseName}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-
-                  {course.rating > 0 && (
-                    <div className="absolute top-3 right-3">
-                      <Badge className="bg-white/90 text-gray-800 border-white/20">
-                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
-                        {course.rating}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-
-                {/* Course Content */}
-                <div className="flex-1">
-                  <CardHeader className={viewMode === "list" ? "pb-2" : "pb-3"}>
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-gray-800 line-clamp-1 group-hover:text-indigo-900 transition-colors">
-                        {course.courseName}
-                      </h3>
-                      <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
-                        {course.description}
-                      </p>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent
-                    className={`space-y-4 ${viewMode === "list" ? "pt-0" : ""}`}
-                  >
-                    {/* Instructor */}
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={course.user.avatarUrl || "/default-avatar.png"}
-                        alt={course.user.firstName}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {course.user.firstName} {course.user.lastName}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          @{course.user.username}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Course Info */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-green-600">
-                          {formatPrice(course.price)}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <Calendar className="w-3 h-3" />
-                        <span>{formatDate(course.createdAt)}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </div>
-              </Card>
+              <MyCoursesItem key={course.id} course={course} />
             ))}
           </motion.div>
         ) : (

@@ -27,41 +27,6 @@ const MyCourses = () => {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const navigate = useNavigate();
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        when: "beforeChildren",
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.3 },
-    },
-    hover: {
-      y: -5,
-      transition: { duration: 0.2 },
-    },
-  };
-
   const fetchCourses = async (page = currentPage) => {
     try {
       setLoading(true);
@@ -107,13 +72,12 @@ const MyCourses = () => {
       </div>
 
       <motion.div
-        variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="relative z-10 container mx-auto px-4 py-8"
       >
         {/* Header Section */}
-        <motion.div variants={itemVariants} className="mb-8">
+        <motion.div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -242,7 +206,6 @@ const MyCourses = () => {
               {filteredCourses.map((course, index) => (
                 <motion.div
                   key={course.id}
-                  variants={cardVariants}
                   initial="hidden"
                   animate="visible"
                   whileHover="hover"
@@ -253,7 +216,7 @@ const MyCourses = () => {
               ))}
             </motion.div>
           ) : (
-            <motion.div variants={itemVariants} className="text-center py-16">
+            <motion.div className="text-center py-16">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <BookOpen className="w-12 h-12 text-gray-400" />
               </div>
@@ -284,7 +247,7 @@ const MyCourses = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <motion.div variants={itemVariants}>
+          <motion.div>
             <Card className="border-none shadow-lg bg-white/80 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">

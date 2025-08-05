@@ -30,6 +30,7 @@ const emptySkill = () => ({
   link: "",
   description: "",
   bannerUrl: "",
+  achievements: "",
 });
 
 const AddSkill = () => {
@@ -90,6 +91,10 @@ const AddSkill = () => {
       }
       if (s.bannerUrl && !validateUrl(s.bannerUrl)) {
         toast.error(`Vui lòng nhập URL hợp lệ cho hình ảnh dòng ${i + 1}`);
+        return;
+      }
+      if (!s.achievements.trim()) {
+        toast.error(`Vui lòng nhập quyền lợi cho học viên dòng ${i + 1}`);
         return;
       }
     }
@@ -269,6 +274,27 @@ const AddSkill = () => {
                       />
                       <p className="text-xs text-gray-500">
                         Mô tả sẽ giúp người khác hiểu rõ hơn về khả năng của bạn
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 mt-4">
+                      <Label
+                        htmlFor={`description-${idx}`}
+                        className="text-sm font-semibold text-gray-700"
+                      >
+                        Quyền lợi của học viên
+                      </Label>
+                      <Textarea
+                        id={`description-${idx}`}
+                        name="achievements"
+                        placeholder="Mô tả quyền lợi của học viên khi tham gia khóa học này..."
+                        value={skill.achievements}
+                        onChange={(e) => handleInputChange(idx, e)}
+                        className="border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500 min-h-[100px]"
+                        rows={3}
+                      />
+                      <p className="text-xs text-gray-500">
+                        Các quyền lợi của học viên tách biệt bởi dấu chấm.
                       </p>
                     </div>
                     {/* upload Banner image */}

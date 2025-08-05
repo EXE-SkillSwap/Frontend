@@ -34,9 +34,7 @@ const NotificationSheet = () => {
   const markAsRead = async (notification) => {
     await markNotificationAsRead(notification.id);
     setNotifications((prev) =>
-      prev.map((notification) =>
-        notification.id === id ? { ...notification, read: true } : notification
-      )
+      prev.map((n) => (n.id === notification.id ? { ...n, read: true } : n))
     );
   };
 

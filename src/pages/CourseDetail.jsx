@@ -1,8 +1,17 @@
+import CourseFeedbacksCard from "@/components/cards/CourseFeedbacksCard";
+import SendFeedbackCard from "@/components/cards/SendFeedbackCard";
+import CourseDetailLoading from "@/components/common/loading/CourseDetailLoading";
+import ConfirmEnrollCourseDialog from "@/components/dialog/ConfirmEnrollCourseDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCourseById } from "@/services/api/coursesService";
+import { sendMessage } from "@/services/api/conversationsService";
+import { enrollInCourse, getCourseById } from "@/services/api/coursesService";
+import { getFeedbacks } from "@/services/api/feedbackService";
+import { formatDate, formatPrice } from "@/utils/course";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { jwtDecode } from "jwt-decode";
 import {
   ArrowLeft,
   Award,
@@ -11,10 +20,9 @@ import {
   CheckCircle,
   Clock,
   ExternalLink,
-  Heart,
   MessageCircle,
-  Share2,
   Star,
+  Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,7 +33,41 @@ const CourseDetail = () => {
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const nav = useNavigate();
+
+  const fetchFeedbacks = async (page = 0) => {
+    try {
+      setFeedbackLoading(true);
+      const response = await getFeedbacks(courseId, page);
+
+      if (response.data) {
+        setFeedbacks(response.data.content || []);
+        setCurrentPage(response.data.page?.number || 0);
+        setTotalPages(response.data.page?.totalPages || 0);
+        setTotalElements(response.data.page?.totalElements || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+      setFeedbacks([]);
+    } finally {
+      setFeedbackLoading(false);
+    }
+  };
+
+  const userAchievements =
+    course?.achievements
+      .split(".")
+      .filter((achievement) => achievement.trim() !== "") || [];
+
+  const currentUserId = jwtDecode(localStorage.getItem("token"))?.sub;
+
+  const isMyCourse = currentUserId == course?.user?.id;
 
   const fetchCourse = async () => {
     try {
@@ -40,22 +82,12 @@ const CourseDetail = () => {
 
   useEffect(() => {
     fetchCourse();
+    fetchFeedbacks(currentPage);
   }, [courseId]);
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  const onRefresh = () => {
+    fetchCourse();
+    fetchFeedbacks(currentPage);
   };
 
   const getStatusBadge = (status) => {
@@ -79,38 +111,38 @@ const CourseDetail = () => {
     }
   };
 
-  const handleEnroll = () => {
-    toast.success("Đăng ký khóa học thành công!");
+  const handleEnroll = async () => {
+    try {
+      const response = await enrollInCourse(courseId);
+      if (response) {
+        fetchCourse();
+        toast.success("Đăng ký khóa học thành công");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data || "Không thể đăng ký khóa học này");
+    }
   };
 
-  const handleContact = () => {
-    toast.info("Chức năng liên hệ đang được phát triển");
+  const handleOpenDialog = () => {
+    if (!course.enrolled) {
+      setDialogOpen(true);
+    }
   };
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    toast.success(isFavorite ? "Đã bỏ yêu thích" : "Đã thêm vào yêu thích");
+  const handleContact = async (userId) => {
+    try {
+      const response = await sendMessage(userId);
+      if (response) {
+        nav(`/chats?cId=${response.data?.id}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 pt-24">
-        <div className="container mx-auto px-4 py-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-32 mb-6"></div>
-            <div className="h-64 bg-gray-200 rounded-lg mb-6"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 space-y-4">
-                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-              </div>
-              <div className="h-96 bg-gray-200 rounded-lg"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <CourseDetailLoading />;
   }
 
   if (!course) {
@@ -161,27 +193,6 @@ const CourseDetail = () => {
             <div className="absolute top-4 left-4">
               {getStatusBadge(course.status)}
             </div>
-            <div className="absolute top-4 right-4 flex gap-2">
-              <Button
-                variant="secondary"
-                size="icon"
-                onClick={toggleFavorite}
-                className="bg-white/20 backdrop-blur-sm border-white/20 hover:bg-white/30"
-              >
-                <Heart
-                  className={`w-4 h-4 ${
-                    isFavorite ? "fill-red-500 text-red-500" : "text-white"
-                  }`}
-                />
-              </Button>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="bg-white/20 backdrop-blur-sm border-white/20 hover:bg-white/30"
-              >
-                <Share2 className="w-4 h-4 text-white" />
-              </Button>
-            </div>
           </div>
         </div>
 
@@ -195,6 +206,14 @@ const CourseDetail = () => {
                   <h1 className="text-3xl font-bold text-gray-900">
                     {course.courseName}
                   </h1>
+                  {isMyCourse && (
+                    <div className="">
+                      <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Đây là khóa học của bạn
+                      </Badge>
+                    </div>
+                  )}
 
                   <div className="flex items-center gap-4">
                     {course.rating > 0 && (
@@ -216,10 +235,10 @@ const CourseDetail = () => {
                         </span>
                       </div>
                     )}
-                    {/* <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
                       <Users className="w-4 h-4" />
-                      <span>156 học viên</span>
-                    </div> */}
+                      <span>{course.totalEnrollments}</span>
+                    </div>
                     <div className="flex items-center gap-1 text-sm text-gray-600">
                       <Calendar className="w-4 h-4" />
                       <span>Tạo ngày {formatDate(course.createdAt)}</span>
@@ -254,7 +273,7 @@ const CourseDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {["Hỗ trợ từ giảng viên"].map((item, index) => (
+                  {userAchievements.map((item, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                       <span className="text-sm text-gray-700">{item}</span>
@@ -263,6 +282,21 @@ const CourseDetail = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {!isMyCourse && (
+              <SendFeedbackCard courseId={course.id} onRefresh={onRefresh} />
+            )}
+
+            {/* add feedback for  course area*/}
+            <CourseFeedbacksCard
+              fetchFeedbacks={fetchFeedbacks}
+              totalElements={totalElements}
+              totalPages={totalPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              loading={loading}
+              feedbacks={feedbacks}
+            />
           </div>
 
           {/* Sidebar */}
@@ -274,17 +308,30 @@ const CourseDetail = () => {
                   <div className="text-3xl font-bold text-green-600 mb-2">
                     {formatPrice(course.price)}
                   </div>
-                  <p className="text-sm text-gray-600">Một lần thanh toán</p>
+                  <p className="text-sm text-gray-600 ">
+                    <InfoCircledIcon className="inline-block w-4 h-4 mr-1" />
+                    Thanh toán với người hướng dẫn
+                  </p>
                 </div>
 
                 <div className="space-y-4 mb-6">
-                  <Button
-                    onClick={handleEnroll}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
-                    size="lg"
-                  >
-                    Đăng ký ngay
-                  </Button>
+                  {course.enrolled ? (
+                    <Button
+                      className="w-full bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 text-white font-semibold py-3 cursor-pointer"
+                      size="lg"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Bạn đã tham gia khóa học này.
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleOpenDialog}
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 cursor-pointer"
+                      size="lg"
+                    >
+                      Đăng ký ngay
+                    </Button>
+                  )}
 
                   <Button
                     variant="outline"
@@ -301,7 +348,7 @@ const CourseDetail = () => {
             {/* Instructor Card */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
-                <CardTitle>Giảng viên</CardTitle>
+                <CardTitle>Người Hướng Dẫn</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-start gap-4 mb-4">
@@ -327,7 +374,7 @@ const CourseDetail = () => {
 
                 <Button
                   variant="outline"
-                  onClick={handleContact}
+                  onClick={() => handleContact(course.user?.id)}
                   className="w-full"
                 >
                   <MessageCircle className="w-4 h-4 mr-2" />
@@ -344,8 +391,12 @@ const CourseDetail = () => {
               <CardContent>
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">156</div>
-                    <div className="text-sm text-gray-600">Học viên</div>
+                    <div className="text-2xl font-bold text-blue-600">
+                      {course.totalEnrollments}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Người đã tham gia
+                    </div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-green-600">
@@ -359,6 +410,14 @@ const CourseDetail = () => {
           </div>
         </div>
       </div>
+      {dialogOpen && (
+        <ConfirmEnrollCourseDialog
+          isOpen={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          onConfirm={handleEnroll}
+          courseName={course.courseName}
+        />
+      )}
     </div>
   );
 };

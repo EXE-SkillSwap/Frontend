@@ -1,3 +1,15 @@
+import ProfileMembershipCard from "@/components/cards/ProfileMembershipCard";
+import ProfileSkillsCard from "@/components/cards/ProfileSkillsCard";
+import UserSkillsCard from "@/components/cards/UserSkillsCard";
+import ChangePassword from "@/components/ChangePassword";
+import ChaseLoading from "@/components/common/loading/ChaseLoading";
+import StoryDialog from "@/components/dialog/StoryDialog";
+import EditProfile from "@/components/EditProfile";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import UploadProfileImage from "@/components/UploadProfileImage";
 import { uploadImage } from "@/services/api/cloudinaryService";
 import { getUserMembership } from "@/services/api/membershipService";
 import {
@@ -5,23 +17,6 @@ import {
   getUserProfile,
   updateProfile,
 } from "@/services/api/userService";
-import ProfileMembershipCard from "@/components/cards/ProfileMembershipCard";
-import ProfileSkillsCard from "@/components/cards/ProfileSkillsCard";
-import UserSkillsCard from "@/components/cards/UserSkillsCard";
-import ChangePassword from "@/components/ChangePassword";
-import ChaseLoading from "@/components/common/loading/ChaseLoading";
-import EditProfile from "@/components/EditProfile";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import UploadProfileImage from "@/components/UploadProfileImage";
 import { motion } from "framer-motion";
 import {
   Briefcase,
@@ -37,10 +32,9 @@ import {
   Venus,
 } from "lucide-react";
 import moment from "moment/moment";
-import { useEffect, useRef, useState, createContext, useContext } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import StoryDialog from "@/components/dialog/StoryDialog";
 
 const cloudinary_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 

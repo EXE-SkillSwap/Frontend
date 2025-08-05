@@ -7,3 +7,7 @@ export const getConversations = async () => {
 export const getConversationMessages = async (conversationId) => {
   return instance.get(`chat/messages/conversation/${conversationId}`);
 };
+
+export const sendMessage = async (userId) => {
+  return instance.post(`chat/create/new-chat/${userId}`);
+};

@@ -22,9 +22,10 @@ const MembershipItem = ({ packageData, isPopular = false }) => {
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
   const nav = useNavigate();
-  const features = packageData?.features
-    .split(".")
-    .filter((feature) => feature.trim() !== "");
+  const features =
+    packageData?.features
+      .split(".")
+      .filter((feature) => feature.trim() !== "") || [];
 
   const handleBuyMembership = async (id) => {
     if (isAuthenticated() === false) {

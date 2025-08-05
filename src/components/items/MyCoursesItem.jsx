@@ -1,11 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   formatDate,
   formatPrice,
@@ -17,13 +11,13 @@ import {
   Calendar,
   Clock,
   DollarSign,
-  ExternalLink,
-  Eye,
   MoreHorizontal,
   Star,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const MyCoursesItem = ({ course }) => {
+  const nav = useNavigate();
   const getStatusIcon = (status) => {
     switch (status) {
       case "PENDING":
@@ -66,9 +60,12 @@ const MyCoursesItem = ({ course }) => {
         )}
       </div>
 
-      <CardHeader className="pb-3">
+      <CardHeader
+        className="pb-3 cursor-pointer"
+        onClick={() => nav(`/course/${course.id}`)}
+      >
         <div className="space-y-2">
-          <h3 className="text-xl font-bold text-gray-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
+          <h3 className="text-xl font-bold text-gray-800 line-clamp-1 group-hover:text-purple-900 transition-colors ">
             {course.courseName}
           </h3>
           <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
@@ -80,12 +77,13 @@ const MyCoursesItem = ({ course }) => {
       <CardContent className="pb-3">
         <div className="space-y-3">
           {/* Price */}
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-green-600" />
-            <span className="text-lg font-bold text-green-600">
-              {formatPrice(course.price)}
-            </span>
-          </div>
+          <Badge className="bg-green-100/50 ">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-green-600">
+                {formatPrice(course.price)}
+              </span>
+            </div>
+          </Badge>
 
           {/* Date */}
           <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -106,28 +104,6 @@ const MyCoursesItem = ({ course }) => {
           </div>
         </div>
       </CardContent>
-
-      <CardFooter className="pt-3 border-t border-gray-100">
-        <div className="flex gap-2 w-full">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 hover:bg-blue-50 hover:border-blue-300"
-            onClick={() => window.open(course.link, "_blank")}
-          >
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Xem chi tiết
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 hover:bg-green-50 hover:border-green-300"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            Quản lý
-          </Button>
-        </div>
-      </CardFooter>
     </Card>
   );
 };

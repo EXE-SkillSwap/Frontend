@@ -31,3 +31,7 @@ export const approveCourse = async (courseId) => {
 export const rejectCourse = async (body) => {
   return instance.put(`courses/reject`, body);
 };
+
+export const enrollInCourse = async (courseId) => {
+  return instance.post(`course-attendance/enroll/${courseId}`);
+};

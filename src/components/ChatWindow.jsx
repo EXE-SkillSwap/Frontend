@@ -1,12 +1,11 @@
-import { getConversationMessages } from "@/services/api/conversationsService";
-import connectSocket from "@/services/api/sockerService";
 import GroupChatHeader from "@/components/GroupChatHeader";
 import MessageItem from "@/components/MessageItem";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getConversationMessages } from "@/services/api/conversationsService";
 import { Client } from "@stomp/stompjs";
 import { jwtDecode } from "jwt-decode";
-import { Info, MoreHorizontal, Phone, Send, Video } from "lucide-react";
+import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,7 +25,7 @@ const ChatWindow = ({ selectedConversation }) => {
         reconnectDelay: 5000,
         onConnect: () => {
           client.subscribe(
-            `/topic/chat/${selectedConversation.id}`,
+            `/topic/chat/${selectedConversation?.id}`,
             (newMessage) => {
               callback(newMessage.body);
             }
