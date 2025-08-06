@@ -2,14 +2,13 @@ import ConfirmRejectCourse from "@/Admin/dialog/ConfirmRejectCourse";
 import CourseDetailDialog from "@/Admin/dialog/CourseDetailDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Paginator from "@/generator/paginator";
 import useDebounce from "@/hooks/use-debounce";
 import { approveCourse, getAllCourses } from "@/services/api/coursesService";
 import { formatDate, formatPrice } from "@/utils/course";
 import {
   ArrowUpDown,
   Check,
-  ChevronLeft,
-  ChevronRight,
   ExternalLink,
   Filter,
   Search,
@@ -344,63 +343,11 @@ const ManageCourses = () => {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-700">
-              Trang {currentPage + 1} / {totalPages} - Tổng {totalElements} khóa
-              học
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 0}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              Trước
-            </Button>
-
-            {/* Page numbers */}
-            <div className="flex gap-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const pageNum =
-                  currentPage <= 2
-                    ? i
-                    : currentPage >= totalPages - 3
-                    ? totalPages - 5 + i
-                    : currentPage - 2 + i;
-
-                if (pageNum < 0 || pageNum >= totalPages) return null;
-
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={pageNum === currentPage ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handlePageChange(pageNum)}
-                    className="w-8 h-8 p-0"
-                  >
-                    {pageNum + 1}
-                  </Button>
-                );
-              })}
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages - 1}
-            >
-              Sau
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      )}
+      <Paginator
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
       {courseDetailDialogOpen && selectedCourse && (
         <CourseDetailDialog
           course={selectedCourse}
