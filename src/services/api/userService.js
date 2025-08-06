@@ -37,3 +37,9 @@ export const uploadProfileImage = async (body) => {
 export const getProfileImageByUserId = async (userId) => {
   return instance.get(`users/profile-images/${userId}`);
 };
+
+export const getAllUsers = async (page, size, search, role, sortBy) => {
+  return instance.get(
+    `users/all?page=${page}&size=${size}&searchString=${search}&role=${role}&sortBy=${sortBy}`
+  );
+};

@@ -14,7 +14,7 @@ export function Header() {
             <div className="text-sm font-medium text-gray-900">
               SkillSwap Admin
             </div>
-            <Badge className="text-xs border border-green-500 bg-green-200 text-green-700">
+            <Badge className="text-xs border border-purple-500 bg-purple-200 text-purple-700">
               Admin
             </Badge>
           </div>
