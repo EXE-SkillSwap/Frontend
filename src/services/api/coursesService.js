@@ -20,6 +20,10 @@ export const getAllCourses = async (
   );
 };
 
+export const getAttendedCourses = async (size, page) => {
+  return instance.get(`courses/attended-courses?size=${size}&page=${page}`);
+};
+
 export const getCourseById = async (courseId) => {
   return instance.get(`courses/${courseId}`);
 };
@@ -34,4 +38,14 @@ export const rejectCourse = async (body) => {
 
 export const enrollInCourse = async (courseId) => {
   return instance.post(`course-attendance/enroll/${courseId}`);
+};
+
+export const getCourseAttendees = async (courseId, size, page) => {
+  return instance.get(
+    `course-attendance/attendees/${courseId}?size=${size}&page=${page}`
+  );
+};
+
+export const getBestCourses = async (size, page) => {
+  return instance.get(`courses/best-courses?size=${size}&page=${page}`);
 };

@@ -1,17 +1,24 @@
+import ManageCourses from "@/Admin/dashboard/ManageCourses";
 import ManageMemberships from "@/Admin/dashboard/ManageMembership";
+import ManageSubscription from "@/Admin/dashboard/ManageSubscription";
 import Participants from "@/Admin/dashboard/Participants";
 import AppLoading from "@/components/common/loading/AppLoading";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import UserLayout from "@/layouts/UserLayout";
 import AddSkill from "@/pages/AddSkill";
 import Admin from "@/pages/AdminPage";
+import AttendedCourses from "@/pages/AttendedCourses";
 import CommingSoon from "@/pages/CommingSoon";
+import CourseDetail from "@/pages/CourseDetail";
+import CoursePage from "@/pages/CoursePage";
 import EditSkill from "@/pages/EditSkill";
 import NotFound from "@/pages/errors/NotFound";
 import FindFriends from "@/pages/FindFriends";
+import GoogleCallback from "@/pages/GoogleCallback";
 import HomePage from "@/pages/HomePage";
 import Login from "@/pages/Login";
 import Membership from "@/pages/Membership";
+import MyCourses from "@/pages/MyCourses";
 import Payment from "@/pages/Payment";
 import Profile from "@/pages/Profile";
 import SelectSkills from "@/pages/SelectSkills";
@@ -21,12 +28,7 @@ import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import EnhancedChatInterface from "./pages/EnhancedChatInterface";
 import ForumPage from "./pages/ForumPage";
-import GoogleCallback from "@/pages/GoogleCallback";
-import MyCourses from "@/pages/MyCourses";
-import CoursePage from "@/pages/CoursePage";
-import CourseDetail from "@/pages/CourseDetail";
-import ManageCourses from "@/Admin/dashboard/ManageCourses";
-import ManageSubscription from "@/Admin/dashboard/ManageSubscription";
+import CourseAttendees from "@/pages/CourseAttendees";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -110,12 +112,20 @@ function App() {
           element: <MyCourses />,
         },
         {
+          path: "/attended-courses",
+          element: <AttendedCourses />,
+        },
+        {
           path: "/courses",
           element: <CoursePage />,
         },
         {
           path: "/course/:courseId",
           element: <CourseDetail />,
+        },
+        {
+          path: "/attendees/:courseId",
+          element: <CourseAttendees />,
         },
       ],
     },

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import useDebounce from "@/hooks/use-debounce";
-import { getAllCourses } from "@/services/api/coursesService";
+import { getAttendedCourses } from "@/services/api/coursesService";
 import { motion } from "framer-motion";
 import {
   BookOpen,
@@ -19,13 +19,12 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const CoursePage = () => {
+const AttendedCourses = () => {
   const [courses, setCourses] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState("APPROVED");
   const [sortBy, setSortBy] = useState("DESC");
   const [searchString, setSearchString] = useState("");
   const [viewMode, setViewMode] = useState("grid");
@@ -33,13 +32,7 @@ const CoursePage = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await getAllCourses(
-        9,
-        currentPage,
-        inputSearchDebounce,
-        status,
-        sortBy
-      );
+      const response = await getAttendedCourses(9, currentPage);
       setCourses(response.data.content);
       setTotalPages(response.data.page?.totalPages);
       setCurrentPage(response.data.page?.number);
@@ -61,7 +54,6 @@ const CoursePage = () => {
       setCurrentPage(newPage);
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-24">
       <div className="container mx-auto px-4 py-8">
@@ -162,15 +154,6 @@ const CoursePage = () => {
             <p className="text-gray-600 mb-6">
               Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc để xem thêm khóa học
             </p>
-            <Button
-              onClick={() => {
-                setSearchString("");
-                setStatus("APPROVED");
-              }}
-              className="bg-blue-500 hover:bg-blue-600"
-            >
-              Xem tất cả khóa học
-            </Button>
           </motion.div>
         )}
 
@@ -244,4 +227,4 @@ const CoursePage = () => {
   );
 };
 
-export default CoursePage;
+export default AttendedCourses;

@@ -29,6 +29,7 @@ import {
   UserX,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 
 const Participants = () => {
   const [users, setUsers] = useState([]);
@@ -207,7 +208,12 @@ const Participants = () => {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-gray-600">{user.email}</TableCell>
+                  <TableCell className="text-gray-600">
+                    {user.email}
+                    {user.googleAuth ? (
+                      <FcGoogle className="inline-block ml-2" />
+                    ) : null}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={"primary"}>{user.role}</Badge>
                   </TableCell>

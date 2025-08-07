@@ -164,7 +164,7 @@ const CourseDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
+    <div className="min-h-screen bg-gray-50 pt-14">
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="mb-6">
@@ -208,9 +208,12 @@ const CourseDetail = () => {
                   </h1>
                   {isMyCourse && (
                     <div className="">
-                      <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                      <Badge
+                        className="bg-blue-100 text-blue-800 border-blue-200 cursor-pointer"
+                        onClick={() => nav(`/attendees/${course.id}`)}
+                      >
                         <CheckCircle className="w-3 h-3 mr-1" />
-                        Đây là khóa học của bạn
+                        Quản lí khóa học của bạn
                       </Badge>
                     </div>
                   )}

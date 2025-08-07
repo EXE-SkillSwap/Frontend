@@ -1,37 +1,13 @@
 import BannerCarousel from "@/components/common/BannerCarousel";
+import { getBestCourses } from "@/services/api/coursesService";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
+import { BookOpen, Code, Palette, TrendingUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { BookOpen, Code, Palette, TrendingUp, Send } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const courses = [
-  {
-    id: 1,
-    title: "Bí kíp tán gái đỉnh cao",
-    description:
-      "Từ FA thành cao thủ thả thính, thực hành ngay trên mạng xã hội!",
-    image:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    id: 2,
-    title: "Ảo thuật cơ bản cho người mới",
-    description:
-      "Học những trick ảo thuật đơn giản để gây ấn tượng với bạn bè.",
-    image:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    id: 3,
-    title: "Thả thính văn minh",
-    description: "Cách thả thính không bị block, tăng tỷ lệ rep tin nhắn!",
-    image:
-      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80",
-  },
-];
 
 const categories = [
   { name: "Phát triển Web", icon: Code },
@@ -66,8 +42,22 @@ const HomePage = () => {
   const newsletterRef = useRef(null);
   // Refs cho mảng thẻ khóa học & đánh giá (cho hiệu ứng hover)
   const courseCardRefs = useRef([]);
+  const nav = useNavigate();
+
+  const [courses, setCourses] = useState([]);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await getBestCourses(3, 0);
+      setCourses(response.data?.content);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      toast.error("Không thể tải khóa học. Vui lòng thử lại sau.");
+    }
+  };
 
   useEffect(() => {
+    fetchCourses();
     const sections = [
       featuredRef.current,
       categoriesRef.current,
@@ -151,20 +141,23 @@ const HomePage = () => {
             >
               <div className="relative h-56 overflow-hidden">
                 <img
-                  src={course.image}
-                  alt={course.title}
+                  src={course.bannerUrl}
+                  alt={course.courseName}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               </div>
               <div className="p-6 text-left">
                 <h3 className="text-xl font-bold mb-2 text-purple-900 group-hover:text-indigo-600 transition-colors">
-                  {course.title}
+                  {course.courseName}
                 </h3>
                 <p className="text-gray-600 text-base mb-4">
                   {course.description}
                 </p>
-                <button className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 text-white font-semibold shadow-md hover:from-pink-600 hover:to-indigo-700 transition-all">
+                <button
+                  onClick={() => nav(`/course/${course.id}`)}
+                  className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 text-white font-semibold shadow-md hover:from-pink-600 hover:to-indigo-700 transition-all"
+                >
                   Xem chi tiết
                 </button>
               </div>
