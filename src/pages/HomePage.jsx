@@ -1,5 +1,6 @@
 import BannerCarousel from "@/components/common/BannerCarousel";
 import { getBestCourses } from "@/services/api/coursesService";
+import { isAuthenticated } from "@/utils/auth.utils";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BookOpen, Code, Palette, TrendingUp } from "lucide-react";
@@ -57,7 +58,10 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    fetchCourses();
+    if (isAuthenticated()) {
+      fetchCourses();
+    }
+
     const sections = [
       featuredRef.current,
       categoriesRef.current,
@@ -119,52 +123,52 @@ const HomePage = () => {
     <main className="relative z-0 bg-gradient-to-b from-purple-50 via-violet-50 to-indigo-50 min-h-screen mt-16">
       {/* Banner Chính */}
       <BannerCarousel />
-
-      {/* Phần Khóa Học Nổi Bật */}
-      <section
-        ref={featuredRef}
-        className="fade-in-section py-20 px-6 text-center"
-      >
-        <h2 className="text-3xl md:text-4xl font-extrabold mb-4 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-lg">
-          Các kĩ năng trao đổi cùng nhau
-        </h2>
-        <p className="text-gray-600 max-w-xl mx-auto mb-10 text-lg">
-          Khám phá các lộ trình học hàng đầu được chọn lọc kỹ lưỡng cho sự phát
-          triển của bạn.
-        </p>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
-          {courses.map((course, index) => (
-            <div
-              key={course.id}
-              ref={(el) => (courseCardRefs.current[index] = el)}
-              className="cursor-pointer rounded-3xl shadow-xl overflow-hidden bg-white border-0 transition-all duration-300 group relative"
-            >
-              <div className="relative h-56 overflow-hidden">
-                <img
-                  src={course.bannerUrl}
-                  alt={course.courseName}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+      {isAuthenticated() && (
+        <section
+          ref={featuredRef}
+          className="fade-in-section py-20 px-6 text-center"
+        >
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-lg">
+            Các kĩ năng trao đổi cùng nhau
+          </h2>
+          <p className="text-gray-600 max-w-xl mx-auto mb-10 text-lg">
+            Khám phá các lộ trình học hàng đầu được chọn lọc kỹ lưỡng cho sự
+            phát triển của bạn.
+          </p>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+            {courses.map((course, index) => (
+              <div
+                key={course.id}
+                ref={(el) => (courseCardRefs.current[index] = el)}
+                className="cursor-pointer rounded-3xl shadow-xl overflow-hidden bg-white border-0 transition-all duration-300 group relative"
+              >
+                <div className="relative h-56 overflow-hidden">
+                  <img
+                    src={course.bannerUrl}
+                    alt={course.courseName}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                </div>
+                <div className="p-6 text-left">
+                  <h3 className="text-xl font-bold mb-2 text-purple-900 group-hover:text-indigo-600 transition-colors">
+                    {course.courseName}
+                  </h3>
+                  <p className="text-gray-600 text-base mb-4">
+                    {course.description}
+                  </p>
+                  <button
+                    onClick={() => nav(`/course/${course.id}`)}
+                    className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 text-white font-semibold shadow-md hover:from-pink-600 hover:to-indigo-700 transition-all"
+                  >
+                    Xem chi tiết
+                  </button>
+                </div>
               </div>
-              <div className="p-6 text-left">
-                <h3 className="text-xl font-bold mb-2 text-purple-900 group-hover:text-indigo-600 transition-colors">
-                  {course.courseName}
-                </h3>
-                <p className="text-gray-600 text-base mb-4">
-                  {course.description}
-                </p>
-                <button
-                  onClick={() => nav(`/course/${course.id}`)}
-                  className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 text-white font-semibold shadow-md hover:from-pink-600 hover:to-indigo-700 transition-all"
-                >
-                  Xem chi tiết
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Phần Danh Mục Phổ Biến */}
       <section ref={categoriesRef} className="py-20 px-6 text-center">

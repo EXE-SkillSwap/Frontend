@@ -16,10 +16,12 @@ import { Client } from "@stomp/stompjs";
 import { Check, Copy, CreditCard, ExternalLink, QrCode } from "lucide-react";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+import { useNavigate } from "react-router-dom";
 
 const PaymentDialog = ({ open, setOpen, paymentData }) => {
   const [copiedField, setCopiedField] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const nav = useNavigate();
 
   const copyToClipboard = async (text, field) => {
     try {
@@ -111,7 +113,8 @@ const PaymentDialog = ({ open, setOpen, paymentData }) => {
       setPaymentSuccess(true);
       setTimeout(() => {
         setOpen(false);
-      }, 3000);
+        nav("/profile");
+      }, 1000);
     };
 
     const client = connectSocket(handleData);
