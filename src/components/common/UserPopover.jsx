@@ -6,31 +6,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getUserProfile } from "@/services/api/userService";
+import { clearUser, fetchUserProfile } from "@/redux/slices/profileSlice";
 import { logOut } from "@/utils/auth.utils";
 import { BookOpen, Crown, LogOut, User } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const UserPopover = () => {
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
-
-  const fetchUserInfo = async () => {
-    try {
-      const response = await getUserProfile();
-      setUserInfo(response.data);
-    } catch (error) {
-      console.error("Error fetching user info:", error);
-      // Handle error appropriately, e.g., show a toast notification
-    }
-  };
+  const dispatch = useDispatch();
+  const { userInfo, loading, error } = useSelector((state) => state.profile);
 
   useEffect(() => {
-    fetchUserInfo();
-  }, []);
+    if (!userInfo) {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, userInfo]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
   const handleLogOut = () => {
+    dispatch(clearUser());
     logOut();
   };
 

@@ -1,30 +1,54 @@
-import { getProfile } from "@/redux/actions/profileAction";
-import { createSlice } from "@reduxjs/toolkit";
+import { getUserProfile } from "@/services/api/userService";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  profile: null,
-  loading: false,
-  error: null,
-};
+export const fetchUserProfile = createAsyncThunk(
+  "user/fetchProfile",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getUserProfile();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Không thể tải thông tin người dùng"
+      );
+    }
+  }
+);
 
-const profileSlice = createSlice({
-  name: "profile",
-  initialState,
-  reducers: {},
+const userSlice = createSlice({
+  name: "user",
+  initialState: {
+    userInfo: null,
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    clearUser: (state) => {
+      state.userInfo = null;
+      state.loading = false;
+      state.error = null;
+    },
+    updateUserInfo: (state, action) => {
+      state.userInfo = { ...state.userInfo, ...action.payload };
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(getProfile.pending, (state) => {
+      .addCase(fetchUserProfile.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
-      .addCase(getProfile.fulfilled, (state, action) => {
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile = action.payload;
+        state.userInfo = action.payload;
+        state.error = null;
       })
-      .addCase(getProfile.rejected, (state, action) => {
+      .addCase(fetchUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export default profileSlice.reducer;
+export const { clearUser, updateUserInfo } = userSlice.actions;
+export default userSlice.reducer;

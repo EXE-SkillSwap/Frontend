@@ -26,6 +26,7 @@ import MyCourses from "@/pages/MyCourses";
 import CoursePage from "@/pages/CoursePage";
 import CourseDetail from "@/pages/CourseDetail";
 import ManageCourses from "@/Admin/dashboard/ManageCourses";
+import ManageSubscription from "@/Admin/dashboard/ManageSubscription";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -137,6 +138,10 @@ function App() {
         {
           path: "courses",
           element: <ManageCourses />,
+        },
+        {
+          path: "subscriptions",
+          element: <ManageSubscription />,
         },
       ],
     },

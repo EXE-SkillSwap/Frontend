@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { logOut } from "@/utils/auth.utils";
 import {
+  ChevronDown,
+  ChevronRight,
   GiftIcon,
   LayoutDashboard,
   LogOutIcon,
   Users,
-  ChevronDown,
-  ChevronRight,
 } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const navigationItems = [
   { icon: LayoutDashboard, label: "Thống kê", href: "/admin/dashboard" },
@@ -20,12 +20,15 @@ const navigationItems = [
     icon: GiftIcon,
     label: "Quản lí gói thành viên",
     href: "/admin/memberships",
+    children: [
+      { label: "Danh sách gói", href: "/admin/memberships" },
+      { label: "Luợt đăng ký", href: "/admin/subscriptions" },
+    ],
   },
   {
     icon: LayoutDashboard,
     label: "Quản lí Khóa học",
     href: "/admin/courses",
-    // Example of adding dropdown items
     children: [{ label: "Kiểm duyệt", href: "/admin/courses" }],
   },
 ];

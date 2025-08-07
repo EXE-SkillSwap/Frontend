@@ -5,12 +5,17 @@ import "./index.css";
 import "moment/locale/vi";
 import { Provider } from "react-redux";
 import store from "./redux/storeConfig.js";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <>
-    <Provider store={store}>
-      <App />
-      <Toaster position="top-center" richColors />
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <App />
+        <Toaster position="top-center" richColors />
+      </Provider>
+    </QueryClientProvider>
   </>
 );
