@@ -1,5 +1,7 @@
 import { AddMembershipDialog } from "@/Admin/dialog/AddMembershipDialog";
-import { getMembershipsForAdmin } from "@/services/api/membershipService";
+import ConfirmDeleteMembership from "@/Admin/dialog/ConfirmDeleteMembership";
+import UpdateMembershipDialog from "@/Admin/dialog/UpdateMembershipDialog";
+import TableLoading from "@/components/common/loading/TableLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -17,14 +28,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Paginator from "@/generator/paginator";
+import useDebounce from "@/hooks/use-debounce";
+import { getMembershipsForAdmin } from "@/services/api/membershipService";
+import { formatPrice } from "@/utils/course";
 import {
-  MoreHorizontal,
+  Calendar,
   CreditCard,
   Edit,
-  Trash2,
+  MoreHorizontal,
   Plus,
-  Calendar,
-  DollarSign,
+  Search,
+  Trash2,
 } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -33,14 +48,33 @@ import { toast } from "sonner";
 export default function ManageMemberships() {
   const [memberships, setMemberships] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [sortBy, setSortBy] = useState("DESC");
+  const [searchString, setSearchString] = useState("");
+  const inputSearchDebounce = useDebounce(searchString, 300);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [selectedMembership, setSelectedMembership] = useState(null);
+  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
+  const [updateMembershipDialogOpen, setUpdateMembershipDialogOpen] =
+    useState(false);
 
   const fetchMemberships = async () => {
     try {
       setLoading(true);
-      const response = await getMembershipsForAdmin();
+      const response = await getMembershipsForAdmin(
+        currentPage,
+        10,
+        inputSearchDebounce,
+        sortBy,
+        isDeleted
+      );
 
       if (response.status === 200) {
-        setMemberships(response.data);
+        setMemberships(response.data?.content);
+        setTotalPages(response.data.page?.totalPages);
+        setTotalElements(response.data.page?.totalElements);
       }
     } catch (error) {
       console.log(error);
@@ -52,32 +86,25 @@ export default function ManageMemberships() {
 
   useEffect(() => {
     fetchMemberships();
-  }, []);
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
+  }, [currentPage, inputSearchDebounce, sortBy, isDeleted]);
 
   const formatDuration = (duration) => {
     return `${duration} ngày`;
   };
 
   const handleEdit = (membership) => {
-    console.log("Edit membership:", membership);
-    // TODO: Implement edit functionality
+    setSelectedMembership(membership);
+    setUpdateMembershipDialogOpen(true);
   };
 
   const handleDelete = (membership) => {
-    console.log("Delete membership:", membership);
-    // TODO: Implement delete functionality
+    setSelectedMembership(membership);
+    setConfirmDeleteDialogOpen(true);
   };
 
   const getStatusBadge = (deleted) => {
     return deleted ? (
-      <Badge variant="destructive">Đã xóa</Badge>
+      <Badge className={`bg-red-100 text-red-800 border-red-200`}>Đã xóa</Badge>
     ) : (
       <Badge
         variant="default"
@@ -88,35 +115,9 @@ export default function ManageMemberships() {
     );
   };
 
-  const renderLoadingSkeleton = () =>
-    [...Array(5)].map((_, index) => (
-      <TableRow key={index}>
-        <TableCell>
-          <div className="h-4 bg-gray-200 rounded animate-pulse w-8"></div>
-        </TableCell>
-        <TableCell>
-          <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-        </TableCell>
-        <TableCell>
-          <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-        </TableCell>
-        <TableCell>
-          <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-        </TableCell>
-        <TableCell>
-          <div className="h-6 bg-gray-200 rounded animate-pulse w-32"></div>
-        </TableCell>
-        <TableCell>
-          <div className="h-6 bg-gray-200 rounded animate-pulse w-32"></div>
-        </TableCell>
-        <TableCell>
-          <div className="h-6 bg-gray-200 rounded animate-pulse w-20"></div>
-        </TableCell>
-        <TableCell>
-          <div className="h-8 bg-gray-200 rounded animate-pulse w-8"></div>
-        </TableCell>
-      </TableRow>
-    ));
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -141,50 +142,50 @@ export default function ManageMemberships() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Tổng gói thành viên
-            </CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{memberships.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Tất cả gói đang quản lý
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Gói đang hoạt động
-            </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {memberships.filter((m) => !m.deleted).length}
-            </div>
-            <p className="text-xs text-muted-foreground">Gói có thể sử dụng</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Gói đã xóa</CardTitle>
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {memberships.filter((m) => m.deleted).length}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Gói không còn sử dụng
-            </p>
-          </CardContent>
-        </Card>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo tên khóa học..."
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        {/* filter */}
+        <div className="flex items-center gap-2">
+          <Select value={sortBy} onValueChange={(value) => setSortBy(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Xắp sếp" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Xắp sếp</SelectLabel>
+                <SelectItem value="DESC">Mới nhất</SelectItem>
+                <SelectItem value="ASC">Cũ nhất</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select
+            value={isDeleted}
+            onValueChange={(value) => setIsDeleted(value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Trạng thái</SelectLabel>
+                <SelectItem value={false} className={`text-green-600`}>
+                  Đang hoạt động
+                </SelectItem>
+                <SelectItem value={true} className={`text-red-600`}>
+                  Đã xóa
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Memberships Table */}
@@ -212,7 +213,7 @@ export default function ManageMemberships() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  renderLoadingSkeleton()
+                  <TableLoading />
                 ) : memberships.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-8">
@@ -298,6 +299,27 @@ export default function ManageMemberships() {
           </div>
         </CardContent>
       </Card>
+      <Paginator
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+      {confirmDeleteDialogOpen && (
+        <ConfirmDeleteMembership
+          open={confirmDeleteDialogOpen}
+          onOpenChange={setConfirmDeleteDialogOpen}
+          membership={selectedMembership}
+          onRefresh={fetchMemberships}
+        />
+      )}
+      {updateMembershipDialogOpen && (
+        <UpdateMembershipDialog
+          open={updateMembershipDialogOpen}
+          onOpenChange={setUpdateMembershipDialogOpen}
+          membership={selectedMembership}
+          onRefresh={fetchMemberships}
+        />
+      )}
     </div>
   );
 }

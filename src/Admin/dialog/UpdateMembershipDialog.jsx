@@ -20,7 +20,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createMembershipSchema } from "@/schemas/createMembership.schema";
-import { createMembership } from "@/services/api/membershipService";
+import {
+  createMembership,
+  updateMembership,
+} from "@/services/api/membershipService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Banknote,
@@ -34,32 +37,32 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export function AddMembershipDialog({ children, onRefresh }) {
-  const [open, setOpen] = useState(false);
+const UpdateMembershipDialog = ({
+  open,
+  onOpenChange,
+  membership,
+  onRefresh,
+}) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const createMembershipForm = useForm({
     resolver: zodResolver(createMembershipSchema),
     defaultValues: {
-      name: "",
-      price: 0,
-      duration: 1,
-      description: "",
-      features: "",
+      name: membership?.name || "",
+      price: membership?.price || 0,
+      duration: membership?.duration || 1,
+      description: membership?.description || "",
+      features: membership?.features || "",
     },
   });
 
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
-
-      const response = await createMembership(data);
-
+      const response = await updateMembership(membership?.id, data);
       if (response) {
-        toast.success("Tạo gói thành viên thành công!");
+        toast.success("Cập nhật gói thành viên thành công!");
         onRefresh();
-        setOpen(false);
-        createMembershipForm.reset();
+        onOpenChange(false);
       }
     } catch (error) {
       console.error("Error creating membership:", error);
@@ -68,23 +71,8 @@ export function AddMembershipDialog({ children, onRefresh }) {
       setIsSubmitting(false);
     }
   };
-
-  const formatPrice = (value) => {
-    if (!value) return "";
-    return new Intl.NumberFormat("vi-VN").format(value);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children || (
-          <Button className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700">
-            <Plus className="w-4 h-4" />
-            Thêm gói thành viên
-          </Button>
-        )}
-      </DialogTrigger>
-
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <div className="flex items-center gap-2">
@@ -92,12 +80,12 @@ export function AddMembershipDialog({ children, onRefresh }) {
               <CreditCard className="w-5 h-5 text-purple-600" />
             </div>
             <DialogTitle className="text-xl font-semibold">
-              Tạo gói thành viên mới
+              Cập nhật gói thành viên
             </DialogTitle>
           </div>
           <DialogDescription className="text-gray-600">
-            Thiết lập thông tin chi tiết cho gói thành viên mới. Điền đầy đủ các
-            thông tin để người dùng có thể hiểu rõ về quyền lợi và chi phí.
+            Cập nhật thông tin gói thành viên{" "}
+            <strong className="text-gray-900">"{membership.name}"</strong>.
           </DialogDescription>
         </DialogHeader>
 
@@ -122,6 +110,7 @@ export function AddMembershipDialog({ children, onRefresh }) {
                         placeholder="Ví dụ: Gói Premium, Gói VIP..."
                         className="h-11"
                         {...field}
+                        value={membership.name}
                       />
                     </FormControl>
                     <FormMessage />
@@ -150,6 +139,7 @@ export function AddMembershipDialog({ children, onRefresh }) {
                             onChange={(e) => {
                               field.onChange(e.target.valueAsNumber);
                             }}
+                            value={membership.price}
                           />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
                             VND
@@ -180,6 +170,7 @@ export function AddMembershipDialog({ children, onRefresh }) {
                             onChange={(e) => {
                               field.onChange(e.target.valueAsNumber);
                             }}
+                            value={membership.duration}
                           />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
                             ngày
@@ -207,6 +198,7 @@ export function AddMembershipDialog({ children, onRefresh }) {
                         placeholder="Mô tả chi tiết về gói thành viên, các quyền lợi và ưu đãi đặc biệt..."
                         className="min-h-[80px] resize-none"
                         {...field}
+                        value={membership.description}
                       />
                     </FormControl>
                     <FormMessage />
@@ -229,6 +221,7 @@ export function AddMembershipDialog({ children, onRefresh }) {
                         placeholder="Ví dụ: Truy cập không giới hạn các khóa học. Hỗ trợ 24/7. Chứng chỉ hoàn thành khóa học"
                         className="min-h-[100px] resize-none"
                         {...field}
+                        value={membership.features}
                       />
                     </FormControl>
                     <div className="text-xs text-gray-500 mt-1">
@@ -260,12 +253,12 @@ export function AddMembershipDialog({ children, onRefresh }) {
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Đang tạo...
+                    Đang cập nhật...
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <Plus className="w-4 h-4" />
-                    Tạo gói thành viên
+                    Cập nhật gói thành viên
                   </div>
                 )}
               </Button>
@@ -275,4 +268,6 @@ export function AddMembershipDialog({ children, onRefresh }) {
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default UpdateMembershipDialog;
