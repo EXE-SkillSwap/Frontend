@@ -7,3 +7,7 @@ export const createPosts = async (data) => {
 export const getAllPosts = async (page) => {
   return instance.get(`posts?page=${page}&size=10`);
 };
+
+export const getPostById = async (postId) => {
+  return instance.get(`posts/${postId}`);
+};

@@ -29,6 +29,7 @@ import { createBrowserRouter } from "react-router-dom";
 import EnhancedChatInterface from "./pages/EnhancedChatInterface";
 import ForumPage from "./pages/ForumPage";
 import CourseAttendees from "@/pages/CourseAttendees";
+import PostDetail from "@/pages/PostDetail";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -126,6 +127,10 @@ function App() {
         {
           path: "/attendees/:courseId",
           element: <CourseAttendees />,
+        },
+        {
+          path: "/posts/:postId",
+          element: <PostDetail />,
         },
       ],
     },

@@ -2,29 +2,41 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { likePost } from "@/services/api/likeService";
 import { formatDateAgo } from "@/utils/format";
-import {
-  Bookmark,
-  Heart,
-  MessageCircle,
-  MoreHorizontal,
-  Send,
-  Smile,
-} from "lucide-react";
-import { useState } from "react";
+import { Heart, MessageCircle, Send } from "lucide-react";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 const PostCard = ({ post, className, innerRef }) => {
   const [isLiked, setIsLiked] = useState(post?.liked || false);
-  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
-  const [likesCount, setLikesCount] = useState(post.likes);
+  const [likesCount, setLikesCount] = useState(post?.likeCount);
   const [comment, setComment] = useState("");
+  const throttleRef = useRef(false);
+  const nav = useNavigate();
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+  const handleLike = async () => {
+    if (throttleRef.current) return;
+
+    throttleRef.current = true;
+
+    try {
+      await likePost(post?.id);
+      setIsLiked(!isLiked);
+      setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throttleRef.current = false;
+      return;
+    }
+
+    setTimeout(() => {
+      throttleRef.current = false;
+    }, 2000);
   };
 
-  const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
+  const handleViewPostDetail = () => {
+    if (window.location.pathname === `/posts/${post?.id}`) return;
+    nav(`/posts/${post?.id}`);
   };
 
   return (
@@ -51,14 +63,11 @@ const PostCard = ({ post, className, innerRef }) => {
             @{post?.user?.username}
           </span>
         </div>
-        <Button variant="ghost" size="icon">
-          <MoreHorizontal className="w-4 h-4" />
-        </Button>
       </div>
 
       {/* Post Actions */}
       <div className="p-4">
-        <div className="mb-2">
+        <div className="mb-2" onClick={handleViewPostDetail}>
           <span className="text-sm">{post?.content}</span>
         </div>
         <div className="flex items-center justify-between mb-3">
@@ -76,7 +85,12 @@ const PostCard = ({ post, className, innerRef }) => {
                 )}
               />
             </Button>
-            <Button variant="ghost" size="icon" className="p-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-0"
+              onClick={handleViewPostDetail}
+            >
               <MessageCircle className="w-6 h-6" />
             </Button>
           </div>
@@ -84,15 +98,18 @@ const PostCard = ({ post, className, innerRef }) => {
 
         {/* Likes */}
         <div className="mb-2">
-          <span className="font-semibold text-sm">{post?.likeCount} likes</span>
+          <span className="font-semibold text-sm">{likesCount} likes</span>
         </div>
 
         {/* Caption */}
 
         {/* Comments */}
         {post?.commentCount > 0 && (
-          <button className="text-sm text-gray-500 mb-2">
-            View all {post?.commentCount} comments
+          <button
+            className="text-sm text-gray-500 mb-2"
+            onClick={handleViewPostDetail}
+          >
+            Xem tất cả {post?.commentCount} bình luận
           </button>
         )}
 
@@ -103,22 +120,13 @@ const PostCard = ({ post, className, innerRef }) => {
 
         {/* Add Comment */}
         <div className="flex items-center space-x-2 pt-2 border-t border-gray-100">
-          <Smile className="text-gray-500" />
+          <Send className="text-gray-500" />
           <Input
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Add a comment..."
+            onClick={handleViewPostDetail}
+            placeholder="Bình luận..."
             className="flex-1 border-none p-0 h-auto focus-visible:ring-0 text-sm bg-transparent"
+            readOnly
           />
-          {comment && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-blue-500 font-semibold p-0 h-auto"
-            >
-              Post
-            </Button>
-          )}
         </div>
       </div>
     </div>

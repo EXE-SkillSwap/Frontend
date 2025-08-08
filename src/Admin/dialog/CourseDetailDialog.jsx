@@ -62,7 +62,7 @@ const CourseDetailDialog = ({ course, isOpen, onClose, onApprove }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-12/15 max-h-[95vh] overflow-y-auto">
+      <DialogContent className="w-[900px] max-h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-900">
             Chi tiết khóa học
