@@ -67,6 +67,11 @@ const ManageSubscription = () => {
 
   const getStatusBadge = (status) => {
     const variants = {
+      PENDING: {
+        variant: "secondary",
+        className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+        label: "Chờ kích hoạt",
+      },
       ACTIVE: {
         variant: "default",
         className: "bg-green-100 text-green-800 border-green-200",
@@ -76,6 +81,11 @@ const ManageSubscription = () => {
         variant: "secondary",
         className: "bg-red-100 text-red-800 border-red-200",
         label: "Đã hết hạn",
+      },
+      INACTIVE: {
+        variant: "default",
+        className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+        label: "Chưa kích hoạt",
       },
       CANCELLED: {
         variant: "destructive",
@@ -101,6 +111,10 @@ const ManageSubscription = () => {
       FAILED: {
         className: "bg-red-100 text-red-800 border-red-200",
         label: "Thanh toán thất bại",
+      },
+      CANCELLED: {
+        className: "bg-red-100 text-red-800 border-red-200",
+        label: "Đã hủy",
       },
     };
 
