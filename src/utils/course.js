@@ -25,6 +25,9 @@ export const processCourseStatusColor = (status) => {
 };
 
 export const formatPrice = (price) => {
+  if (typeof price !== "number" || isNaN(price)) {
+    return "Không xác định";
+  }
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
@@ -32,6 +35,7 @@ export const formatPrice = (price) => {
 };
 
 export const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString("vi-VN", {
     year: "numeric",
     month: "short",

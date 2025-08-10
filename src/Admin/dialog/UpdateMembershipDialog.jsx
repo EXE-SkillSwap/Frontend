@@ -140,6 +140,7 @@ const UpdateMembershipDialog = ({
                               field.onChange(e.target.valueAsNumber);
                             }}
                             value={membership.price}
+                            readOnly
                           />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
                             VND
