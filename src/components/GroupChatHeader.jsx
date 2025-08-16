@@ -58,10 +58,7 @@ const GroupChatHeader = ({ conversation }) => {
 
           {/* Show remaining count if there are more participants */}
           {remainingCount > 0 && (
-            <div
-              className="relative -ml-3 flex items-center justify-center w-10 h-10 bg-gray-300 border-2 border-white rounded-full"
-              style={{ zIndex: 0 }}
-            >
+            <div className="relative -ml-3 flex items-center justify-center w-10 h-10 bg-gray-300 border-2 border-white rounded-full">
               <span className="text-xs font-medium text-gray-600">
                 +{remainingCount}
               </span>

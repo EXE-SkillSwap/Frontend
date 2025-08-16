@@ -99,7 +99,6 @@ const ChatWindow = ({ selectedConversation }) => {
     } else {
       setMessages([]);
       setMessageText("");
-      // Optionally navigate back to conversations list if no conversation is selected
       nav("/chats");
     }
   }, [selectedConversation]);
@@ -107,23 +106,9 @@ const ChatWindow = ({ selectedConversation }) => {
   return (
     <div className="flex-1 flex flex-col">
       {/* Chat Header */}
-      <div className="bg-white px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div className="bg-white px-6 py-1 border-b border-gray-200 flex items-center justify-between">
         <GroupChatHeader conversation={selectedConversation} />
-
-        <div className="flex items-center gap-2">
-          {/* <Button variant="ghost" size="icon" className="text-gray-600">
-            <Phone className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-gray-600">
-            <Video className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-gray-600">
-            <Info className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-gray-600">
-            <MoreHorizontal className="w-4 h-4" />
-          </Button> */}
-        </div>
+        <div className="flex items-center gap-2"></div>
       </div>
 
       {/* Messages */}
@@ -149,35 +134,19 @@ const ChatWindow = ({ selectedConversation }) => {
             <Input
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
-              placeholder="Type a new message"
+              placeholder="Nhập tin nhắn"
               className="pr-20"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && messageText.trim()) {
+                  handleSendMessage(
+                    selectedConversation.id,
+                    messageText.trim()
+                  );
+                  setMessageText("");
+                }
+              }}
             />
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-              {/* <Button variant="ghost" size="icon" className="text-gray-600">
-                <Plus className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 h-8 w-8"
-              >
-                <Paperclip className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 h-8 w-8"
-              >
-                <Smile className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 h-8 w-8"
-              >
-                <Mic className="w-4 h-4" />
-              </Button> */}
-            </div>
+            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1"></div>
           </div>
           <Button
             variant="primary"

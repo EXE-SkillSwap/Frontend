@@ -43,3 +43,7 @@ export const getAllUsers = async (page, size, search, role, sortBy) => {
     `users/all?page=${page}&size=${size}&searchString=${search}&role=${role}&sortBy=${sortBy}`
   );
 };
+
+export const getUserByNickname = async (nickname) => {
+  return instance.get(`users/nickname/${nickname}`);
+};

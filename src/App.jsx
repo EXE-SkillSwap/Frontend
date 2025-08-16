@@ -24,12 +24,13 @@ import Profile from "@/pages/Profile";
 import SelectSkills from "@/pages/SelectSkills";
 import Signup from "@/pages/Signup";
 import { useEffect, useState } from "react";
-import { RouterProvider } from "react-router";
+import { RouterProvider, useParams } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import EnhancedChatInterface from "./pages/EnhancedChatInterface";
 import ForumPage from "./pages/ForumPage";
 import CourseAttendees from "@/pages/CourseAttendees";
 import PostDetail from "@/pages/PostDetail";
+import UserPostProfile from "@/pages/UserPostProfile";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,12 +49,12 @@ function App() {
       element: <SelectSkills />,
     },
     {
-      path: "/payment/callback",
-      element: <Payment />,
-    },
-    {
       path: "/chats",
       element: <EnhancedChatInterface />,
+    },
+    {
+      path: "/payment/callback",
+      element: <Payment />,
     },
     {
       path: "/auth",
@@ -131,6 +132,10 @@ function App() {
         {
           path: "/posts/:postId",
           element: <PostDetail />,
+        },
+        {
+          path: "/p/:nickname",
+          element: <UserPostProfile />,
         },
       ],
     },

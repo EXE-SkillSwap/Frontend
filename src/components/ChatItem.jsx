@@ -18,23 +18,6 @@ const ChatItem = ({
     return `${participant.user.firstName} ${participant.user.lastName}`.trim();
   };
 
-  // Format time from createdAt
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours =
-      Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
-
-    if (diffInHours < 24) {
-      return date.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
-    }
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  };
-
   const renderSingleAvatar = (participant) => (
     <div className="relative">
       <Avatar className="w-10 h-10">
@@ -44,8 +27,6 @@ const ChatItem = ({
           {participant.user.lastName[0]}
         </AvatarFallback>
       </Avatar>
-      {/* You can add online status logic here if needed */}
-      {/* <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div> */}
     </div>
   );
 

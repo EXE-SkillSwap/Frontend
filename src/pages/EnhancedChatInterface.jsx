@@ -1,11 +1,11 @@
-import { getConversations } from "@/services/api/conversationsService";
 import logo from "@/assets/newLogo.png"; // Adjust the path as necessary
 import ChatItem from "@/components/ChatItem";
 import ChatWindow from "@/components/ChatWindow";
-import ChatSidebar from "@/components/common/ChatSidebar";
+import Header from "@/components/common/Header";
 import EmtyMessageState from "@/components/EmtyMessageState";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getConversations } from "@/services/api/conversationsService";
 import { Grid3X3, MoreHorizontal, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -36,11 +36,10 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-500 via-purple-500 to-cyan-600 p-6 flex">
-      {/* Vertical Toolbar */}
-      <ChatSidebar />
+    <div className="min-h-screen bg-gradient-to-br from-cyan-100 via-purple-300 to-cyan-200 p-6 flex">
       {/* Main Chat Container */}
-      <div className="max-w-8xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden h-[calc(100vh-3rem)] flex-1 flex flex-col">
+      <Header />
+      <div className="max-w-8xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden h-[calc(100vh-7rem)] flex-1 flex flex-col mt-15">
         {/* Header */}
         <div className="bg-white px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -50,13 +49,7 @@ export default function Index() {
               className="w-6 h-6 rounded-md"
               onClick={() => nav("/chats")}
             />
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="Tìm kiếm ...."
-                className="pl-10 w-80 bg-gray-50 border-gray-200"
-              />
-            </div>
+            <div className="relative"></div>
           </div>
         </div>
 
@@ -67,15 +60,7 @@ export default function Index() {
             <div className="flex-1 overflow-y-auto">
               {/* Chat Header */}
               <div className="px-4 py-2 flex items-center justify-between">
-                <h2 className="font-semibold text-gray-800">Trò Chuyện</h2>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" className="text-gray-600">
-                    <Grid3X3 className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-gray-600">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </Button>
-                </div>
+                <div className="flex items-center gap-2"></div>
               </div>
 
               {/* Recent Section */}

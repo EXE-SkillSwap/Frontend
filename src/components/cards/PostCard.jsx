@@ -7,10 +7,10 @@ import { formatDateAgo } from "@/utils/format";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 const PostCard = ({ post, className, innerRef }) => {
   const [isLiked, setIsLiked] = useState(post?.liked || false);
   const [likesCount, setLikesCount] = useState(post?.likeCount);
-  const [comment, setComment] = useState("");
   const throttleRef = useRef(false);
   const nav = useNavigate();
 
@@ -39,14 +39,21 @@ const PostCard = ({ post, className, innerRef }) => {
     nav(`/posts/${post?.id}`);
   };
 
+  const handleViewPostAuth = (nickname) => {
+    nav(`/p/${nickname}`);
+  };
+
   return (
     <div
       className={cn("bg-white border border-gray-200 rounded-lg", className)}
       ref={innerRef}
     >
       {/* Post Header */}
-      <div className="flex items-center justify-between p-4">
-        <div className="flex items-center space-x-3">
+      <div className="flex items-center justify-between p-4 ">
+        <div
+          className="flex items-center space-x-3 cursor-pointer"
+          onClick={() => handleViewPostAuth(post?.user?.username)}
+        >
           <Avatar className="w-8 h-8">
             <AvatarImage
               src={post?.user?.avatarUrl}
