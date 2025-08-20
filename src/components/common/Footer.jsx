@@ -1,30 +1,9 @@
-import {
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-  FaLinkedin,
-  FaYoutube,
-} from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Heart, Sparkles, ArrowUp } from "lucide-react";
-import { useState, useEffect } from "react";
 import logo from "@/assets/newLogo.png";
+import { Heart, Mail, MapPin, Phone } from "lucide-react";
+import { FaFacebook } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <>
       {/* Ultra-modern footer with glass morphism */}
@@ -86,7 +65,6 @@ const Footer = () => {
                 {[
                   { name: "Trang Chủ", path: "/" },
                   { name: "Về Chúng Tôi", path: "/about" },
-                  { name: "Diễn Đàn", path: "/forum" },
                   { name: "Liên Hệ", path: "/contact" },
                   { name: "Điều Khoản", path: "/terms" },
                   { name: "Bảo Mật", path: "/privacy" },
@@ -191,13 +169,6 @@ const Footer = () => {
                   className="hover:text-white transition-colors duration-300"
                 >
                   Bảo mật
-                </Link>
-                <span>•</span>
-                <Link
-                  to="/cookies"
-                  className="hover:text-white transition-colors duration-300"
-                >
-                  Cookies
                 </Link>
               </div>
             </div>

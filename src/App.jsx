@@ -31,6 +31,10 @@ import ForumPage from "./pages/ForumPage";
 import CourseAttendees from "@/pages/CourseAttendees";
 import PostDetail from "@/pages/PostDetail";
 import UserPostProfile from "@/pages/UserPostProfile";
+import About from "@/pages/About";
+import Terms from "@/pages/Terms";
+import Contact from "@/pages/Contact";
+import Privacy from "@/pages/Privacy";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,6 +71,22 @@ function App() {
         {
           path: "/",
           element: <HomePage />,
+        },
+        {
+          path: "/about",
+          element: <About />,
+        },
+        {
+          path: "/terms",
+          element: <Terms />,
+        },
+        {
+          path: "/contact",
+          element: <Contact />,
+        },
+        {
+          path: "/privacy",
+          element: <Privacy />,
         },
         {
           path: "/login",
